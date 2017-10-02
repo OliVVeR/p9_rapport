@@ -1,0 +1,151 @@
+\documentclass[a4paper,final]{article}
+
+\usepackage{uppaal}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\title{\LaTeX{} Style for \uppaal Models}
+%\date{}
+\author{Marius Miku\v{c}ionis \\ {\tt marius@cs.aau.dk}}
+
+\newcommand{\cmdbf}[1]{{\bf \textbackslash#1}}
+\newcommand{\cmdtt}[1]{{\tt \textbackslash#1}}
+
+\begin{document}
+\maketitle
+
+
+\section{Introduction}
+The intent of this manual is to document the features of {\bf uppaal} \LaTeX{} style package.
+The {\bf uppaal} package has been developed over many years of publishing papers related to \uppaal.
+The initial intent was to gather common definitions used throughout papers.
+The common definitions outgrew into package and finally became a piece of software it is now.
+
+\subsection{Example}
+Listing~\ref{lst:example} shows a sample \uppaal code typeset using this package.
+\input{example}
+
+
+
+\subsection{Dependencies}
+The package depends on the following packages:
+\begin{description}
+\item[listings] -- implement the actual typesetting.
+\item[color] -- define and customize colors.
+\item[xspace] -- ommit trailing space for tool names.
+\end{description}
+
+\section{Package Options}
+
+
+\section{Environments}
+
+\section{Language Definitions}
+
+\section{Inline Code}
+Apart from explicit listings \uppaal code can also be typeset inside normal text flow using style similar to the default scheme in \uppaal graphical user interface.
+
+\begin{table}[ht]
+  \caption{List of supported \LaTeX{} commands.}
+  \label{tab:commands}
+\begin{tabular}{@{}l@{ }l@{ }l@{ }l@{}}
+  \toprule
+  {\bf Command}   & {\bf Description } & {\bf Example} & {\bf Result} \\
+  \midrule
+  \multicolumn{4}{@{}l}{Labels associated with {\bf locations}:} \\
+  \cmdbf{uppLoc}  & location name        & \cmdtt{uppLoc\{Done\}}    & \uppLoc{Done} \\
+  \cmdbf{uppInv}  & invariant expression & \cmdtt{uppInv\{x$<=$7 \&\& y'==0\}} & \uppInv{x<=7 && y'==0} \\
+  \cmdbf{uppRate} & exponential rate expr. & \cmdtt{uppRate\{1:7\}} & \uppRate{1:7} \\
+  \midrule
+  \multicolumn{4}{@{}l}{Labels associated with {\bf edges}:} \\
+  \cmdbf{uppSelect} & select statement & \cmdtt{uppSelect\{i:int[1,7]\}} & \uppSelect{i:int[1,7]} \\
+  \cmdbf{uppGuard}  & guard expression & \cmdtt{uppGuard\{x$>=$3\}} & \uppGuard{x>=3} \\
+  \cmdbf{uppSync}   & plain synchronization  & \cmdtt{uppSync\{message\}} & \uppSync{message} \\
+  \cmdbf{uppIn}     & input synchronization  & \cmdtt{uppIn\{message\}}   & \uppIn{message} \\
+  \cmdbf{uppOut}    & output synchronization & \cmdtt{uppOut\{message\}}  & \uppOut{message} \\
+  \cmdbf{uppUpdate} & update statement       & \cmdtt{uppUpdate\{x=5,y=7\}} & \uppUpdate{x=5,y=7} \\
+  \cmdbf{uppWeight} & weight expression      & \cmdtt{uppWeight\{i*10\}} & \uppWeight{i*10} \\
+  \midrule
+  \multicolumn{4}{@{}l}{Variable and type names from {\bf declarations}:} \\
+  \cmdbf{uppVar}    & variable name & \cmdtt{uppVar\{count\}}    & \uppVar{count} \\
+  \cmdbf{uppConst}  & constant name & \cmdtt{uppConst\{MAX\_N\}}    & \uppConst{MAX_N true} \\
+  \cmdbf{uppClock}  & clock name    & \cmdtt{uppClock\{time\}}   & \uppClock{time} \\
+  \cmdbf{uppChan}   & channel name  & \cmdtt{uppChan\{message\}} & \uppChan{message} \\
+  \cmdbf{uppType}   & type name     & \cmdtt{uppType\{int32\_t\}}   & \uppType{int32_t} \\
+  \cmdbf{uppFunc}   & function name & \cmdtt{uppFunc\{enqueue()\}} & \uppFunc{enqueue()} \\
+  \cmdbf{uppTemp}   & template name & \cmdtt{uppTemp\{Train\}}   & \uppTemp{Train} \\
+  \cmdbf{uppProc}   & process name  & \cmdtt{uppProc\{Train(3)\}}& \uppProc{Train(3)} \\
+  \midrule
+  \multicolumn{4}{@{}l}{Properties and queries from {\bf verifier}:} \\
+  \cmdbf{uppProp} & any property text & \cmdtt{uppProp\{E$<>$ deadlock\}} & \uppProp{E<> deadlock} \\
+  \cmdbf{uppEF}   & Exists path with Future & \cmdtt{uppEF\{deadlock\}} & \uppEF{deadlock}\\
+  \cmdbf{uppEG}   & Exists path with Global & \cmdtt{uppEG\{counter$<=$9\}} & \uppEG{counter<=9} \\
+  \cmdbf{uppAF}   & All paths with Future & \cmdtt{uppAF\{counter$<=$9\}} & \uppAF{counter<=9} \\
+  \cmdbf{uppAG}   & All paths with Global & \cmdtt{uppAG\{counter$<=$9\}} & \uppAG{counter<=9} \\
+  \cmdbf{uppPr} & Estimate probability  & \cmdtt{uppPr\{[$<=7$]($<>$ done)\}} & \uppPr{[<=7](<> done)}\\
+  \cmdbf{uppPrF}& Probability of Future & \cmdtt{uppPrF\{$<=7$\}\{done\}} & \uppPrF{<=7}{done} \\
+  \cmdbf{uppPrG}& Probability of Global & \cmdtt{uppPrG\{$<=7$\}\{good\}} & \uppPrG{<=7}{good} \\
+  \cmdbf{uppSim}& Simulate and project & \cmdtt{uppSim\{5\}\{$<=7$\}\{x,y\}} & \uppSim{5}{<=7}{x,y} \\
+  \cmdbf{uppSimC}& Simulate with check & \cmdtt{uppSimC\{5\}\{$<=7$\}\{x\}\{3\}\{done\}} & \uppSimC{5}{<=7}{x}{3}{done} \\
+  \midrule
+  \multicolumn{4}{@{}l}{Tool names:} \\
+  \cmdbf{uppaal} & Uppaal & \cmdtt{uppaal} & \uppaal \\
+  \cmdbf{uppaaltiga} & \uppaaltiga & \cmdtt{uppaaltiga} & \uppaaltiga \\
+  \cmdbf{uppaalsmc} & \uppaalsmc & \cmdtt{uppaalsmc} & \uppaalsmc \\
+  \cmdbf{stratego} & \stratego & \cmdtt{stratego} & \stratego \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Colors and Styles}
+This section enumerates the colors and styles which can be customized.
+
+\begin{table}[ht]
+  \caption{Color definitions.}\label{tab:colors}
+  \centering
+\begin{tabular}{llc@{, }c@{, }cl}
+  \toprule
+  {\bf Color} & {\bf Name} & \multicolumn{3}{c}{\bf RGB} & {\bf Sample} \\
+  \midrule
+  uppCommentColor & darker red & 0.4 & 0 & 0 & {\color{uppCommentColor}\rule{10mm}{3mm}} \\
+  uppKeywordColor & dark green & 0 & 0.4 & 0 & {\color{uppKeywordColor}\rule{10mm}{3mm}} \\
+  uppTypeColor & darker green & 0 & 0.3 & 0 & {\color{uppTypeColor}\rule{10mm}{3mm}} \\
+  \midrule
+  uppLocColor & dark red & 0.5 & 0 & 0 & {\color{uppLocColor}\rule{10mm}{3mm}} \\
+  uppInvColor & dark magenta & 0.4 & 0 & 0.4 & {\color{uppInvColor}\rule{10mm}{3mm}} \\
+  uppRateColor & pink & 0.875 & 0.25 & 0.5 & {\color{uppRateColor}\rule{10mm}{3mm}} \\
+  uppSelectColor & dark yellow & 0.4 & 0.4 & 0 & {\color{uppSelectColor}\rule{10mm}{3mm}} \\
+  uppGuardColor & dark green & 0 & 0.3 & 0 & {\color{uppGuardColor}\rule{10mm}{3mm}} \\
+  uppSyncColor & dark cyan & 0 & 0.4 & 0.4 & {\color{uppSyncColor}\rule{10mm}{3mm}} \\
+  uppUpdateColor & dark blue & 0 & 0 & 0.4 & {\color{uppUpdateColor}\rule{10mm}{3mm}} \\
+  uppWeightColor & dark orange & 0.4 & 0.2 & 0 & {\color{uppWeightColor}\rule{10mm}{3mm}} \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \caption{Style definitions.}\label{tab:styles}
+\begin{tabular}{llll}
+  \toprule
+  {\bf Style}            & {\bf Definition}      & {\bf Purpose} & {\bf Sample} \\
+  \midrule
+  \cmdbf{uppBasicStyle}  & \cmdtt{uppPlainStyle} & basic text      & {\uppBasicStyle text} \\
+  \cmdbf{uppKeywordStyle}& \cmdtt{uppBfStyle}  & keywords          & {\uppKeywordStyle return} \\
+  \cmdbf{uppTypeStyle}   & \cmdtt{uppBfStyle}  & type names        & {\uppTypeStyle clock} \\
+  \cmdbf{uppConstStyle}  & \cmdtt{uppBfStyle}  & constant names    & {\uppConstStyle true} \\
+  \cmdbf{uppFuncStyle}   & \cmdtt{uppSlStyle}  & function names    & {\uppFuncStyle sin} \\
+  \cmdbf{uppCommentStyle}& \cmdtt{uppSlStyle}  & simple comment    & {\uppCommentStyle comment} \\
+  \cmdbf{uppFCommentStyle}&\cmdtt{uppSlBfStyle}& fancy comment     & {\uppFCommentStyle comment} \\
+  \midrule
+  \cmdbf{uppPlainStyle}  & (plain font)        & plain text        & {\uppPlainStyle text} \\
+  \cmdbf{uppBfStyle}     & \cmdtt{bfseries}    & bold text         & {\uppBfStyle text} \\
+  \cmdbf{uppSlStyle}     & \cmdtt{slshape}     & slanted text      & {\uppKeywordStyle text} \\
+  \cmdbf{uppSlBfStyle}   & \cmdtt{slshape}\cmdtt{bfseries} & slanted bold text & {\uppSlBfStyle text} \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Acknowledgements}
+The suggestions from co-authors and colleagues: Brian~Nielsen, Ulrik~Nyman, Danny B. Poulsen, and many others.
+
+\end{document}

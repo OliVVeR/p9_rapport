@@ -1,0 +1,113 @@
+\documentclass[10pt, t]{beamer}
+\usepackage{etex}
+\usetheme[left, hideothersubsections=true]{AAUsidebar}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\usepackage{graphicx}
+\usepackage{tikz-er2}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{adjustbox} %allows verbatim scaling e.g. lstlistings
+\usepackage{multicol}
+
+\usetikzlibrary{shapes,arrows}
+\input{tikz_defs}
+
+\definecolor{darkgreen}{rgb}{0.01, 0.75, 0.24}
+
+\lstdefinelanguage{our_java}
+{
+	basicstyle=\small,
+	basicstyle=\ttfamily\scriptsize,
+	captionpos=b,
+	showstringspaces=false,					% Mellemrum i strenge enten vist eller blanke
+	numbers=left, numberstyle=\tiny,		% Linjenumre
+	tabsize=4,
+	frame=single,
+	language=java,
+	keywordstyle=\color{blue}\ttfamily,
+               stringstyle=\color{red}\ttfamily,
+               commentstyle=\color{darkgreen}\ttfamily,
+}
+
+\lstdefinelanguage{inc_cpp}
+{
+	basicstyle=\small,
+	basicstyle=\ttfamily\scriptsize,
+	captionpos=b,
+	showstringspaces=false,					% Mellemrum i strenge enten vist eller blanke
+	numbers=left, numberstyle=\tiny,		% Linjenumre
+	tabsize=4,
+	frame=single,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{green}\ttfamily,
+	language=C++
+}
+
+\newcommand{\chref}[2]{
+    \href{#1}{{\usebeamercolor[bg]{AAUsidebar}#2}}
+}
+
+\title[SW8]{SW8 Projekt}
+\subtitle{Jabbering Through Pablo}
+\date{16/06-2017}
+\author[SW801F17]
+{
+Anders Lykke Matthiassen; 
+Christian Stephansen \linebreak
+Gideon Jonas Baumann Blegmand; 
+Jacob Nielsen \linebreak
+Oliver Brun Købsted;
+Simon Aagaard Pedersen 
+%\linebreak
+    %\href{mailto:csteph13@student.aau.dk}{\textit{<csteph13@student.aau.dk>}}
+}
+
+\institute[
+    Institut For Datalogi\linebreak
+    Selma Lagerlöfs Vej 300\linebreak
+    DK-9220 Aalborg Ø\linebreak
+    http://cs.aau.dk
+]
+{
+    Institut For Datalogi\linebreak
+    Selma Lagerlöfs Vej 300\linebreak
+    DK-9220 Aalborg Ø\linebreak
+    http://cs.aau.dk/
+
+}
+%\institute[
+%	Department of Computer Science \linebreak
+%	Selma Lagerlöfs Vej 300 \linebreak
+%	9220 Aalborg East \linebreak
+%	https://www.cs.aau.dk \linebreak
+%]
+%{
+%	Department of Computer Science \linebreak
+%	Selma Lagerlöfs Vej 300 \linebreak
+%	9220 Aalborg East \linebreak
+%	https://www.cs.aau.dk \linebreak
+%}
+\pgfdeclareimage[height=1.5cm]{titlepagelogo}{AAUgraphics/AAU-logo-stud-DK-RGB}
+\titlegraphic{
+    \pgfuseimage{titlepagelogo}
+}
+
+\setbeamertemplate{section page}
+{
+  \thispagestyle{empty}
+  \frame{
+  \aauwavesbg
+  \finalpage{\insertsection\par}
+  }
+}
+\AtBeginSection{\sectionpage}

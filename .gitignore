@@ -1,0 +1,48 @@
+# LaTeX temporary files
+**/*.aux
+**/*.log
+**/*.toc
+**/*.gz
+**/*.dvi
+**/*.out.ps
+**/*.lox
+**/*.bbl
+**/*.blg
+**/*.lot
+**/*.lof
+**/*.lol
+**/*.out
+**/*.glg
+**/*.glo
+**/*.gls
+**/*.glsdefs
+**/*.xdy
+**/*.ist
+**/*.nav
+**/*.snm
+**/*.vrb
+**/*.mw
+
+#BibLaTeX temporary files
+**/*-blx.bib
+**/*.run.xml
+**/*.bcf
+
+# Output
+**/*.pdf
+
+# OSX specific file
+**/*.DS_Store
+
+# VIM working files
+**/*.swp
+**/~*
+
+#emacs working file
+**/*~
+**/#*#
+**/.#*
+
+#Fedora texlive script
+texliveonfly.py
+content/analysis/technologies.tex
