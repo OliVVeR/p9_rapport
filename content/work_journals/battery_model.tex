@@ -1,0 +1,19 @@
+\section{Battery Model}
+What is a battery model?
+Battery models are used to emulate properties of real world batteries, the amount of information required to model a battery depends of the different kinds of models. The most realistic model uses chemical processes as its base, Dualfoil is an implemented model that requires over 50 battery-related parameters and uses six non-linear differential equations to estimate the battery energy level, recovery effect and lifetime among other thing. There do exist more simplistic models which will be discussed further in this section.
+
+What are the benefits of using such models
+A battery model can provide valuable insight to the state of the battery, this is especially essential when have devices that has no capability of recharging. Applications like this can be sensor devices in sensor networks that often is complicate to replace and requires a high life expediency. Which a battery model, one will be able to estimate the lifetime of such devices within a deviation of error based on the model that is being used. Lifetime of battery is often the primary factor, but the lifetime of a battery can heavenly depend on the usage pattern, that where recovery effect and energy level come into play. Recovery effect is important when talking about battery usage, if the battery is able to idle after periods of load, the battery will be able to recovery some of its energy, and if the load can be disrupted in an average current, the battery will increase its lifetime compared to a constant high current during the entire batteries usage. 
+
+Which battery models are best suited
+Dualfoil (Du)
+Most accurate but expensive and hard to configure
+Kinetic Battery Model (KiBaM)
+Simplest of the three and has minimal overhead
+Diffusion Model (DiM)
+based on KiBaM, but doesn't gain that much more insight compared to the added calculations
+
+KiBam and Dim has almost identical deviation of up to 5\% and given that KiBaM is slightly more simplistic it would be the ideal pick. Du is accurate and may have some applications where it is essential that you are more or less 100\% accurate, but based on the batteries fluctuation in the states that will be hard to accomplish. For our purpose KiBaM is more then accentuate enough for our purpose 
+
+Source
+http://ieeexplore.ieee.org/document/5346550/
