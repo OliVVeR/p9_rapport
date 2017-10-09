@@ -1,0 +1,13 @@
+\section{UPPAAL}
+
+When planning satellite missions it is important, that it can be guaranteed no major or unforeseen errors will occur. This may be done testing or by using a modelling tool capable of verifying, that the proposed actions are correct\cite{cs_smc}. Several such tools exists e.g. Kronos, and UPPAAL. For this project we will be considering UPPAAL, specifically the versions \gls{cora} and \gls{smc}, as they have been presented as the more relevant solutions for this project.
+
+\subsection{Cora}
+UPPAAL \gls{cora} is a version of UPPAAL, it uses priced timed automata \cite{cs_cora}. \Gls{cora} have previously been used to find cost-optimal solutions for for the GomX-3 system\cite{gomx3}, and is therefore considered relevant for this case.
+\Gls{cora} is considered relatively basic for UPPAAL, as it is one of the older versions, it is however fast relative to some of the newer versions. \Gls{cora} introduced the concept of cost, this means that when a template reaches certain locations, it may have some specified cost. In addition it is possible to run queries on the cost, in order the get the minimum cost, or an end state where the cost is under some specified amount.
+This can be very useful for modelling systems such as satellites where energy is an important and limited resource.
+
+\subsection{SMC}
+UPPAAL SMC is one of the newer versions of UPPAAL.
+
+
