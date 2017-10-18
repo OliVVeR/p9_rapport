@@ -1,2 +1,23 @@
 \chapter{Introduction}\label{cha:intro}
+Scheduling in orbit can be a daunting task where many factors needs to be considered, shown in GomX-3 case, one of the most important factors were to monitor and maintain power. This rapport expands on GomX-3 case, which mainly focused on one satellite mission. We would like to see this approach widened to be suited for any space mission.
 
+
+What did GomX-3 article do
+	Generate schedule
+	Verify schedule based on payload and power levels.
+
+To maximize profit with a satellite, a schedule is needed.
+	satellites schedule is often short, to better accommodate unforeseen event while maintain a certain profit level.
+	making a schedule for a satellites can we extremely time consuming and error prone if done by hand.
+	keeping track of power level with a schedule expands on the complexity.
+	To maximize profit the satellite should never go into safe mode (certain power level)
+	
+Problem statement
+	How can we design a tool that allows engineers to more easily generate a schedule that fits their needs, which can be configured and tweaked on a number of factors. to accommodate power level and other critical factors that are involved when operating a satellite in space.
+	
+Solution
+	Four component goes into this tool
+	Number one, easy method of defining task and setting parameters given the specific satellite, this can be done in excel or other formats.
+	Number two, generate the best schedule.
+	Number three, validating that the schedule can actually run even if some of the task take a bit longer. If this can't be satisfied, the tool will tweak the parameter given in component one and generate a new best schedule until we can validate within a small margin of error.
+	Number four, exporting the results to the user in format that is useful to the engineers.
