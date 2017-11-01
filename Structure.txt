@@ -1,0 +1,58 @@
+Introduction
+GomX needs:
+Increasing number of nanosatellites launched into space
+increases demand for partial/full automation of schedule generation 
+Full or partial creation of schedule is done by hand.
+Creating optimal/best schedule can be extremely time consuming.
+ keeping track of power level with a schedule expands on the complexity.
+A good schedule should take these factors into consideration
+Profit
+Energy
+General problems related to schedule
+Can be very expensive to explore every path to find best schedule(alternative use heuristics)
+Related work
+GomX-3 article
+Generate schedule
+schedule is conjunction of smaller schedules
+Verify schedule based on payload and power and profit levels
+Using simple battery model and KiBaM(with recharge) for candidate schedules.
+Schedules length are between 24 to 72 hours. (72 and longer is not suitable)
+Schedules tries to avoid making the satellite going into safe mode
+
+Initial Problem
+How can we assist engineers when creating a schedule for nanosatellites, that are able to generate a schedule based on the tasks that the engineers define? It should also be aware of energy level as well as profit value they can expect when using the generated schedule.
+
+How can the problem be solved?
+Four component goes into this tool
+Easy method of defining task and setting parameters given the specific satellite, this can be done in excel or other formats.
+Generate the best schedule.
+Validating that the schedule can actually run even if some of the task take a bit longer. If this can't be satisfied, the tool will tweak the parameter given in component one and generate a new best schedule until we can validate within a small margin of error.
+Exporting the results to the user in format that is useful to the engineers.
+
+Input model -> Schedule
+Schedule validation
+if rejected goto step 1.
+Generate output model
+
+Validation/Robustness (Uppaal, Simulink and Kronos)
+What should we validate?
+How can we validate it?
+Input Model
+How should the input model be defined? (assumptions from gomX experiences with programs)
+
+Schedule
+How could we generate a schedule?
+What should the schedule prioritize?
+Profit
+Energy saving 
+
+Battery Model
+What battery model to use, when running a schedule?
+
+Output Model
+How should the output model be defined? (assumptions from gomX)
+
+
+	
+	
+
