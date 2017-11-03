@@ -2,10 +2,32 @@
 Scheduling in orbit can be a daunting task where many factors needs to be considered, this rapport aims to accommodate GomSpace in generation schedules for their nano satellites, GomSpace could benefit from having partial or fully generated schedules, and this rapport will go over how this could be achieved. GomSpace has a desired to alleviate the time required to create a schedule, this need has increased over the years since the amount of launched nano satellites has gone up. This trend has made it impractically to continue generating schedules by hands, and a more elegant solution is than needed.
 
 Related work %Hvor bliver deres tasks defineret i GOMX-3? Hvorfor kan deres schedular ikke bruges til andre missioner? En af deres heuristics er king (6029126 states explored -> 175191 states explored)
-Generation of a schedule with respect to profit and energy has already been done with the GomX-3 mission, they came up with an approach to generate a schedule, that uses orbit and power predictions as input for the schedule generator, which was modelled in UPPAAL CORA. One problem they countered was the large number of states when generation a schedule for 24 or more hours, to counter weight it they added heuristics that would reduce the number of options each state had in some cases. Two battery models was used, the first one is a simple model that was integrated with the schedule generator and the second one was an analytical model called kinetic battery model (KiBaM), which were used to validate candidate schedules. When a final schedule had been selected, a csv file will then be generated which has all the information about the schedule.
+Generation of a schedule with respect to profit and energy has already been done with the GomX-3 mission, they came up with an approach to generate a schedule, that uses orbit and power predictions as input for the schedule generator, which was modelled in UPPAAL CORA. One problem they countered was the large number of states when generation a schedule for 24 or more hours, to counter weight it they added heuristics that would reduce the number of options each state had in some cases. Two battery models was used, the first one is a simple model that was integrated with the schedule generator and the second one was an analytical model called kinetic battery model (KiBaM), which were used to validate candidate schedules. When a final schedule had been selected, a csv file will then be generated which has all the information about the schedule. The two most effective heuristics they used where "Force discard of schedules on depletion" and "Impose upper bound on discharging loads", the first one forces the schedule into a deadlock when the battery reaches a non positive state of charge, and the schedule it then discarded, the second one put limits on the amount of time a task that draws a lot of power can be executed.%GomX-3 Article
 
-Problem statement
-How can we design a tool that allows engineers to more easily generate a schedule that fits their needs, which can be configured and tweaked on a number of factors. to accommodate power level and other critical factors that are involved when operating a satellite in space.
+Battery models also play an important part in schedules for space missions, and numerous models have been developed to capture how a battery functions in the real work. In the paper "what battery model to use?" they go over the different types of battery models that exists, they analyse a wide range of model, where the electrochemical models being of the highest accuracy down to the most basic models. Through the paper they made some discoveries , first one being that the electrochemical models were often way to complex to be used in applications and was error prone if all setting were not set correctly. On the other side of the spectrum was the basic models which gave fairly good results, but under certain circumstances it would not perform well in respect to the real world battery. In between these two models are the analytical models, that seems to work well in also any condition without high deviations. The analytical models introduced from the paper is KiBaM and diffusion model, they perform similarly. But the paper would suggest KiBaM to be used when modelling a battery, duo to it being more simplistic then the diffusion model.
+%use kibam in a stocastic setup to minimize error. 
+%What battery model to use?
+
+%Generate entire schedule vs segments of a schedule (pros and cons?)
+Our approach is similar at the beginning, in which we require the engineer to define the input parameters and let CORA derive a schedule for us. But after that we purpose to construct a new model in SMC to verify the schedule also using KiBaM, but with the focus of detecting if a schedule will still be viable if one or several of the tasks goes over their estimated time, and SMC can than say within a margin of uncertainty the probability of the schedule being able to run its plan. The entire solution will be a black box so the engineers do not need have any knowledge about the UPPAAL tools. This tool is meant to be used from a command line, where they will be able to specify which parameters to optimize for, like profit, energy saving etc.
+
+
+%GomX-3 split schedules into smaller parts
+% By spliting the entire schedules into small segments reduces the plan for longterm goals
+% cora only support static prices.
+% heuristics
+% Force discard of schedules on depletion
+% Impose upper bound on discharing loads
+
+%GomX-3 not inclucded: 
+% Chance of actual sucess if something goes wrong (task take longer than expected)
+% Instead of making one candicate schedule, produce a few more with enough varaity that the engineers can chose the plan that suits them the best.
+
+Problem statement 1
+How can a tool that allows engineers to more easily generate a schedule that fits their needs be developed, which can be configured and tweaked on a number of factors. to accommodate power level and other critical factors that are involved when operating a satellite in space, with minimal knowledge of PTA or similar models.
+
+Problem statement 2
+It is possible to expand upon the previous work done by GomX-3 article to make a more reliable schedules that can account for over duo deadlines and other errors, as well as being flexible enough to suit a wide range of space missions.
 
 
 %What did GomX-3 article do
