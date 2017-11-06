@@ -1,2 +1,18 @@
 \section{KiBaM}\label{sec:kibam}
+Schedules for space missions need to be battery aware, in order for their satellite too function correctly and not fall out of their orbit or lose connection with the satellite. A lot of battery models have been devlovped over the years and in this section a few of them will be covered to give an overview of which model is ideal for our purpose.
+
+The battery models that will be examined in this section can be put into the following types of catagories: eletrochemical-, electrical-circuit-, Stochastic-, and analytical-models.
+
+Eletrochemical Models are represented by the chemical proceses taking place in a battery, they are known to be to most accruate models in the field. But the downside to those models are there complexity. An example of this is the Dualfoil written in fortran that simulates lithium-ion batteries, which take over 50 parameters related to the battery properties, and it uses six non-linear differential equations. This is difficult to setup duo to the large number of parameters and uses a lot of cpu to simulate the battery.
+
+Eletrical-circuit Models the battery based on the eletrical properties, almost all of the models in thi
+
+
+
+
+Battery models plays an important part in schedules for space missions, and numerous models have been developed to capture how a battery functions in the real world. In the paper "what battery model to use?"\cite{battery_model} they go over the different types of battery models that exists, they analyse a wide range of models, where the electrochemical models being of the highest accuracy down to the most basic models. 
+Through the paper\cite{battery_model} they made some discoveries, first one being that the electrochemical models were often way to complex to be used in applications and was error prone if all setting were not set correctly. On the other side of the spectrum was the basic models which gave fairly good results, but under certain circumstances it would not perform well in respect to the real world battery. In between these two models are the analytical models, which seems to work well in any condition without high deviations. The analytical models introduced from the paper is KiBaM and diffusion model, they perform similarly. But the paper would suggest KiBaM to be used when modelling a battery, duo to it being more simplistic then the diffusion model \cite{battery_model}.
+%use kibam in a stocastic setup to minimize error. 
+%What battery model to use?
+
 KiBaM is an analytical model and uses an abstract model to represent the battery.
