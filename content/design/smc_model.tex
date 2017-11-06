@@ -1,7 +1,7 @@
 \section{SMC model} \label{sec:smc}
 After having produced a near optimal trace from the \gls{cora} model, it will be used to update a \gls{smc} model on which other relevant queries can be run.
 
-The \gls{smc} model is equipped with an implementation of \gls{kibam}\cref{sec:kibam}, in order to make a more accurate representation of the battery dis/recharge. The \gls{smc} model preserves the solar template in order to allow it to charge during periods of insolation.
+The \gls{smc} model is equipped with an implementation of \gls{kibam}\cref{sec:kibam}, in order to make a more accurate representation of the battery dis- or recharge. The \gls{smc} model preserves the solar template in order to allow it to charge during periods of insolation.
 
 Where the \gls{cora} model finds a trace, the \gls{smc} model will try and rerun the produced trace. This means the \gls{smc} model will execute tasks in the exact same order as the \gls{cora} model.% As this model implements KiBaM it gives a fairly accurate representation of the energy consumption. 
 
