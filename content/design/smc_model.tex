@@ -1,12 +1,12 @@
-\section{SMC model}
-After having produced a seemingly viable trace from the \gls{cora} model, the trace will be used to update a \gls{smc} model on which other relevant queries can be run.
+\section{SMC model} \label{sec:smc}
+After having produced a near optimal trace from the \gls{cora} model, it will be used to update a \gls{smc} model on which other relevant queries can be run.
 
-The \gls{smc} model is updated to include an implementation of the KiBaM \cref{sec:kibam}, battery model, in order to make a more accurate representation of the battery. The \gls{smc} model preserves the solar template in order to still being able to charge during the periods the satellite is in the sun.
+The \gls{smc} model is equipped with an implementation of \gls{kibam}\cref{sec:kibam}, in order to make a more accurate representation of the battery dis- or recharge. The \gls{smc} model preserves the solar template in order to allow it to charge during periods of insolation.
 
-Where the \gls{cora} model finds a trace, the \gls{smc} model uses the produced trace. This means the \gls{smc} model will execute tasks in the exact same order as the \gls{cora} model. 
+Where the \gls{cora} model finds a trace, the \gls{smc} model will try and rerun the produced trace. This means the \gls{smc} model will execute tasks in the exact same order as the \gls{cora} model.% As this model implements KiBaM it gives a fairly accurate representation of the energy consumption. 
 
 \Cref{fig:cost_schedule} and \cref{fig:solar_task}, shows the different templates used in the \gls{smc} model. To the left of \cref{fig:cost_schedule} are the energy source. The energy source is responsible for updating the remaining available and bound energy, and in case there are no more available energy, it will synchronise with the scheduler which will then stop running more tasks.
-
+On the right of \cref{fig:cost_schedule} is the scheduler, it awaits a synchronisation from the tasks in order to ensure that they are ready for execution. The scheduler then estimates if running another task will deplete the battery. If this is the case it will transition back to the initial location preparing to run another task. If running another task would not deplete the battery, the task will be run.
 
 \begin{figure}[H]%
 	\centering
@@ -15,9 +15,12 @@ Where the \gls{cora} model finds a trace, the \gls{smc} model uses the produced 
 	\qquad
 	\subfloat
 	{{\includegraphics[width=6cm]{graphics/smc_scheduler.pdf} }}%
-	\caption{The SMC model's energy source(left) and scheduler(right)}%
+	\caption{The \gls{smc} model's energy source(left) and scheduler(right)}%
 	\label{fig:cost_schedule}%
 \end{figure}
+
+On the left side of \cref{fig:solar_task}, we see the template for the orbit time. It is here assumed that the satellite will spend half its orbit in insolation where it is possible to recharge the battery. It switches the variable \uppVar{Insolation} between true and false, which is used in the calculation of the bound energy.\afx{Kom tilbage hertil når at kibam afsnittet er frdigt. Uddyb om hvordan vores mplementation reflektere teorien fra \cref{sec:kibam}\\
+The right side of \cref{fig:solar_task} is the template for a task, this indicates that a task can be, ready to be run, running, and inactive. When a task is not running the consumption is lower as indicated by \uppVar{i = I\_idle} which represents the background load of other minor tasks that are not modelled.
 
 \begin{figure}[H]%
 	\centering
@@ -26,6 +29,15 @@ Where the \gls{cora} model finds a trace, the \gls{smc} model uses the produced 
 	\qquad
 	\subfloat
 	{{\includegraphics[width=6cm]{graphics/smc_task.pdf} }}%
-	\caption{The SMC model's representation of solar panels(left) and a task(right)}%
+	\caption{The \gls{smc} model's representation of solar panels(left) and a task(right)}%
 	\label{fig:solar_task}%
 \end{figure}
+Since the model is made in UPPAAL \gls{smc} we are able to run statistical queries asking for the chance of the available energy falling below some threshold, or to simply track the value of the bound and available energy over time for some specified amount of runs. Examples of such queries can be seen in \cref{eq:pr_low_a_sim_ab}, which indicates, first the chance that the battery level will fall below $55\, \%$ within $43200$ time units. Assuming the time unit is in seconds the example query is for 12 hours. The other query is a simulation of the avilable and bound energy over the same amount of time.\\
+\begin{align}
+Pr[<= 43200] \quad(a <= (c/100)*55)		\nonumber \\
+simulate \quad 1 \quad [<=432000] \quad \{a,b\} 
+\label{eq:pr_low_a_sim_ab}
+\end{align}
+
+The advantages of running these queries is, that even though the runs in \gls{cora} conclude that a schedule is viable, the probability query may be able to find that running the trace could lead to energy depletion. Also tacking the state of the battery may help to see the effect of the solar panels and the tasks stress on the battery. This is relevant as one or two repetitions of the schedule may not deplete the battery but perhaps ten would, in such case it may be relevant to change some parameters and run it again.
+\afx{skriv om robustheden også}
