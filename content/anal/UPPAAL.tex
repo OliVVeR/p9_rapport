@@ -1,7 +1,7 @@
 \section{UPPAAL}
 When planning satellite missions it is important, that it can be guaranteed no major or unforeseen errors will occur. This may be done testing or by using a modelling tool capable of verifying, that the proposed actions are correct\cite{cs_smc}. Several such tools exists e.g. Kronos, and UPPAAL. For this project we will be considering UPPAAL, specifically the versions \gls{cora} and \gls{smc}, as they have been presented as the more relevant solutions for this project.
 
-Common for all versions of UPPAAL, is that; it has global decelerations, and templates. One model may have several templates, each with its own local decelerations. The template itself consists of one to many locations and edges, edges connects the locations and when activated indicates a chance to the current state.\\
+Common for all versions of UPPAAL, is that; it has global decelerations, and templates. One model may have several templates, each with its own local decelerations. The template itself consists of one to many locations and edges, edges connects the locations and when activated indicates a chance in the current state.\\
 Edges may be decorated with; selects, guards, synchronizations, and updates. Selects are used for introducing new temporary variables. Guards are used to ensure that an edge is not activated prematurely. Synchronizations are used for activating multiple edges across templates simultaneously. Finally updates are used to chance variables, and to call functions, written in declarations.\\
 Locations can be given a name, and an invariant. An invariant must always be evaluated to true e.g. if a location have the invariant $time <= 5$, at time five there will be a chance of state.\\
 Also common for the versions of UPPAAL, is that queries can be written i order to ensure sustain properties are upheld, such as; is some location reachable, and will time ever exceed some amount. To complement this there is an available simulator, where the user may decide step by step what the model should do.
@@ -11,6 +11,8 @@ Also common for the versions of UPPAAL, is that queries can be written i order t
 UPPAAL \gls{cora} is a version of UPPAAL, it uses priced timed automata \cite{cs_cora}. \Gls{cora} have previously been used to find cost-optimal solutions for the GomX-3 system\cite{gomx3}, and is therefore considered relevant for this case.
 \Gls{cora} is considered relatively basic for UPPAAL, as it is one of the older versions, it is however fast relative to some of the newer versions. \Gls{cora} introduced the concept of cost, this means that when a template reaches certain locations, it may have some specified cost. In addition it is possible to run queries on the cost, in order the get the minimum cost, or an end state where the cost is under some specified amount.
 This can be very useful for modelling systems such as satellites where energy is an important and limited resource.
+
+\ofx{vi kan få et lorte trace ud...}
 
 \subsection{SMC}
 UPPAAL SMC is one of the newer versions of UPPAAL.
