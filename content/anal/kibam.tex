@@ -1,19 +1,93 @@
-\section{KiBaM}\label{sec:kibam}
-Schedules for space missions need to be battery aware, in order for their satellite too function correctly and not fall out of their orbit or lose connection with the satellite. A lot of battery models have been devlovped over the years and in this section a few of them will be covered to give an overview of which model is ideal for our purpose.
+\section{Battery Models}\label{sec:kibam}
+Schedules for space missions need to be battery aware, in order for their satellite too function correctly and not fall out of their orbit or lose connection with the satellite. This part will focus on what battery model to use in CORA. As mentioned previous CORA does not allow differential equations in their models, which has to be taking into account when chosen the battery model.
 
-The battery models that will be examined in this section can be put into the following types of catagories: eletrochemical-, electrical-circuit-, Stochastic-, and analytical-models.
+Battery models are by nature difficult to compare, this is primarily because it is almost impossible to compare results from other sources, duo to lack of specification used in generating the results. This section will only focus on the battery models taken from \cite{battery_model}. The models that will be covered are Dualfoil, Diffusion, KiBaM, Peukert and Ideal.
 
-Eletrochemical Models are represented by the chemical proceses taking place in a battery, they are known to be to most accruate models in the field. But the downside to those models are there complexity. An example of this is the Dualfoil written in fortran that simulates lithium-ion batteries, which take over 50 parameters related to the battery properties, and it uses six non-linear differential equations. This is difficult to setup duo to the large number of parameters and uses a lot of cpu to simulate the battery.
+The Ideal model is very simplistic in that is only takes two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity refereed to the batteries amount of amp-hours, and load current is the discharge on the battery in amps. The formal for this is shown in \cref{BM}.
 
-On the other end of the spectrum there is the most basic battery model that uses capacity(C) and load current(I) to calculate the lifetime(L) of a battery, given the formula $L=C/I$. 
+\begin{equation}\label{BM}
+L=C/I
+\end{equation}
+
+Performance of the Ideal model can be seen in \cref{t-Ideal}. In general the Ideal 
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[]
+	\centering
+	\label{t-Ideal}
+	\scalebox{0.8}{
+	\begin{tabular}{|llllll|lllll|}
+		\hline
+		\multicolumn{6}{|c|}{Constant load} & \multicolumn{5}{c|}{Variable load} \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}I, amps} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ \\ \hline
+		T1 & 222.7 & 141.0 & 181.3 & 40.3 & 28.58\% & C1 & 54.5 & 70.8 & 16.3 & 29.91\% \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		T2 & 204.5 & 156.6 & 197.4 & 40.8 & 26.05\% & C2 & 73.3 & 91.9 & 18.6 & 25.38\% \\ \hline
+		T3 & 108.3 & 307.8 & 372.8 & 65 & 21.12\% & C3 & 88.3 & 108.5 & 20.2 & 22.88\% \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		T4 & 107.5 & 312.0 & 375.6 & 63.6 & 20.38\% & C4 & 136.0 & 163.0 & 27 & 19.85\% \\ \hline
+		T5 & 94.9 & 358.2 & 425.4 & 67.2 & 18.76\% & C5 & 182.7 & 216.5 & 33.8 & 18.50\% \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		T6 & 84.3 & 397.2 & 478.9 & 81.7 & 20.57\% & C6 & 59.0 & 74.7 & 15.7 & 26.61\% \\ \hline
+		T7 & 75.5 & 448.2 & 534.8 & 86.6 & 19.32\% & C7 & 51.1 & 66.9 & 15.8 & 30.92\% \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		T8 & 28.0 & 1248 & 1442 & 194 & 15.54\% & C8 & 55.0 & 70.8 & 15.8 & 28.73\% \\ \hline
+		T9 & 19.5 & 1818 & 2071 & 253 & 13.92\% & C9 & 54.9 & 70.8 & 15.9 & 28.96\% \\ \hline
+		\rowcolor[HTML]{EFEFEF} 
+		T10 & 3.0 & 12690 & 13458 & 768 & 6.05\% & C10 & 142.7 & 171.3 & 28.6 & 20.04\% \\ \hline
+	\end{tabular}}
+	\caption{Comparison of Actual measure against Ideal model. Measured data taken from \cite{battery_lifetime_analysis} and Ideal data taken from \cite{battery_model}}
+\end{table}
+
+
+Dualfoil model is based on the chemical proceses taking place in a battery, It is one of the most accruate models in the field. But the downside to this model is its complexity. It requires more than 50 parameters related to the battery properties to be set, and it uses six non-linear differential equations. Given the large set of parameters makes it difficult to configure corretly and in most cases often used purely as a comparison against other models.
+
+Diffusion model
 
 %Eletrical-circuit Models, uses eletrical properties to model the battery. The most common properties to model in an eletrical-circuit model is capacity of the battery, lost capacity at high discharge currents, dischargeof battery, state of charge and battery's resistance. Compared to the eletrochemical models these are require overall less computational power to reprents the battery, but also less accruate.
 
 %Stochastic models uses high level abstraction to represent the battery, one instance of this is with Marko chains where model has $N$ number of states, where N is the number of available charge units and it represent either the actual amount of amps or some arbetary amount like the amount of energy required to do an activity. Each time step there is a chance of remaining in the same state or going up one state or moving down one or several states, the battery is considered empty when state 0 is reached. For instance if a battery has 200 charge units, the battery will initialy start in state 200 given it is full, than after one time step the new possible range from 0 to 200, in this example we end in state 80.
 
+%Analytical models also uses high level abstraction to capture the battery's properties.
+
+
+
+%On the other end of the spectrum there is the most basic battery model that uses capacity(C) and load current(I) to calculate the lifetime(L) of a battery, given the formula 
+
+%This asumes a constant load and the batteries properties are linear. 
+
+%Modifing the basic battery model, we can capture the non-linear properties. This can be done with Peukert's law. 
+%\begin{equation}
+%L=H(\frac{C}{IH})^k
+%\caption{Peukert's law Model}
+%\end{equation}
+%\begin{itemize}
+%	\item L - lifetime in hours
+%	\item H - discharge time in hours based on amp hours(AH)
+%	\item C - capacity in AH
+%	\item I - load current in amps
+%	\item k - Peukert Exponent, often provided by manufacturs
+%\end{itemize}
+%http://all-about-lead-acid-batteries.capnfatz.com/all-about-lead-acid-batteries/lead-acid-battery-fundamentals/peukerts-law-and-exponent-explained/
+
+
+%If we wan't to find out how long a 9 volt battery with 90AH can power a 200 watts, 120 volts light bulb. In \cref{BM:E1} the values have setup using the above information, the results show that it is possible to power a light blub for 53.9 hours. 
+
+%\begin{equation}
+%53.9=90/1.67
+%\caption{Basic Model: 90AH battery powering light bulb}
+%\label{BM:E1}
+%\end{equation}
+%\begin{equation}
+%83.5656=18(\frac{90}{1.67*18})^1.4
+%\caption{Peukert's law Model: 90AH battery powering light blub}
+%\label{PLM:E1}
+%\end{equation}
+
 %More work on Stochastic models.
-
-
 
 
 Battery models plays an important part in schedules for space missions, and numerous models have been developed to capture how a battery functions in the real world. In the paper "what battery model to use?"\cite{battery_model} they go over the different types of battery models that exists, they analyse a wide range of models, where the electrochemical models being of the highest accuracy down to the most basic models. 
