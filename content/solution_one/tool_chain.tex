@@ -2,7 +2,8 @@
 %regneark med data - parameter til python - til cora model - til cora verifyta - til læsbart trace - til python - til SMC model - til query - til python - til start/til scheule
 \section{Tool-chain} \label{sec:tool_chain}
 \afx{Før dette læses, så er de diverse tools blevet introduceret. Her er CSV fil formattet også forklaret}\\
-In order to clarify our usage of different tools we will in this section describe the different steps in our system. \Cref{fig:tool_chain} displays the flowchart representation of the tool-chain. The numbers that are used are only there for the convenience of this section as we will present some of the locations, some will be excluded as they are trivial or similar to another location. 
+\afx{Der introduceres mere end hvad der er på billedet nu}
+In order to clarify our usage of different tools we will in this section describe the different steps in our system. \Cref{fig:tool1} displays the flowchart representation of the tool-chain. The numbers that are used are only there for the convenience of this section as we will present some of the locations, some will be excluded as they are trivial or similar to another location. 
 
 \paragraph{Location 1 - CSV file that contains payload information} is the input file for the system. The usage of this file and its format is described in \cref{sec:csvlang}.
 
@@ -26,7 +27,7 @@ In this location we will extract a trace from the \gls{cora} model and use it as
 \paragraph{Location 12 - Tune model parameters} if the queries were not satisfied, the schedule will be discarded and we will produce a new one. In order to produce a new schedule, we will provide \gls{cora} with a new set of parameters based on those from the CSV file. These parameters will be loyal to those specified in the CSV file, but their ranges will be shortened in order to provoke new choices in the schedule. This will change the workflow as we are not interested in verifying the worst case model any more, as the previous worst case is still true to this version of the parameters. We will therefore skip location 4, 5, and 6 and will go directly yo location 7.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{graphics/tool_chain.pdf}
-	\label{fig:tool_chain}
+	\includegraphics[width=\textwidth]{graphics/tool1.pdf}
+	\label{fig:tool1}
 	\caption{Flowchart that displays the worflow and use of tools}
 \end{figure}
