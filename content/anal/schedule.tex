@@ -1,2 +1,13 @@
 \section{Schedule}
-What is a good and bad schedule, what are the requirements? critical systems
+In order to generate a schedule we will first have to define what is considered a viable and non-viable schedule. Different considerations goes into this, most impotently what is the minimum requirements for a reliable schedule and what is the additional requirements from GomSpace. The generated schedule should be correct and validated according to the specifications given as input. 
+
+First we will discuss what type of real-time the satellites are considered to be. It may be considered soft real-time, which means that if some deadlines fails it is not mission critical, it should however be a rare occurrence. In favour of the system being hard real-time is that the satellite can only communicate with earth in certain windows of time, and must at that point be available to receive new schedules. \textit{As there are both soft- and hard real-time aspects to the satellite mission, it will be considered weakly hard real-time. This means that some deadlines must be upheld, where as others are not of the same level of importance.}
+
+The battery level will have to be considered at all times, when generating the schedule, and may never fall below a specified amount, as it results in communication to the satellite being lost.
+Therefore the schedule must accommodate this in a way such that there are no risk of the power level ever falling below the specified amount. 
+
+
+
+% Weakly hard
+% http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=919277
+% Reasoning: We can do a lot of things whenever, but have to send data in surtain windows, and must receive new schedules at some point
