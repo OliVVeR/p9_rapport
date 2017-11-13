@@ -1,7 +1,7 @@
 \section{Battery Models}\label{sec:kibam}
 Schedules for space missions need to be battery aware, in order for their satellite too function correctly and not fall out of their orbit or lose connection with the satellite. This part will focus on what battery model to use in CORA. As mentioned previous CORA does not allow differential equations in their models, which has to be taking into account when chosen the battery model.
 
-Battery models are by nature difficult to compare, this is primarily because it is almost impossible to compare results from other sources, duo to lack of specification used in generating the results. This section will only focus on the battery models taken from \cite{battery_model}. The models that will be covered are Dualfoil, Diffusion, KiBaM, Peukert and Ideal.
+Battery models are by nature difficult to compare, this is primarily because it is almost impossible to compare results from other sources, duo to lack of specification used in generating the results. This section will only focus on the battery models taken from \cite{battery_model}. The models that will be covered are KiBaM, Peukert and Ideal.
 
 The Ideal model is very simplistic in that is only takes two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity refereed to the batteries amount of amp-hours, and load current is the discharge on the battery in amps. The formal for this is shown in \cref{BM}.
 
@@ -9,20 +9,20 @@ The Ideal model is very simplistic in that is only takes two variables to determ
 L=C/I
 \end{equation}
 
-Performance of the Ideal model can be seen in \cref{t-Ideal}. In general the Ideal 
+Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is divided into two parts, constant load and variable load, the column ``Measured, min'' show the actual reading of the lithium-ion battery under the different loads. To the right the Ideal estimation are shown. In general the Ideal model overestime the expected lifetime in all cases, shown in T1 the diviation from the actual measures differes by 28.58\%, a trend seems to appear in that lower amps often results in better predictions from the Ideal model with constant loads. Only T5 and T6 dose not apply to this, because T5 have a better prediction then T6 even though T5 has an higher load. During variable loads all cases overestimate by a substantial amount, the closes approximation is C5 with a 18.5\% overestimation. The data shows that the Ideal model does a poor job of estimating the actual lifetime of a battery, which is properly because the Ideal model asumes linear effcet for lifetime estimation.
 
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{table}[]
 	\centering
-	\label{t-Ideal}
+	\label{table:t-Ideal}
 	\scalebox{0.8}{
 	\begin{tabular}{|llllll|lllll|}
 		\hline
 		\multicolumn{6}{|c|}{Constant load} & \multicolumn{5}{c|}{Variable load} \\ \hline
 		\rowcolor[HTML]{EFEFEF} 
-		\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}I, amps} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ \\ \hline
+		\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}I, amps} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Ideal, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$C} & \%$\Delta$ \\ \hline
 		T1 & 222.7 & 141.0 & 181.3 & 40.3 & 28.58\% & C1 & 54.5 & 70.8 & 16.3 & 29.91\% \\ \hline
 		\rowcolor[HTML]{EFEFEF} 
 		T2 & 204.5 & 156.6 & 197.4 & 40.8 & 26.05\% & C2 & 73.3 & 91.9 & 18.6 & 25.38\% \\ \hline
@@ -39,9 +39,105 @@ Performance of the Ideal model can be seen in \cref{t-Ideal}. In general the Ide
 		\rowcolor[HTML]{EFEFEF} 
 		T10 & 3.0 & 12690 & 13458 & 768 & 6.05\% & C10 & 142.7 & 171.3 & 28.6 & 20.04\% \\ \hline
 	\end{tabular}}
-	\caption{Comparison of Actual measure against Ideal model. Measured data taken from \cite{battery_lifetime_analysis} and Ideal data taken from \cite{battery_model}}
+	\caption{Comparison of Actual measure against Ideal model. Measured data taken from \cite{battery_lifetime_analysis} and Ideal data taken from \cite{battery_model}. Specification for the variable loads can be found in \cref{variable_loads_list}
+	}
 \end{table}
 
+Peukert Model introduces a few new variables in comparison to the Ideal model, like the previous we still want to estimate the expected lifetime, but to better represent the battery a non-linear model is needed. Peukert fixes this by introducing two new variables: discharge time(H) and Peukert Exponent(k), the formal can be see in the equation below. the value k is special in the sense that it is only observerable trough examiniation of the battery, this exponent will often be provided by the manufactors of the battery.
+\begin{equation}
+L=H(\frac{C}{IH})^k
+\end{equation}
+\begin{itemize}
+	\item L - lifetime in hours
+	\item H - discharge time in hours based on amp hours(AH)
+	\item C - capacity in AH
+	\item I - load current in amps
+	\item k - Peukert Exponent
+\end{itemize}
+
+In \cref{table:t-Peukert} showcases the estimations using Peukert. In most cases Peukert overestimate except for one instance in test T10, it underestimate with 3.17\%. It seems to become more accruate the smaller the amps are, with the outliner, T5 and T6 Similarly to \cref{table:t-Ideal}. But overall Peukert performance better than the Ideal model.
+
+\begin{table}[]
+	\centering
+	\label{table:t-Peukert}
+	\scalebox{0.8}{
+	\begin{tabular}{|llllll|lllll|}
+\hline
+\multicolumn{6}{|c|}{Constant load} & \multicolumn{5}{c|}{Variable load} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}I, amps} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Peukert, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Peukert, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$C} & \%$\Delta$ \\ \hline
+T1 & 222.7 & 141.0 & 154.5 & 13.5 & 9.57\% & C1 & 54.5 & 60.5 & 6 & 11.01\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T2 & 204.5 & 156.6 & 168.4 & 11.8 & 7.54\% & C2 & 73.3 & 79.1 & 5.8 & 7.91\% \\ \hline
+T3 & 108.3 & 307.8 & 321.3 & 13.5 & 4.39\% & C3 & 88.3 & 93.8 & 5.5 & 6.23\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T4 & 107.5 & 312.0 & 323.7 & 11.7 & 3.75\% & C4 & 136.0 & 142.5 & 6.5 & 4.78\% \\ \hline
+T5 & 94.9 & 358.2 & 367.5 & 9.3 & 2.60\% & C5 & 182.7 & 190.2 & 7.5 & 4.11\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T6 & 84.3 & 397.2 & 414.4 & 17.2 & 4.33\% & C6 & 59.0 & 64.4 & 5.4 & 9.15\% \\ \hline
+T7 & 75.5 & 448.2 & 463.6 & 15.4 & 3.44\% & C7 & 51.1 & 56.5 & 5.4 & 10.57\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T8 & 28.0 & 1248 & 1270 & 22 & 1.76\% & C8 & 55.0 & 60.5 & 5.5 & 10.00\% \\ \hline
+T9 & 19.5 & 1818 & 1835 & 17 & 0.94\% & C9 & 54.9 & 60.5 & 5.6 & 10.20\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T10 & 3.0 & 12690 & 12288 & -402 & -3.17\% & C10 & 142.7 & 148.8 & 6.1 & 4.27\% \\ \hline
+\end{tabular}}
+	\caption{Comparison of Actual measure against Peukert model. Measured data taken from \cite{battery_lifetime_analysis} and Peukert data taken from \cite{battery_model}. Specification for the variable loads can be found in \cref{variable_loads_list}
+	}
+\end{table}
+
+\gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c dertermines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charge is lowered also the bound charge to flow over to available charge based on the variable k. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2}.
+
+\begin{figure}
+	\center
+	\includegraphics[width=\textwidth/2]{graphics/kibam.jpg}
+	\label{fig:kibam_wells}
+	\caption{Displays the two wells of \gls{kibam}}
+\end{figure}
+
+\begin{equation}\label{eq:y1}
+y_1(t) = y_{1,0}e^{-k't}+\frac{(y_0k'c-I)(1-e^{-k't})}{k'}-\frac{Ic(k't-1+e^{-k't})}{k'}
+\end{equation}
+
+\begin{equation}\label{eq:y2}
+y_2(t) = y_{2,0}e^{-k't}+y_0(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
+\end{equation}
+
+e = euler's number
+k' = k/c(1-c)
+k = defined value
+t = time in hours
+c = 
+I =
+
+\begin{table}[]
+	\centering
+	\label{table:t-KiBaM}
+	\scalebox{0.8}{
+	\begin{tabular}{|llllll|lllll|}
+\hline
+\multicolumn{6}{|c|}{Constant load} & \multicolumn{5}{c|}{Variable load} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}I, amps} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}KiBaM, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Test} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Measured, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}KiBaM, min} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}$\Delta$T} & \%$\Delta$ \\ \hline
+T1 & 222.7 & 141.0 & 139.9 & -1.1 & -0.78\% & C1 & 54.5 & 60.5 & -18.2 & -33.39\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T2 & 204.5 & 156.6 & 156 & -0.6 & -0.38\% & C2 & 73.3 & 79.1 & -17.6 & -24.01\% \\ \hline
+T3 & 108.3 & 307.8 & 331.4 & 23.6 & 7.67\% & C3 & 88.3 & 93.8 & -16.9 & -19.14\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T4 & 107.5 & 312.0 & 334.1 & 22.1 & 7.08\% & C4 & 136.0 & 142.5 & -12.4 & -9.12\% \\ \hline
+T5 & 94.9 & 358.2 & 384 & 25.8 & 7.20\% & C5 & 182.7 & 190.2 & -7 & -3.83\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T6 & 84.3 & 397.2 & 437.5 & 40.3 & 10.15\% & C6 & 59.0 & 64.4 & -17.9 & -30.34\% \\ \hline
+T7 & 75.5 & 448.2 & 493.3 & 45.1 & 10.06\% & C7 & 51.1 & 56.5 & -20.6 & -40.31\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T8 & 28.0 & 1248 & 1401 & 153 & 12.26\% & C8 & 55.0 & 60.5 & -16.9 & -30.73\% \\ \hline
+T9 & 19.5 & 1818 & 2029 & 211 & 11.61\% & C9 & 54.9 & 60.5 & -20.1 & -36.61\% \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+T10 & 3.0 & 12690 & 13417 & 727 & 5.73\% & C10 & 142.7 & 148.8 & -11 & -7.71\% \\ \hline
+\end{tabular}}
+	\caption{Comparison of Actual measure against \gls{kibam} model. Measured data taken from \cite{battery_lifetime_analysis} and \gls{kibam} data taken from \cite{battery_model}. Specification for the variable loads can be found in \cref{variable_loads_list}
+	}
+\end{table}
 
 Dualfoil model is based on the chemical proceses taking place in a battery, It is one of the most accruate models in the field. But the downside to this model is its complexity. It requires more than 50 parameters related to the battery properties to be set, and it uses six non-linear differential equations. Given the large set of parameters makes it difficult to configure corretly and in most cases often used purely as a comparison against other models.
 
