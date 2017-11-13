@@ -86,7 +86,7 @@ T10 & 3.0 & 12690 & 12288 & -402 & -3.17\% & C10 & 142.7 & 148.8 & 6.1 & 4.27\% 
 	}
 \end{table}
 
-\gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c dertermines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charge is lowered also the bound charge to flow over to available charge based on the variable k. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2}.
+\gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c dertermines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charge is lowered also the bound charge to flow over to available charge based on the variable k. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2}. 
 
 \begin{figure}
 	\center
@@ -96,19 +96,21 @@ T10 & 3.0 & 12690 & 12288 & -402 & -3.17\% & C10 & 142.7 & 148.8 & 6.1 & 4.27\% 
 \end{figure}
 
 \begin{equation}\label{eq:y1}
-y_1(t) = y_{1,0}e^{-k't}+\frac{(y_0k'c-I)(1-e^{-k't})}{k'}-\frac{Ic(k't-1+e^{-k't})}{k'}
+y_1(t) = cCe^{-k't}+\frac{(y_0k'c-I)(1-e^{-k't})}{k'}-\frac{Ic(k't-1+e^{-k't})}{k'}
 \end{equation}
 
 \begin{equation}\label{eq:y2}
-y_2(t) = y_{2,0}e^{-k't}+y_0(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
+y_2(t) = (1-c)Ce^{-k't}+y_0(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
 \end{equation}
 
+
+C = capacity in AH
 e = euler's number
 k' = k/c(1-c)
 k = defined value
 t = time in hours
-c = 
-I =
+c = ratio between available and bound charge
+I = load also refered to as current applyed on the battery
 
 \begin{table}[]
 	\centering
