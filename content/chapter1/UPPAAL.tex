@@ -7,7 +7,3 @@ Locations can be given a name, and an invariant. An invariant must always be eva
 Also common for the versions of UPPAAL, is that queries can be written i order to ensure sustain properties are upheld, such as; is some location reachable, and will time ever exceed some amount. To complement this there is an available simulator allowing the user to monitor the behaviour of their model, in the simulator the user can decide step by step what the model does, or generate a random trace.
 
 
-\subsection{UPPAAL CORA}
-UPPAAL \gls{cora} is a version of UPPAAL which uses priced timed automata \cite{cs_cora}. \Gls{cora} have previously been used to find cost-optimal solutions for the GomX-3 system\cite{gomx3}, and is therefore considered relevant for this case.
-\Gls{cora} is considered relatively basic for UPPAAL, as it is one of the older versions, it is however fast relative to some of the newer versions. \Gls{cora} introduced the concept of cost, this means that when a template reaches certain locations, it may have some specified cost, this however is limited to be linear. In addition it is possible to generate the most cost optimal trace, the minimum cost. Or a query asking for a sustain state where the cost is under some specified amount.\\
-This can be advantageous for modelling systems such as satellites where energy is an important and limited resource which can be represented by the cost. After running a query it is possible to extract a trace, which can be used to represent the generated schedule.
