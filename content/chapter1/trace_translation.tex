@@ -2,7 +2,7 @@
 \afx{lige før det her afsnt er CORA afsnittet. Det afsnit ender med at vi er i stand til at få et trace}
 The trace produced by in \cref{sec:cora} is formatted in such a way that it is non-humanly readable because it is made for the UPAALL engine. A snippet of a trace can be seen in \cref{lst:unreadable}.
 \begin{figure}[H]
-\begin{lstlisting}[caption={Non-humanly readable trace}, label=lst:unreadable]
+\begin{lstlisting}[caption={Non-humanly readable trace}, label=lst:unreadable, language=text]
 	8 1 1 1 1 
 	.
 	0 1 0
@@ -16,3 +16,23 @@ The trace produced by in \cref{sec:cora} is formatted in such a way that it is n
 \end{lstlisting}
 \end{figure}
 This trace can however be used as input for the \gls{lbtp}\cite{libutap} library.
+This library is capable of parsing the above trace into a more readable format.
+An example of this can be seen in \cref{lst:readable}.
+\begin{figure}[H]
+\begin{lstlisting}[caption={Humanly readable trace}, label=lst:readable, language=text]
+	State:
+	( Task.Ready Scheduler._id5 )
+	t=0 x=0 on=1 I_idle=2 active=0 runs[0]=0 runs[1]=0 runs[2]=0 runs[3]=0 Task.runnable[0]=1 Task.runnable[1]=0 Task.runnable[2]=0 Task.runnable[3]=0 rate=2 cost=0
+	
+	Transitions:
+	  Scheduler._id5->Scheduler._id6 { 1, run!, 1 }
+	  Task.Ready->Task.Running { runnable[active] == 1, run?, runs[active]++, x := 0 }
+	
+	State:
+	( Task.Running Scheduler._id6 )
+	t=0 x=0 on=1 I_idle=2 active=0 runs[0]=1 runs[1]=0 runs[2]=0 runs[3]=0 Task.runnable[0]=1 Task.runnable[1]=0 Task.runnable[2]=0 Task.runnable[3]=0 rate=50 cost=0
+	
+	Delay: 5
+\end{lstlisting}
+\end{figure}
+
