@@ -6,6 +6,12 @@ First we will discuss what type of real-time the satellites are considered to be
 The battery level will have to be considered at all times, when generating the schedule, and may never fall below a specified amount, as it results in communication to the satellite being lost.
 Therefore the schedule must accommodate this in a way such that there are no risk of the power level ever falling below the specified amount. 
 
+A schedule is considered viable of it upholds the following criteria specified during configuration 
+\begin{itemize}
+	\item Battery level must be above the specified threshold during the entire schedule.
+	\item Schedule must give instructions from start point to end point.
+	\item Schedule must be near optimal based on some property.
+\end{itemize}
 
 
 % Weakly hard
