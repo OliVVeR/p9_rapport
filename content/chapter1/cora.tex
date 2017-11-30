@@ -3,3 +3,33 @@ UPPAAL \gls{cora} is a version of UPPAAL which uses priced timed automata \cite{
 \Gls{cora} is one of the older systems in the UPPAAL family, as this is the case it has curtain limitations not encountered in newer versions, such as the usage of floats. 
 \Gls{cora} introduced the concept of cost, this means that when a certain locations in reached, it may have some specified cost, this however is limited to be linear. \\
 This can be advantageous for modelling systems such as satellites where energy is an important and limited resource which can be represented by the cost. After running a query it is possible to extract a trace, which can be used to represent the generated schedule.
+
+
+\gls{cora} has three limitations. First one is no extrapolation, which means that termination is only garanteed if the models obey the following rules: 
+\begin{itemize}
+	\item Models is acyclic, so the system
+	\item No support for liveness or deadlock
+	\item 
+\end{itemize}
+
+
+No extrapolation - termination only guarantee if your system is acyclic and all cloks are bound by invariants.
+
+Simple reachability, does not support liveness or deadlock checks.
+
+Limited use of guiding
+- support for (cost + remaining) sorting is implemented (BFS)
+- support for heuristic variable is implemented, but the expression cannot refer to the cost variable
+
+%http://people.cs.aau.dk/~adavid/cora/download.html#download
+
+
+optimal sceduling and planning.
+state-space exploration -> promising and cheap visited first -> prune parts of search tree not improving solution.
+symbolic data structure -> symbolic state-space representation with cost information -> optimal or near-optimal solutions
+
+S2,3: problem of cost-optimal reachability -> symbolic branch-and-bound solving this problem.
+ clocks are non-negative real values, can be reset and grow at a fixed rate.
+
+S5: PTA-related optimization problems -> future support
+
