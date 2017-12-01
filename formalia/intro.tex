@@ -9,16 +9,23 @@ This project aims to accommodate this problem by providing a tool that can produ
 \textit{How is it possible to produce a schedule that considers multiple goals, and how is it possible to verify the robustness of such an schedule?}
 
 Generating a schedule with respect to profit and energy consumption has already been done with the GomX-3 mission\cite{gomx3}. 
-They came up with an approach to generate a schedule, that uses orbit and power predictions as input for the scheduler, which was modelled in \gls{cora}. 
-One problem they encountered was the large number of states when generating a schedule for 24 hours or more. 
-To counter weight this, they added heuristics that would reduce the number of options each state had in some cases. 
-Two battery models was used, the first one is a simple model that was integrated with the schedule generator, and the second one was an analytical model called kinetic battery model (KiBaM), which were used to validate candidate schedules. 
-When a final schedule had been selected, a csv file was then generated with all the information about the schedule. 
-The two most effective heuristics they used where "Force discard of schedules on depletion" and "Impose upper bound on discharging loads", the first one forces the schedule into a deadlock when the battery reaches a non positive state of charge, and the schedule is then discarded, the second one put limits on the amount of time a task that draws a lot of power can be executed\cite{gomx3}. 
-We chosen their work as our starting point for this project and will use the nano-satellite as our context
+Their solution was to generate a schedule, that uses orbit and power predictions as input for the scheduler, which was modelled in UPPAAL \gls{cora}.
+%Their scheduler incorporated a battery model which allowed them to monitor their power consumptions.
+%However, do to some limitations in \gls{cora}, the battery model they created were linear and did not provide an accurate enough depiction of the power consumption.
+%One problem they encountered was the large number of states when generating a schedule for 24 hours or more. 
+%To counter weight this, they added heuristics that would reduce the number of options each state had in some cases. 
+%They used a simple linear battery model that was integrated with the schedule generator, and the second one was an analytical model called kinetic battery model (KiBaM), which were used to validate candidate schedules. 
+%When a final schedule had been selected, a csv file was then generated with all the information about the schedule. 
+%The two most effective heuristics they used where "Force discard of schedules on depletion" and "Impose upper bound on discharging loads", the first one forces the schedule into a deadlock when the battery reaches a non positive state of charge, and the schedule is then discarded, the second one put limits on the amount of time a task that draws a lot of power can be executed\cite{gomx3}. 
+We chosen their work as our starting point for our model as we deemed many of their findings relevant for solving the problem.
 
 %our goal
-Our goal for this project is to generate a validated schedule via a model, which models the behaviour and battery of a nano-satellite. The model will be created in UPPAAL \gls{cora} as the GomX-3\cite{gomx3} have already proven this to be an effective tool. The process should be automated and generalised so it may be applied to multiple cases. It will take a file as input, which should only require domain specific knowledge of what the user is trying to schedule. The schedule will be tested in regards to its robustness by the use of UPPAAL \gls{smc}. When we have accepted the schedule it will be outputted in a readable format that can be applied. In order for the schedule to be applicable it should uphold curtain parameters and be able to find a near-optimal solution for the problem.
+Our goal for this project is to generate a validated schedule which is produced by analysing a model that models the behaviour and battery of a nano-satellite. 
+The model will be created in \gls{cora} as the GomX-3\cite{gomx3} have already proven this to be an effective tool. The process should be automated and generalised so it may be applied to multiple cases. 
+It will take a file as input, which should only require domain specific knowledge of what the user is trying to schedule. 
+The schedule will be tested in regards to its robustness by the use of UPPAAL \gls{smc}. 
+When we have accepted the schedule it will be outputted in a readable format that can be applied. 
+In order for the schedule to be applicable it should uphold curtain parameters and be able to find a near-optimal solution for the problem.
 \glsresetall
 
 %Generate entire schedule vs segments of a schedule (pros and cons?)
