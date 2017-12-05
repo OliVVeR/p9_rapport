@@ -26,7 +26,6 @@ The schedule will be tested in regards to its robustness by the use of UPPAAL \g
 When a schedule have been accepted it will be outputted in a readable format, such that it can be inspected by the users. 
 The process should be automated such that the only necessary input from the user is to select the input and, optionally, specifying some parameters. 
 The solution should be generalised so it may be used in other embedded systems and not just nanosatellites.
-\glsresetall
 
 %Generate entire schedule vs segments of a schedule (pros and cons?)
 %Our approach is similar at the beginning, in which we require the engineer to define the input parameters and let \gls{cora} derive a schedule for us. But after that we purpose to construct a new model in \gls{smc} to verify the schedule also using KiBaM, but with the focus of detecting if a schedule will still be viable if one or several of the tasks goes over their estimated time. \gls{smc} can do probabilistic analyse on our model to estimate the percentage of which a schedule will succeed. The entire solution will be a black box so the engineers do not need have any knowledge about the UPPAAL tools. This tool is meant to be used from a command line, where they will be able to specify which parameters to optimize for, like profit, energy saving etc.
