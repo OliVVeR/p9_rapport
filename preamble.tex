@@ -237,6 +237,32 @@
 	language=C
 }
 
+\lstdefinelanguage{my_c}{
+	basicstyle=\footnotesize \ttfamily \color{black} \bfseries,   
+	breakatwhitespace=false,       
+	breaklines=true,               
+	captionpos=b,                   
+	commentstyle=\color{darkgreen},   
+	deletekeywords={...},          
+	escapeinside={\%*}{*)},                  
+	frame=single,                  
+	language=C++,                
+	keywordstyle=\color{purple},  
+	morekeywords={BRIEFDescriptorConfig,string,TiXmlNode,DetectorDescriptorConfigContainer,istringstream,cerr,exit}, 
+	identifierstyle=\color{black},
+	stringstyle=\color{blue},      
+	numbers=left,                 
+	numbersep=5pt,                  
+	numberstyle=\tiny\color{black}, 
+	rulecolor=\color{black},        
+	showspaces=false,               
+	showstringspaces=false,        
+	showtabs=false,                
+	stepnumber=1,                   
+	tabsize=5,                     
+	title=\lstname,                 
+}
+
 \definecolor{darkgreen}{rgb}{0.01, 0.75, 0.24}
 \lstdefinelanguage{our_java}
 {
@@ -456,4 +482,23 @@
 %%Glossary
 \usepackage[toc]{glossaries}					% Terminologi- eller symbolliste (se mere i Daleifs Latex-bog)
 \makeglossaries
+\definecolor{darkblue}{RGB}{0,0,125}
 \usepackage{tikz}                               %Used to make common UML diagrams.
+\usetikzlibrary{arrows,shapes,snakes,automata,backgrounds,petri}
+
+\tikzstyle{location}=[circle,thick,draw=black!75,fill=darkblue!20,minimum size=6mm]
+\tikzstyle{init}=[circle,double,thick,draw=black!75,fill=darkblue!20,minimum size=8mm]
+\tikzstyle{red place}=[place,draw=red!75,fill=red!20]
+\tikzstyle{simple place}=[minimum size=6mm]
+\tikzstyle{transition}=[rectangle,thick,draw=black!75,
+fill=black!20,minimum size=4mm]
+
+
+\definecolor{select}{RGB}{204, 153, 0}
+\definecolor{guard}{RGB}{51, 153, 102}
+\definecolor{sync}{RGB}{0, 102, 204}
+\definecolor{update}{RGB}{0, 153, 255}
+\definecolor{name}{RGB}{102, 0, 51}
+\definecolor{invariant}{RGB}{204, 0, 204}
+\definecolor{RoE}{RGB}{255, 51, 204}
+\DeclareUnicodeCharacter{2201}{\test}
