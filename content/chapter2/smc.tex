@@ -62,54 +62,92 @@ While running a probability query comes with a number of parameters, the ones th
 	\label{table:smc_result}
 \end{table}
 
-Simulate is used to run the modelled system a number of time and capture some values during simulation, to illustrate this we
+Simulate is used to run the modelled system a number of time and capture some values during simulation, to illustrate this a new model it needed, which can be found in \cref{fig:showcase01} along with its declarations in \cref{lst:showcase1_declarations}. Three clock are defined in this example, and a model that has two locations where it is possible to go from one location to the other when the clock t is between $[5-10]$. Depending on the location either x or y can increment with repsectivly rates 1 and 2.
+
+\begin{figure}
+	\begin{lstlisting}[language=my_c, caption={Declarations}, label=lst:showcase1_declarations]
+	clock x, y, t;
+	\end{lstlisting}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]left:
+		\textcolor{invariant}{x '== 1}\\
+		\textcolor{invariant}{\&\& y '== 0}\\
+		\textcolor{invariant}{\&\& t <= 10}
+	}] {};
+	\node [location] (l1) [right of=l0, xshift=20mm, label={
+		[align=left]right:
+		\textcolor{invariant}{x '== 0}\\
+		\textcolor{invariant}{\&\& y '== 2}\\
+		\textcolor{invariant}{\&\& t <= 10}
+	}] {};
+	%Edges
+	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=left]{
+			\textcolor{guard}{t >= 5}\\
+			\textcolor{update}{t = 0}
+		} (l1);
+	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=left]{
+			\textcolor{guard}{t >= 5}\\
+			\textcolor{update}{t = 0}
+		} (l0);
+	\end{tikzpicture}
+	\caption{Simple model}
+	\label{fig:showcase01}
+\end{figure}
+
+Simulations can now be done with the newly modelled system, the query for this can be seen in \cref{eq:q2}, in this simulation it runs one time until 100 unit times has passed, and the values to be captured is x and y.
+
+\begin{equation}\label{eq:q2}
+simulate 1 [<= 100] {x,y}
+\end{equation}
+
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{graphics/showcase01.png}
+	\label{fig:sim01}
+	\caption{One simulations of the value of two variables \uppVar{x, y} over 100 time units}
+\end{figure}
+
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{graphics/showcase02.png}
+	\label{fig:sim02}
+	\caption{Five simulations of the value of two variables \uppVar{x, y} over 100 time units}
+\end{figure}
 
 %TODO describe queries and afterwards the results.
 
+
+%DEMO OF TIKZ
 %\begin{figure}
-%	\begin{lstlisting}[language=my_c, caption={Declarations}, label=lst:declarations]
-%	clock x;
-%	\end{lstlisting}
+%	\begin{tikzpicture}
+%	\node [init] (start) {};
+%	%\type [typeOfNode] (id) [relation from other nodes, distance, text] {text inside node}
+%	\node [location] (end1) [right of=start, xshift=20mm, label={[align=left]below right:
+%		\textcolor{name}{name}\\
+%		\textcolor{invariant}{invariant}\\
+%		\textcolor{RoE}{rate of expoential}
+%	}] {$C$};
+%	\node [location] (end2) [left of=start,xshift=-20mm] {$\cup$};
+%	\path[->,black] (start) edge node [midway, below][align=left]{
+%		\textcolor{select}{select}\\
+%		\textcolor{guard}{guard}\\
+%		\textcolor{sync}{sync}\\
+%		\textcolor{update}{update}
+%	} (end1);
+%	\path[->,black] (start) edge node [midway, below][align=left]{
+%		\textcolor{select}{select}\\
+%		\textcolor{guard}{guard}\\
+%		\textcolor{sync}{sync}\\
+%		\textcolor{update}{update}
+%	} (end2);
+%	\end{tikzpicture}
+%	\caption{Test example of UPPAAL models}
+%	\label{fig:example1}
 %\end{figure}
-
-
-
-
-
-\begin{figure}
-	\begin{tikzpicture}
-	\node [init] (start) {};
-	%\type [typeOfNode] (id) [relation from other nodes, distance, text] {text inside node}
-	\node [location] (end1) [right of=start, xshift=20mm, label={[align=left]below right:
-		\textcolor{name}{name}\\
-		\textcolor{invariant}{invariant}\\
-		\textcolor{RoE}{rate of expoential}
-	}] {$C$};
-	\node [location] (end2) [left of=start,xshift=-20mm] {$\cup$};
-	\path[->,black] (start) edge node [midway, below][align=left]{
-		\textcolor{select}{select}\\
-		\textcolor{guard}{guard}\\
-		\textcolor{sync}{sync}\\
-		\textcolor{update}{update}
-	} (end1);
-	\path[->,black] (start) edge node [midway, below][align=left]{
-		\textcolor{select}{select}\\
-		\textcolor{guard}{guard}\\
-		\textcolor{sync}{sync}\\
-		\textcolor{update}{update}
-	} (end2);
-	\end{tikzpicture}
-	\caption{Test example of UPPAAL models}
-	\label{fig:example1}
-\end{figure}
-
-%node [midway, below][align=left]{
-%\textcolor{name}{newline}\\
-%\textcolor{invariant}{newline}\\
-%\textcolor{RoE}{newline}
-%}{};
-
-
 
 After having run a simulation query, it is possible to get a graph illustrating the result of running the simulations. In \cref{fig:simab} we see two variable which have been simulated five times for $15.000$ units of time, this will be useful for monitoring the battery energy levels over time.
 
