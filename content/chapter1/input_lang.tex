@@ -1,0 +1,44 @@
+\section{Reading the Input} \label{sec:read_input}
+In order to model the payloads and environment, we will need some information from the user.
+The payloads are described through an CSV file where the dimensions represents the variables we will consider when producing the schedule.
+The environment, the satellite's properties, and the robustness parameters are all described in an configuration file.\\
+We have filled out both files to provide examples of how to use them. 
+It is expected that the user changes all of the variables to represent their needs.
+
+\subsection{CSV File} \label{subsec:csv}
+The payloads are defined out from seven variables.
+\begin{itemize}
+	\item	Name
+	\item	Time
+	\item	Energy
+	\item	Profit
+	\item	Deadline
+	\item	Dependencies
+	\item	Window
+\end{itemize}
+An example of a CSV file with five payloads can be seen in \cref{lst:csv}.
+The example payloads are based on those from the GomX-3 nanosatelite\ref{gomx3}.\\
+The name should indicate what the payload represents and is only their for user as it will not be used in actual schedule.
+A payload's name will be translated to a number when it has been modelled and when it is referenced in the schedule. 
+The first payload defined in the CSV file will be number zero and the n'th payload will be named n-1.\\
+The time dimension specifies how much time, in minutes, it will take to complete the payload.
+It is defined by a range in order to allow uncertainty 
+\begin{figure}[H]
+\begin{lstlisting}[caption={An example of how five payloads can be defined}, label=lst:csv, language=text]
+Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window
+Slew,	2-5,	10,		1,		-1,			-1,			-1
+L1,		90-90,	20,		5,		150,		-1,			-1
+L2,		90-90,	20,		5,		150,		-1,			-1
+X,		15-15,	10,		30,		1,			L1|L2,		45-60
+UHF,	15-15,	15,		1,		-1,			-1,			45-60
+\end{lstlisting}
+\end{figure}
+
+\subsection{Ini File} \label{subsec:init}
+
+
+\begin{figure}[H]
+\begin{lstlisting}[caption={}, label=lst:ini, language=text]
+ello
+\end{lstlisting}
+\end{figure}
