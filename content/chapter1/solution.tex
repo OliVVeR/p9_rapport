@@ -1,24 +1,28 @@
 \section{Solution} \label{sec:solution}
 The solution we propose to the problem statement, introduced in the introduction, is a follows:
 \begin{itemize}
-	\item	Input a payload description file that specifies all of the payloads and input some parameters that specifies the environment and validation options
-	\item	Produce a \gls{cora} model that will find the a near optimal schedule in regards to battery usage \afx{hvad er near optimal - hvad er vores goal}
-	\item	Validate the schedule in \gls{smc} to test the robustness and act accordingly to the result
+	\item	Input a payload description file that specifies all of the payloads, and input some parameters that specifies the environment and validation options
+	\item	Produce a \gls{cora} model that will find the a near optimal schedule in regards to profit while guaranteeing the battery level will never fall below a curtain level
+	\item	Validate the schedule in \gls{smc} to test the robustness and act accordingly to the result as well as getting a more accurate simulation of the battery consumption
 	\begin{itemize}
-		\item	Rejected: produce a new schedule and validate that
-		\item	Accepted: output schedule
+		\item	Rejected: modify the input and produce a new schedule for validation
+		\item	Accepted: output schedule along with relevant values
 	\end{itemize}
 \end{itemize}
 
-By doing so we are able to produce a schedule that schedules the payloads and is the verified in regards to the robustness.
+By doing so we are able to produce a schedule that schedules the payloads and is verified in regards to the robustness.
 How the schedule is generated and how the robustness is tested will be explained in the following chapters of this report.
-Before we start with how the input language is defined in \cref{sec:csvlang}\nameref{sec:csvlang}, we would like to present our toolchain which should provide an overview of the system and how tools are used.
+Prior to defining the input language in \cref{sec:csvlang} \nameref{sec:csvlang}, we will present our toolchain which provides an overview of how the final system will work and how the different tools are used.
 
 \subsection{Tool-chain} \label{subsec:tool_chainv}
 In order to clarify our usage of different tools we will describe the different steps in our system. 
-\Cref{fig:tool1} displays the flowchart representation of the tool-chain.
+\Cref{fig:tool1} displays a flowchart representation of the tool-chain.
 
-Location 2-11 corresponds to the black-box part of the system.\afx{overflødigt?}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{graphics/tool_chain.pdf}
+	\label{fig:tool1}
+	\caption{Flowchart that displays the workflow and use of tools}
+\end{figure}
 
 \paragraph{Location 1 - CSV file that contains payload information} 
 Is the input file for the system. 
@@ -59,8 +63,3 @@ These parameters will be loyal to those specified in the CSV file, but their ran
 This will change the workflow as we are not interested in verifying the worst case model any more, as the previous worst case is still true to this version of the parameters. 
 We will therefore skip location 4, 5, and 6 and will go directly yo location 7.
 
-\begin{figure}[h]
-	\includegraphics[width=\textwidth]{graphics/tool_chain.pdf}
-	\label{fig:tool1}
-	\caption{Flowchart that displays the workflow and use of tools}
-\end{figure}
