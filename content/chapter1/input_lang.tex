@@ -3,7 +3,7 @@ In order to model the payloads and environment, we will need some information fr
 The payloads are described through an CSV file where the dimensions represents the variables we will consider when producing the schedule.
 The environment, the satellite's properties, and the robustness parameters are all described in an configuration file.\\
 We have filled out both files to provide examples of how to use them. 
-It is expected that the user changes all of the variables to represent their needs.
+It is expected that the user changes all of the variables to represent their system.
 
 \subsection{CSV File} \label{subsec:csv}
 The payloads are defined out from seven variables.
@@ -17,28 +17,105 @@ The payloads are defined out from seven variables.
 	\item	Window
 \end{itemize}
 An example of a CSV file with five payloads can be seen in \cref{lst:csv}.
-The example payloads are based on those from the GomX-3 nanosatelite\ref{gomx3}.\\
-The name should indicate what the payload represents and is only their for user as it will not be used in actual schedule.
-A payload's name will be translated to a number when it has been modelled and when it is referenced in the schedule. 
+The example payloads are based on those from the GomX-3 nanosatelite\cite{gomx3}.\\
+The name should indicate what the payload represents.
+A payload's name will be translated into a number when it has been modelled. 
+The numeric name will also be used when it is referenced in the produced schedule. 
 The first payload defined in the CSV file will be number zero and the n'th payload will be named n-1.\\
 The time dimension specifies how much time, in minutes, it will take to complete the payload.
-It is defined by a range in order to allow uncertainty 
+It is defined by a range in order to allow for uncertainty in regards to the timings of the payloads\\
+Energy specifies how high an load, in mAh, the payload applies on the battery every minute.\\
+%The total load over the duration of one payload can therefore be calculated by multiplying energy with time.
+Profit is expressed within a range from 1 to 5, which signifies how valuable or profitable it is to complete a payload.
+1 being the least profitable and 5 being the most.
+In this example, the first payload Slew represents the action of slewing the satellite.
+This does not directly generate any profit for the satellite as no data is gathered or alike.
+L1 and L2 represents the use of the L-Band transmitter that the GomX-3 nano satellite use to communicate with other satellites, which allows it to collect valuable data.
+Which is why it has been giving a 5 in profit as it is the most profitable payload.
+The profit is counted when a we are making a schedule and it is possible to filter out schedules that does reach a minimum total profit over its duration.\\
+Deadline is either -1 or a positive whole number and is used to cancel payloads that is delayed.
+The scheduler may chose to wait before executing a payload and we can therefore risk that it is no longer relevant to execute the next payload in the queue.
+The decision for whether or not to cancel a payload in regards to its deadline goes as follows: \textit{if the time we have spent waiting for the next payload to start plus the time it takes to complete the payload, exceeds the deadline; cancel}.\\
+%waited\_time + execute\_time > Deadline \longrightarrow cancel\\
+The -1 value means that there is no deadline.\\
+Dependencies contains a list of other payloads which the current payload is waiting for to complete.
+The payload may only be executed if the other payloads in the list have been executed.
+The user may type a | which means logic "or" or the can type \& which means logic "and".\\
+%The user can set parentheses to
+Some payloads can only be executed in certain time widows, such as when they are above the communication station on earth.
+This is why we have added the Window dimension which restricts when the payload can be executed as it may only happen within the window.
+The window may not be above the orbit time or below 0.
+-1 disables the window.
 \begin{figure}[H]
 \begin{lstlisting}[caption={An example of how five payloads can be defined}, label=lst:csv, language=text]
 Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window
 Slew,	2-5,	10,		1,		-1,			-1,			-1
 L1,		90-90,	20,		5,		150,		-1,			-1
 L2,		90-90,	20,		5,		150,		-1,			-1
-X,		15-15,	10,		30,		1,			L1|L2,		45-60
+X,		15-15,	10,		3,		1,			L1|L2,		45-60
 UHF,	15-15,	15,		1,		-1,			-1,			45-60
 \end{lstlisting}
 \end{figure}
 
-\subsection{Ini File} \label{subsec:init}
+\subsection{Configuration File} \label{subsec:init}
+An example of the configuration file can be seen in \cref{lst:ini} where we have chosen to use the INI file standard.
+The configuration file is divided into three regions System, Cora, and SMC.\\
+The System specific variables describes the satellite and the time constraints.
 
-
+We will explain some of the non intuitive parameters below.\\
+The \textbf{schedule\_length} defines how long the produced schedule should be, in minutes.
+We do not expect that the user defines every single operation that the satellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
+\textbf{idle\_cost} is the load that is imposes on the battery at all times, even when the satellite is idling - not currently executing any of the defined payloads.
+This will allow us to disregard some of the payloads that the satellite may perform as they can be grouped together as one single background process which is always being executed.
+The user should only consider payloads which can be executed in parallel to the defined payloads and only chose those which energy and time cost are trivial.
+Failing to do so may result in a non representative model of their satellite and therefore a schedule where our guarantees may not be valid.\\
+Based on the GOMX-3 article\cite{gomx3} we have decided to include the \textbf{safe\_threshold} variable.
+This variable is used to determine when the satellite's SOC is too low to continue executing the schedule.
+If the satellite go below this threshold, it is in danger of depleting the battery, which means it will not be able to communicate with the earth for a period of time.
+This will result in a huge loss of potential profit as we are no longer able to execute profitable payloads and should therefore be avoided.
+It is critical that the schedules we produce will never go below this threshold.\\
+We have four variables that are related to the \gls{smc} model where three of them is used in its battery model.
+\textbf{rec\_rate} defines the recharge rate when the satellite goes trough insolation, such that the value is added to the battery's capacity every minute.
+\textbf{f\_rate} is a rate that is specific to the battery model we have chosen, and it is used to simulate the recovery effect of batteries.
+The recovery effect will be described later in \cref{sec:kibam} \nameref{sec:kibam}.
+\textbf{ac\_width} is also a variable that is used with the battery model.
 \begin{figure}[H]
-\begin{lstlisting}[caption={}, label=lst:ini, language=text]
-ello
+\begin{lstlisting}[caption={An example of how the environment can be defined}, label=lst:ini, language=text]
+[SYSTEM]
+# System specific
+# schedule length in minutes
+schedule_length = 720
+# orbit time in minutes
+orbit_time = 90
+# battery capacity in mAh
+battery_capacity = 5400
+# idle cost in mAh
+idle_cost = 5
+# safe mode threshold in percentage [0-100]
+safe_threshold = 40
+# The start SoC in mAh
+soc = 5400
+
+[CORA]
+# Cora specific
+
+[SMC]
+# SMC specific
+# Recharge rate
+rec_rate = 0.2
+# flow of available charge
+f_rate = 0.0002324
+# available width in relation to bound width
+ac_width = 0.16667
+# how certain should the system be in the results? Percentage [1-99]
+certainty = 95
 \end{lstlisting}
 \end{figure}
+As the reader might have noticed, the \gls{cora} section does not contain any variables.
+% as all of the lines beneath it is comments.
+%Those are both variables that we want to add in the future, but we have not deemed absolutely necessary for our model.
+The section is used as a placeholder for future versions of the file, as may we want to allow for variables that are specific to \gls{cora}.
+This will be touched upon in the \cref{sec:future} \nameref{sec:future}
+
+
+Now that we know what kind of payloads that the satellite is capable of performing and we know about the environment it is in, we are able to start modelling the system.
