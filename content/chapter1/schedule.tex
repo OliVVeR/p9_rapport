@@ -1,16 +1,17 @@
 \section{Schedule}
 In order to generate a schedule we will first have to define what is considered a viable and non-viable schedule. Different considerations goes into this, most impotently what is the minimum requirements for a reliable schedule and what is the additional requirements from GomSpace. The generated schedule should be correct and validated according to the specifications given as input. 
 
-First we will discuss what type of real-time the satellites are considered to be. It may be considered soft real-time, which means that if some deadlines fails it is not mission critical, it should however be a rare occurrence. In favour of the system being hard real-time is that the satellite can only communicate with earth in certain windows of time, and must at that point be available to receive new schedules. \textit{As there are both soft- and hard real-time aspects to the satellite mission, it will be considered weakly hard real-time. This means that some deadlines must be upheld, where as others are not of the same level of importance.}
+First we will discuss what type of real-time the satellites are considered to be. It may be considered soft real-time, which means that if some deadlines fails it is not mission critical, it should however not be a common occurrence. In favour of the system being hard real-time is that the satellite can only preform some jobs within surtain windows of time, such as communicate with earth, and must at that point be available to receive new schedules. \textit{As there are both soft- and hard real-time aspects to the satellite mission, it will be considered weakly hard real-time. This means that some deadlines must be upheld, where as others are not of the same level of importance.}
 
+The schedule will need to be robust, meaning being capable of handling errors, such as; the satellite will sometimes have to reset at unforeseen times, or maybe the moon blocks the sun and the battery would therefore not recharge as much as expected. This may cause the satellite to fall behind schedule and would in some way need to compensate for this.
 The battery level will have to be considered at all times, when generating the schedule, and may never fall below a specified amount, as it results in communication to the satellite being lost.
 Therefore the schedule must accommodate this in a way such that there are no risk of the power level ever falling below the specified amount. 
 
 A schedule is considered viable of it upholds the following criteria specified during configuration 
 \begin{itemize}
-	\item Battery level must be above the specified threshold during the entire schedule.
+	\item Battery level must at all times be above the specified threshold.
 	\item Schedule must give instructions from start point to end point.
-	\item Schedule must be near optimal based on some property.
+	\item Schedule must be optimal in regards to profit, while upholding other requirements such as battery level.
 \end{itemize}
 
 
