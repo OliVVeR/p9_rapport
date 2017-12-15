@@ -1,8 +1,8 @@
 \section{Solution} \label{sec:solution}
-The solution we propose to the problem statement, introduced in the introduction, is a follows:
+The solution we propose to the problem statement, introduced in the introduction, is as follows:
 \begin{itemize}
 	\item	Input a payload description file that specifies all of the payloads, and input some parameters that specifies the environment and validation options
-	\item	Produce a \gls{cora} model that will find the a near optimal schedule in regards to profit while guaranteeing the battery level will never fall below a curtain level
+	\item	Produce a \gls{cora} model that will find the a near optimal schedule in regards to profit while guaranteeing the battery level will never fall below a certain level
 	\item	Validate the schedule in \gls{smc} to test the robustness and act accordingly to the result as well as getting a more accurate simulation of the battery consumption
 	\begin{itemize}
 		\item	Rejected: modify the input and produce a new schedule for validation
@@ -12,7 +12,7 @@ The solution we propose to the problem statement, introduced in the introduction
 
 By doing so we are able to produce a schedule that schedules the payloads and is verified in regards to the robustness.
 How the schedule is generated and how the robustness is tested will be explained in the following chapters of this report.
-Prior to defining the input language in \cref{sec:read_input}\nameref{sec:read_input}, we will present our toolchain which provides an overview of how the final system will work and how the different tools are used.
+Prior to defining the input language in \cref{sec:read_input} \nameref{sec:read_input}, we will present our toolchain which provides an overview of how the final system will work and how the different tools are used.
 
 \subsection{Tool-chain} \label{subsec:tool_chainv}
 In order to clarify our usage of different tools we will describe the different steps in our system. 
