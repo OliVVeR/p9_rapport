@@ -1,15 +1,13 @@
 \section{Battery Models}\label{sec:kibam}
-Schedules for space missions need to be battery aware, in order for their satellite too function correctly and not fall out of their orbit or lose connection with the satellite. This part will focus on what battery model to use in CORA and subsuquently for SMC. As mentioned previous CORA does not allow differential equations in their models, which has to be taking into account when chosen the battery model.
+Part of the propose solution is to ensure that battery level are maintain at an expectable level, in order to do this we need some way of modeling a battery, this section will go over three different battery models to determine what drawbacks there may be when using a certain model. An important factor to consider when examining the battery models is the recovery effect, which can have large impact on the expected lifetime. Recovery effect happen after a battery has been discharged for a period of time, the amount of current applied to the battery effects the recovery effect along with the battery capacity. The performance of the different models will be compared to the actual measured of a lithium-ion battery, measured are taken from \cite{battery_lifetime_analysis}.
 
-Batteries are complicated to simulate due to its chemical properties, and the different kinds of batteries makes is it even worse. One thing all batteries have in common is the ability to store chemical energy and convert it into electricity. But another factor like recovery effect dependents on the type of battery and can have large impact on the expected lifetime, recovery effect happen after battery has been discharged for a period, the amount of current applied to the battery effects the recovery effect. The performance of the different models will be compared to the actual measured of a lithium-ion battery, measured are taken from \cite{battery_lifetime_analysis}.
-
-The Ideal model is very simplistic due to it only taking two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity refereed to the batteries amount of amp-hours, and load current is the constant discharge on the battery in amps. The formal for this is shown in \cref{eq:bm}.
+The Ideal model is very simplistic due to it only taking two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity relates to the batteries amount of amp-hours, and load current is the constant discharge on the battery in amps. The formal for this is shown in \cref{eq:bm}.
 
 \begin{equation}\label{eq:bm}
 L=C/I
 \end{equation}
 
-Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is divided into two parts, constant load and variable load, the column ``Measured, min'' show the actual reading of the lithium-ion battery under the different loads. To the right the Ideal estimation are shown. In general the Ideal model overestime the expected lifetime in all cases, shown in T1 the diviation from the actual measures differes by 28.58\%, a trend seems to appear in that lower amps often results in better predictions from the Ideal model with constant loads. Only T5 and T6 dose not apply to this, because T5 have a better prediction then T6 even though T5 has a higher load. During variable loads all cases overestimate by a substantial amount, the closes approximation is C5 with a 18.5\% overestimation. The data shows that the Ideal model does a poor job of estimating the actual lifetime of a battery, which is properly because the Ideal model asumes linear effcet for lifetime estimation. Additionally for variables loads the Ideal model does not consider recovery effect of the battery which further misses the measured minutes. 
+Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is divided into two parts, constant load and variable load, the column ``Measured, min'' show the actual reading of the lithium-ion battery under the different loads. To the right the Ideal estimation are shown. In general the Ideal model overestimate the expected lifetime in all cases, shown in T1 the deviation from the actual measures differs by 28.58\%, a trend seems to appear in that lower amps often results in better predictions from the Ideal model with constant loads. Only T5 and T6 dose not apply to this, because T5 have a better prediction then T6 even though T5 has a higher load. During variable loads all cases overestimate by a substantial amount, the closes approximation is C5 with a 18.5\% overestimation. The data shows that the Ideal model does a poor job of estimating the actual lifetime of a battery, which is properly because the Ideal model assumes linear effect for lifetime estimation. Additionally for variables loads the Ideal model does not consider recovery effect of the battery which further misses the measured minutes. 
 
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
@@ -38,12 +36,12 @@ Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is
 		\rowcolor[HTML]{EFEFEF} 
 		T10 & 3.0 & 12690 & 13458 & 768 & 6.05\% & C10 & 142.7 & 171.3 & 28.6 & 20.04\% \\ \hline
 	\end{tabular}}
-	\caption{Comparison of Actual measure against Ideal model. Ideal data taken from \cite{battery_model}. Specification for the variable loads can be found in \cref{variable_loads_list}
+	\caption{Comparison of Actual measure against Ideal model. Ideal data taken from \cite{battery_model}. Specification for the variable loads can be found in \cref{table:variable_loads_list}
 	}
 	\label{table:t-Ideal}
 \end{table}
 
-Peukert Model introduces a few new variables in comparison to the Ideal model, like the previous we still want to estimate the expected lifetime, but to better represent the battery a non-linear model is needed. Peukert fixes this by introducing two new variables: discharge time(H) and Peukert Exponent(k), the formal can be see in \cref{eq:pm}. Both values k and h is special in the sense that it is only observerable through examiniation of the battery, this is typically done by the manufactor. H is the discharge time in hours and k is an exponent often be provided by the battery manufactors.
+Peukert Model introduces a few new variables in comparison to the Ideal model, like the previous we still want to estimate the expected lifetime, but to better represent the battery a non-linear model is needed. Peukert fixes this by introducing two new variables: discharge time(H) and Peukert Exponent(k), the formal can be see in \cref{eq:pm}. Both values k and h is special in the sense that it is only observable through examination of the battery, this is typically done by the manufacturer. H is the discharge time in hours and k is an exponent often be provided by the battery manufacturers.
 \begin{equation}\label{eq:pm}
 L=H(\frac{C}{IH})^k
 \end{equation}
@@ -55,7 +53,7 @@ L=H(\frac{C}{IH})^k
 	\item k - Peukert Exponent
 \end{itemize}
 
-\cref{table:t-Peukert} showcases the estimations using Peukert. In most cases Peukert overestimate except for one instance in test T10, it underestimate with 3.17\%. It seems to become more accruate the smaller the amps are, with the outliner, T5 and T6 Similarly to \cref{table:t-Ideal}. One thing to notices is that for variable loads it still has a high mismatch compared to measured values, this is due to Peukerts model not taken recovery effect into account. But overall Peukert performance better than the Ideal model.
+\cref{table:t-Peukert} showcases the estimations using Peukert. In most cases Peukert overestimate except for one instance in test T10, it underestimate with 3.17\%. It seems to become more accurate the smaller the amps are, with the outlines, T5 and T6 Similarly to \cref{table:t-Ideal}. One thing to notices is that for variable loads it still has a high mismatch compared to measured values, this is due to Peukerts model not taken recovery effect into account. But overall Peukert performance better than the Ideal model.
 
 \begin{table}[]
 	\centering
@@ -86,7 +84,7 @@ T10 & 3.0 & 12690 & 12288 & -402 & -3.17\% & C10 & 142.7 & 148.8 & 6.1 & 4.27\% 
 	\label{table:t-Peukert}
 \end{table}
 
-\gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c dertermines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charges height $h_2$ is lower then bound charge height $h_1$, charge start o flow from bound charge to available charge until both wells are at equal height. The rate of this flow is determinded by the value k, this simulate the recovery effect of the battery like previous models was not able to capture. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2} along with a short description of the variables used in these equations. 
+\gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c determines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charges height $h_2$ is lower then bound charge height $h_1$, charge start o flow from bound charge to available charge until both wells are at equal height. The rate of this flow is determined by the value k, this simulate the recovery effect of the battery like previous models was not able to capture. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2} along with a short description of the variables used in these equations. 
 
 \begin{figure}
 	\center
@@ -110,7 +108,7 @@ k' = k/c(1-c)
 k = defined value
 t = time in hours
 c = ratio between available and bound charge
-I = load also refered to as current applyed on the battery
+I = load also refereed to as current applied on the battery
 
 Performance of \gls{kibam} can be seen in \cref{table:t-KiBaM}. Under constant load the results vary, and he only indicating is that an amps above 110 and below 20 seems to give better results. Interesting for variable loads is that all of the predictions from \gls{kibam} underestimate compared to the measured values, some are fairly high though, like in case C7 it underestimate by 40.31\%.  
 
@@ -143,7 +141,7 @@ T10 & 3.0 & 12690 & 13417 & 727 & 5.73\% & C10 & 142.7 & 131.7 & -11 & -7.71\% \
 	\label{table:t-KiBaM}
 \end{table}
 
-Looking at all the results for the three battery models, it show that Peukerts model give overall better estimation for variable loads then Ideal or \gls{kibam}. But the advandtage of using \gls{kibam} over Peukerts model under variable load is that \gls{kibam} always underestimate, which is good for our case, that ensure that we will never run into a case where the prediction cause the actual system to run out of energy. The Ideal is inferior to Peukerts and \gls{kibam} in almost all predictions, a summerize of the three differnent battry models can be found below.
+Looking at all the results for the three battery models, it show that Peukerts model give overall better estimation for variable loads then Ideal or \gls{kibam}. But the advantage of using \gls{kibam} over Peukerts model under variable load is that \gls{kibam} always underestimate, which is good for our case, that ensure that we will never run into a case where the prediction cause the actual system to run out of energy. The Ideal is inferior to Peukerts and \gls{kibam} in almost all predictions, a summarize of the three different battery models can be found below.
 \begin{itemize}
 	\item Ideal model - linear representation of the battery with no support of recovery effect
 	\item Peukert model - non-linear representation of the battery with no support of recovery effect

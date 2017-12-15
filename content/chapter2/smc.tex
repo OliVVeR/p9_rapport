@@ -1,10 +1,7 @@
 
 \section{UPPAAL SMC}\label{sec:smc}
-UPPAAL \gls{smc} is one of the newer versions of UPPAAL, it works with statistical model checking for more efficient analysis, as it avoids the exhaustive exploration of the state-space. This statistical exploration gives the added benefit of significantly less memory consumption\cite{cs_smc}, meaning that the computers physical memory is rarely the limit when running a query. This flexibility allows for \gls{smc} to be used for other subjects than verification such as planing\cite{cs_smc}. \\
-Mentioned in \gls{cora} only support linearly priced timed automata, \gls{smc} uses non-linear priced timed automata which makes it possible to implement \gls{kibam}, unlike in \gls{cora}.
-
-In the rest of this section we will be using a running example to showcase some of the \gls{smc}s features, like probability and simulate along with how we can view the results of such queries.
-
+UPPAAL \gls{smc} is one of the newer versions of UPPAAL, it works with statistical model checking for more efficient analysis, as it avoids the exhaustive exploration of the state-space. This statistical exploration gives the added benefit of significantly less memory consumption, meaning that the computers physical memory is rarely the limit when running a query. This flexibility allows for \gls{smc} to be used in other areas which was previous too memory intensive for other UPPAAL tools\cite{cs_smc}. \\
+Mentioned in \cref{sec:upp_cora}, \gls{cora} only support linearly priced timed automata, \gls{smc} uses non-linear priced timed automata which makes it possible to implement \gls{kibam}, based on our information from \cref{sec:kibam} this will greatly improve our battery estimations. \gls{smc} looks similar to previous tools in UPPAAL in form of GUI, but it adds new functionality which will be showcased in the rest of this section, this will include probability and simulate queries and how the results of these queries can be interpreted and understood. \\
 Lets say we want to check what the probability for the system reaching a specific location. First we model the system as shown in \cref{fig:example}, which contains one initial and four other locations. The initial locations is committed, which means that time is not allowed to pass when we are in that location.
 
 \begin{figure}
@@ -42,9 +39,10 @@ Lets say we want to check what the probability for the system reaching a specifi
 Pr[<=1](<> Process.L4)
 \end{equation}
 
-With this system we are now able to ask if the system reach a specified location by the query shown in \cref{eq:q1}. Pr is a keyword to denote that we want to find the probability, square brackets describe the amount of time to pass, it is possible to specify which clock to use, by adding the variable name of the clock at the beginning in between the square brackets. Alternative you can swap out time for discrete steps by putting hash(\#) in the same place as clock variables. In the parentheses we want to check if we reach location L4, Process refers to the model also known as a template, and the diamond (<>) describe that a path can reach location L4, another option is to use square bracket ([]) which mean that a property must be true during the entire path. In this example is dose not make sense because in this example we want to see if we can reach location L4.
+With this system we are now able to ask if the system reach a specified location by the query shown in \cref{eq:q1}. Pr is a keyword to denote that we want to find the probability, square brackets describe the amount of time to pass, it is possible to specify which clock to use, by adding the variable name of the clock at the beginning in between the square brackets. \\
+Alternative you can swap out time for discrete steps by putting hash(\#) in the same place as clock variables. In the parentheses we want to check if we reach location \uppLoc{L4}, Process refers to the model also known as a template, and the diamond (<>) describe that a path can reach location \uppLoc{L4}, another option is to use square bracket ([]) which mean that a property must be true during the entire path. In this example is dose not make sense because in this example we want to see if we can reach location \uppLoc{L4}. \\
+Running the query in \cref{eq:q1} return the following probability range [0.18744,0.287382] that roughly translate to 18.7\%-28.7\% which is based on (294 runs), this result has a 95\% certainty because the probability uncertainty($\epsilon$) is default set to 0.05 (5\%), along with two other interesting parameters, probability of false negatives($\alpha$) and probability of false positive($\beta$). In \cref{table:smc_result} the results from running the query in \cref{eq:q1} with different parameter setting can be seen. The first row shows that running query with $\alpha$ = 0.05, $\beta$ = 0.05 and $\epsilon$ = 0.05 results in a 18.7\%~ to 28.7\%~ probability of reaching \uppLoc{L4}. Likewise the time it took to finish the query was 9 milliseconds. The rest of the row shows the effect of change the parameter of those setting, the $\alpha$ and $\beta$ are exclusive used in hypothesis testing by \gls{smc}  and by the table they have a profound effect on the probability range when used in conjunction with probability uncertain. This can be seen in row 5 which uses both a lower $\alpha$, $\beta$ and $\epsilon$, resulting only in a range from 23.5-28.5\%~ probability.
 
-While running a probability query comes with a number of parameters, the ones that will be explained in this rapport is: probability of false negatives($\alpha$), probability of false positives($\beta$) and probability uncertainty($\epsilon$), because of their significance. In \cref{table:smc_result} the results from running the query in \cref{eq:q1} with different parameter setting can be seen. The first row shows that running query with $\alpha$ = 0.05, $\beta$ = 0.05 and $\epsilon$ = 0.05 results in the first query taking 294 runs to predict that we will reach location L4 between 18.7\%~ to 28.7\%~ of the time. Likewise the time it took to finish the query was 9 milliseconds. So for the first row we set $\alpha$ to 0.05 this indicate that 5\% of the time when we reach a location that is not L4 will be counted towards it reaching L4, similar $\beta$ say that 5\% of the times we reach location L4 it will not be counted as reaching L4. Lastly $\epsilon$ can describe how reliable the probability is, in the fifth row which have 23.5\%~ to 28.5\%~ means that we have a 97.5\% certainty for the system to end in location L4 23.5\%~ to 28.5\%~ of the time when we simulate it, which means that in 2.5\% of the runs it will not produce the correct result.
 \begin{table}[]
 	\centering
 	\scalebox{0.8}{
@@ -62,7 +60,7 @@ While running a probability query comes with a number of parameters, the ones th
 	\label{table:smc_result}
 \end{table}
 
-Simulate is used to run the modelled system a number of time and capture some values during simulation, to illustrate this a new model it needed, which can be found in \cref{fig:showcase01} along with its declarations in \cref{lst:showcase1_declarations}. Three clock are defined in this example, and a model that has two locations where it is possible to go from one location to the other when the clock t is between $[5-10]$. Depending on the location either x or y can increment with repsectivly rates 1 and 2.
+Simulate was another feature introduced in \gls{smc}, it is used to run the modelled system a number of time and capture some values during simulation, to illustrate this a new model it needed, which can be found in \cref{fig:showcase01} along with its declarations in \cref{lst:showcase1_declarations}. Three clock are defined in this example, and a model that has two locations where it is possible to go from one location to the other when the clock t is between $[5-10]$. Depending on the location either \uppVar{x} or \uppVar{y} can increment with respectively rates 1 and 2.
 
 \begin{figure}
 	\begin{lstlisting}[language=my_c, caption={Declarations}, label=lst:showcase1_declarations]
@@ -100,23 +98,50 @@ Simulate is used to run the modelled system a number of time and capture some va
 	\label{fig:showcase01}
 \end{figure}
 
-Simulations can now be done with the newly modelled system, the query for this can be seen in \cref{eq:q2}, in this simulation it runs one time until 100 unit times has passed, and the values to be captured is x and y.
+Simulations can now be done with the newly modelled system, the queries for these can be seen in \cref{eq:q2}, in these simulation it runs 100\gls{tu}, and the values specified to be captured during the simulations is \uppVar{x} and \uppVar{y}.
 
 \begin{equation}\label{eq:q2}
 simulate 1 [<= 100] {x,y}
+simulate 5 [<= 100] {x,y}
 \end{equation}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/showcase01.png}
 	\label{fig:sim01}
-	\caption{One simulations of the value of two variables \uppVar{x, y} over 100 time units}
+	\caption{One simulations of the value of two variables \uppVar{x, y} over 100\gls{tu}}
 \end{figure}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/showcase02.png}
 	\label{fig:sim02}
-	\caption{Five simulations of the value of two variables \uppVar{x, y} over 100 time units}
+	\caption{Five simulations of the value of two variables \uppVar{x, y} over 100\gls{tu}}
 \end{figure}
+
+Two graphs shows the data gather during simulation, in \cref{fig:sim01} and \cref{fig:sim02}. Where the y axis is value and x is time. The simulation runs the system random, if randomness is modelled in the system and will therefore generate new values for the graph each time it is run. Examining the graph we can observe that the value \uppVar{x} tends to around 50 within 100\gls{tu}, so a new question can be raised \textit{``What is the probability that x is above or equal to 50 when 100\gls{tu} have passed?''} in \cref{eq:q3} a query have been constructed to answer the question.
+
+\begin{equation}\label{eq:q3}
+Pr[<=150](<> x >= 50)
+\end{equation}
+
+Like the previous probability example, the query gives us a range of what the probability is that x will be higher or equal to 50 when 100 time units have passed, which in this query results in having a 98\%~ to 100\%~ probability. It is possible to get more information from the query in the form of seven different graphs (probability density distribution, Probability Density Confidence Intervals, Probability Distribution, Probability Confidence Intervals, Cumulative Probability Distribution, Cumulative Probability Confidence Intervals, and Frequency Histogram). 
+
+Frequency Histogram shows the count on the y axis and run duration in time on the x axis, each of the columns represent a time where a number of runs have fulfilled the property. So the first column show that out of the 263 runs three of them had observed the value \uppVar{x} to be higher or equal to 50 at 80.8\gls{tu}. This histogram show that with a 99\% certainty \uppVar{x} will at the earliest be 50 or higher at 80.8 and latest 111.4\gls{tu}.
+
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{graphics/eq3fh.png}
+	\label{fig:eq3fh}
+	\caption{}
+\end{figure}
+
+Cumulative Probability Distribution shows the accumulated probability over time, so with a 99\% certainty at 112\gls{tu} it has a 100\% probability for \uppVar{x} to be equal or above 50, and at 96.4\gls{tu} there is a 50\% probability.
+
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{graphics/eq3cpd.png}
+	\label{fig:eq3cpd}
+	\caption{}
+\end{figure}
+
+The graphs generated by SMC from queries can give useful information about the probability for a query and even more insight, an example of this can be seen the above graphs, when running the query it only returns the probability, but by looking at the graphs we are able to also extract that if this system run for 112 or more \gls{tu} \uppVar{x} will always be 50 or higher.
 
 %TODO describe queries and afterwards the results.
 
@@ -149,28 +174,28 @@ simulate 1 [<= 100] {x,y}
 %	\label{fig:example1}
 %\end{figure}
 
-After having run a simulation query, it is possible to get a graph illustrating the result of running the simulations. In \cref{fig:simab} we see two variable which have been simulated five times for $15.000$ units of time, this will be useful for monitoring the battery energy levels over time.
+%After having run a simulation query, it is possible to get a graph illustrating the result of running the simulations. In \cref{fig:simab} we see two variable which have been simulated five times for $15.000$ units of time, this will be useful for monitoring the battery energy levels over time.
 
-\begin{figure}[!h]
-	\includegraphics[width=\textwidth]{graphics/simab.png}
-	\label{fig:simab}
-	\caption{Five simulations of the value of two variables \uppVar{a, b} over time}
-\end{figure}
+%\begin{figure}[!h]
+%	\includegraphics[width=\textwidth]{graphics/simab.png}
+%	\label{fig:simab}
+%	\caption{Five simulations of the value of two variables \uppVar{a, b} over time}
+%\end{figure}
 
-Also it is possible to run probabilities queries, these answers the question; \textit{"What is the probability that some condition will be fulfilled?"}. An example of this can be seen in \cref{fig:pra300}, where we have run the probability that our variable \uppVar{a} will fall below $300$ within time $7200$ units of time. \Gls{smc} have then run this by randomly simulating the models behaviour until it with some certainty, within a specified margin of error, knows the chance of the property being true.\\
-\Cref{fig:pra300} shows that prior to time $4120$ there are no chance of \uppVar{a} being under $300$, and at time $4520$ it will with certainty be under $300$. For this query it was specified that a $5\%$ uncertainty was acceptable, this resulted in the result seen in \cref{fig:pra300pct} which shows that \gls{smc} was $~90\% - 100\%$ certain \uppVar{a} would fall below $300$. The certainty parameter can be modified to become more precise, at the cost of run time as it will have to run more simulations in order to ensure the correct probability. Using the probability query also allow  for several other types graphs such as probability distribution and frequency histogram.
+%Also it is possible to run probabilities queries, these answers the question; \textit{"What is the probability that some condition will be fulfilled?"}. An example of this can be seen in \cref{fig:pra300}, where we have run the probability that our variable \uppVar{a} will fall below $300$ within time $7200$ units of time. \Gls{smc} have then run this by randomly simulating the models behavior until it with some certainty, within a specified margin of error, knows the chance of the property being true.\\
+%\Cref{fig:pra300} shows that prior to time $4120$ there are no chance of \uppVar{a} being under $300$, and at time $4520$ it will with certainty be under $300$. For this query it was specified that a $5\%$ uncertainty was acceptable, this resulted in the result seen in \cref{fig:pra300pct} which shows that \gls{smc} was $~90\% - 100\%$ certain \uppVar{a} would fall below $300$. The certainty parameter can be modified to become more precise, at the cost of run time as it will have to run more simulations in order to ensure the correct probability. Using the probability query also allow  for several other types graphs such as probability distribution and frequency histogram.
 
-\begin{figure}[h]
-	\includegraphics[width=\textwidth]{graphics/pra300.png}
-	\label{fig:pra300}
-	\caption{Probability over time that the value of (a) will fall under 300}
-\end{figure}
+%\begin{figure}[h]
+%	\includegraphics[width=\textwidth]{graphics/pra300.png}
+%	\label{fig:pra300}
+%	\caption{Probability over time that the value of (a) will fall under 300}
+%\end{figure}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=8cm]{graphics/pra300pct.png}
-	\label{fig:pra300pct}
-	\caption{Initial result of running a probability query}
-\end{figure}
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=8cm]{graphics/pra300pct.png}
+%	\label{fig:pra300pct}
+%	\caption{Initial result of running a probability query}
+%\end{figure}
 
 
