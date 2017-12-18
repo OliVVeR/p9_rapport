@@ -1,0 +1,41 @@
+\section{Queries}\label{sec:queries}
+We have created several queries in order to verify the schedule. We want to verity that we do not go below the battery threshold and the payloads that are schedules is executed. Additionally, we want to monitor some other variables in order to present some data for the user, such as the accumulated profit.
+
+% impotant
+\begin{equation} \label{eq:smc1}
+	E<>\ o\_time == window\_max[n]\ \&\&\ ... dem\ der\ er\ dependant\ paa\ vinduet\ er\ koert
+\end{equation}\afx{Ret den her når vi ved hvad der skal stå}
+Query \ref{eq:smc1} is used to verify that the scheduled payloads that is dependant on a window, is executed within that window. Sudden restarts or variations in other timings may hinder the schedule in executing the payload within its window. 
+
+% impotant
+\begin{equation} \label{eq:smc2}
+	Pr\ a < a*(threshold/100)
+\end{equation}
+Query \ref{eq:smc2} will result in a probability that reflects the risk of the battery going below the threshold. This threshold is specified in the configuration file from \cref{subsec:init} \nameref{subsec:init}. The nanosatellite will enter the safe mode if we go below the threshold.
+
+It is expected that battery usage in the \gls{smc} model differs from the \gls{cora} 
+In general the Ideal model overestimate the expected lifetime in all cases,
+% impotant
+\begin{equation} \label{eq:smc3}
+	Pr\ counts == number\_of\_payloads har\ vi\ koert\ hele\ skidtemoeget?
+\end{equation}\afx{Ret den her når vi ved hvad der skal stå}
+
+% extra
+\begin{equation} \label{eq:smc4}
+	simulate\ 1 [<=schedule\_time] \{ active\}
+\end{equation}
+
+% extra
+\begin{equation} \label{eq:smc5}
+	simulate\ 10 [<=schedule\_time] \{ a, b\}
+\end{equation}
+
+% extra
+\begin{equation} \label{eq:smc6}
+	simulate\ 10 [<= schedule\_time] \{ profit \}
+\end{equation}
+
+
+
+
+\subsection{Parameter Tuning}
