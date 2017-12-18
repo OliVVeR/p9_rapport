@@ -1,2 +1,65 @@
 \section{Cora Model} \label{sec:cora}
 The \gls{cora} model takes a set of tasks with some rules and constrains in order to generate a schedule that upholds the specifications. These are fed to the model from the csv file via our own translator.
+
+
+\subsection*{Task}
+\subsection*{Scheduler}
+\subsection*{Insolation}
+The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declaration and functions in \cref{lst:insolation_code}.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]above:
+		\textcolor{name}{in\_sun}
+	}, label={
+		[align=left]left:
+		\textcolor{invariant}{splitTime <= orbitTime / 8}
+	}] {};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]above:
+		\textcolor{name}{out\_sun}
+	}, label={
+		[align=left]right:
+		\textcolor{invariant}{ins <= orbitTime}
+	}] {};
+	%Edges
+	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=left]{
+			\textcolor{guard}{ins >= orbitTime / 2}} (l1);
+	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=left]{
+			\textcolor{guard}{ins >= orbitTime}\\
+			\textcolor{update}{ins := 0,}\\
+			\textcolor{update}{splitTime = 0}} (l0);
+	\path[->,black] (l0) edge [loop below] node [midway, below left][align=left]{
+			\textcolor{guard}{splitTime >= orbitTime/8}\\
+			\textcolor{update}{increase\_battery()}} (l0);
+	\end{tikzpicture}
+	\caption{Template of insolation}
+	\label{fig:cora_inso}
+\end{figure}
+
+\begin{figure}
+	\begin{lstlisting}[language=my_c, caption={Declarations and function}, label=lst:insolation_code]
+// global declarations
+const int battery_max = 5400;
+const int orbitTime = 90;
+const int chargeRate = 2;
+int battery_cap = 5400;
+
+// local declarations
+clock splitTime, ins;
+
+void increase_battery(){
+	if(battery_max <= battery_cap + (chargeRate * orbitTime)/8){
+		battery_cap = battery_max;}
+	else{
+		battery_cap += (chargeRate * orbitTime)/8;}
+	splitTime = 0;
+}
+	\end{lstlisting}
+\end{figure}
+
+
+\subsection*{Windows}
