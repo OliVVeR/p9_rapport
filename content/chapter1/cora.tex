@@ -5,12 +5,62 @@ UPPAAL \acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed aut
 
 \Gls{cora} introduced the concept of cost, which as mentioned is accumulated over time. An example of how such a model may look can be seed in \cref{fig:cora_eks}.
 
-\begin{figure}[h]
-\begin{centering}
-	\includegraphics[width=7cm]{graphics/cora_eks.png}
-	\label{fig:cora_eks}
+%\begin{figure}[h]
+%\begin{centering}
+%	\includegraphics[width=7cm]{graphics/cora_eks.png}
+%	\label{fig:cora_eks}
+%	\caption{Simple model made in \gls{cora}, which displays an increase in cost over time}
+%\end{centering}
+%\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]above:
+		\textcolor{name}{A}
+	}, label={
+		[align=left]left:
+		\textcolor{invariant}{cost '== 1}\\
+		\textcolor{invariant}{\&\& time <= 5}
+	}] {};
+	\node [location] (l1) [right of=l0, xshift=20mm, yshift=20mm, label={
+		[align=left]above:
+		\textcolor{name}{B1}
+	}, label={
+		[align=left]below:
+		\textcolor{invariant}{cost '== 1}\\
+		\textcolor{invariant}{\&\& time <= 5}
+	}] {};
+	\node [location] (l2) [right of=l0, xshift=20mm, yshift=-20mm, label={
+		[align=left]above:
+		\textcolor{name}{B2}
+	}, label={
+		[align=left]below:
+		\textcolor{invariant}{cost '== 1}\\
+		\textcolor{invariant}{\&\& time <= 5}
+	}] {};
+	\node [location] (l3) [right of=l2, xshift=20mm, yshift=20mm, label={
+		[align=left]above:
+		\textcolor{name}{C}
+	}, label={
+		[align=left]right:
+		\textcolor{invariant}{cost '== 1}\\
+		\textcolor{invariant}{\&\& time <= 5}
+	}] {};
+	%Edges
+	\path[->,black] (l0) edge node [midway, left][align=left]{
+			\textcolor{guard}{time >= 3}} (l1);
+	\path[->,black] (l0) edge node [midway, left][align=left]{
+			\textcolor{guard}{time >= 3}} (l2);
+	\path[->,black] (l1) edge node [midway, right][align=left]{
+			\textcolor{guard}{time >= 10}} (l3);
+	\path[->,black] (l2) edge node [midway, right][align=left]{
+			\textcolor{guard}{time >= 7}} (l3);
+	\end{tikzpicture}
 	\caption{Simple model made in \gls{cora}, which displays an increase in cost over time}
-\end{centering}
+	\label{fig:cora_eks}
 \end{figure}
 
 In \cref{fig:cora_eks} we see a \gls{cora} model with four locations and four edges connecting them. On three of the location there is an invariant bound to the clock "\uppVar{time}" and an associated cost rate. While in the initial location "\uppLoc{A}" the cost rate is one meaning that for every unit of time spend in this \uppLoc{A} the cost will increase by one, it will stay in \uppLoc{A} for three to five units of time before moving on to the next location.\\
