@@ -21,23 +21,24 @@ We expect that we will use less energy in the \gls{smc} model because \gls{kibam
 \begin{equation} \label{eq:smc3}
 	Pr\ counts == number\_of\_payloads har\ vi\ koert\ hele\ skidtemoeget?
 \end{equation}\afx{Ret den her når vi ved hvad der skal stå}
+\afx{beskriv query}
 
 % extra
 \begin{equation} \label{eq:smc4}
 	simulate\ 1 [<=schedule\_time] \{ active\}
 \end{equation}
+Query \ref{eq:smc4} is used to output the order of payloads that was executed. This should correspond to the order that the trace dictates, but there could be differences if it was necessary to skip a payload.
 
 % extra
 \begin{equation} \label{eq:smc5}
 	simulate\ 10 [<=schedule\_time] \{ a, b\}
 \end{equation}
+Query \ref{eq:smc5} provides two time series that reflects the two wells, a and b, from the battery model. This is useful for the user as they might want to discard the schedule if it uses more energy than what they comfortable with. Even if we do not go below the threshold, it may be to expensive to execute the schedule. % forklar hvorfor at vi kører 10 simulations?
 
 % extra
 \begin{equation} \label{eq:smc6}
 	simulate\ 10 [<= schedule\_time] \{ profit \}
 \end{equation}
-
-
-
+Query \ref{eq:smc6} shows the accumulated profit for the schedule, and was introduced in \cref{subsec:csv} \nameref{subsec:csv}. We will not judge a schedule based on this value, we will let the user decide if it is acceptable. The profit is a abstract variable and we will not be able tell whether or not it is satisfactory.
 
 \subsection{Parameter Tuning}
