@@ -5,7 +5,9 @@ The \gls{cora} model takes a set of tasks with some rules and constrains in orde
 \subsection*{Task}
 \subsection*{Scheduler}
 \subsection*{Insolation}
-The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declaration and functions in \cref{lst:insolation_code}.
+The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{in\_sun} and \uppLoc{out\_sun} to ensure that the nanosatellite can only recharge its battery when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{in\_sun} with the function $increase\_battery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the orbitTime have passed, the model is forced to take the transition leading to location \uppLoc{out\_sun}, due to the invariants on \uppLoc{in\_sun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to orbitTime, in this transition is also were the clocks ins and splitTime is reset.
+
+On line 10 the declaration for $increase\_battery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the battery_cap go over its limit (battery\_max) then is just assign battery_cap to battery\_max, else we add the recharge amount to battery\_cap. lastly we reset the clock splitTime.
 
 \begin{figure}
 	\centering
@@ -27,7 +29,9 @@ The implementation of insolation and battery charge can be seen in \cref{fig:cor
 	}] {};
 	%Edges
 	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=left]{
-			\textcolor{guard}{ins >= orbitTime / 2}} (l1);
+			\textcolor{guard}{ins >= orbitTime / 2}\\
+			\textcolor{guard}{\&\& charge\_count == 8}\\
+			\textcolor{update}{charge\_count = 0}} (l1);
 	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=left]{
 			\textcolor{guard}{ins >= orbitTime}\\
 			\textcolor{update}{ins := 0,}\\
@@ -47,6 +51,7 @@ const int battery_max = 5400;
 const int orbitTime = 90;
 const int chargeRate = 2;
 int battery_cap = 5400;
+int charge_count;
 
 // local declarations
 clock splitTime, ins;
@@ -60,6 +65,8 @@ void increase_battery(){
 }
 	\end{lstlisting}
 \end{figure}
+
+The way this is modeled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{in\_sun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be fixed with adding a third initial location, that has transitions to \uppLoc{in\_sun} and \uppLoc{out\_sun}, given a variables that will determine which location we should goto based on the actual position of the satellite, along with change the time of ins to capture where in the orbit the nanosatellite is. 
 
 
 \subsection*{Windows}
