@@ -2,12 +2,88 @@
 The \gls{cora} model takes a set of tasks with some rules and constrains in order to generate a schedule that upholds the specifications. These are fed to the model from the csv file via our own translator.
 
 
-\subsection*{Task}
-\subsection*{Scheduler}
-\subsection*{Insolation}
-The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{in\_sun} and \uppLoc{out\_sun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{in\_sun} with the function $increase\_battery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the orbitTime have passed, the model is forced to take the transition leading to \uppLoc{out\_sun}, due to the invariants on \uppLoc{in\_sun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to orbitTime, in this transition is also were the clocks ins and splitTime is reset.
 
-On line 10 the declaration for $increase\_battery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the battery\_cap go over its limit (battery\_max) then is just assign battery\_cap to battery\_max, else we add the recharge amount to battery\_cap. lastly we reset the clock splitTime.
+\subsection*{Task}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) {$\cup$};
+	\node [location] (l1) [right of=l0, xshift=40mm] {$\cup$};
+	\node [location] (l2) [right of=l1, xshift=40mm, label={
+		[align=left]right:
+		\textcolor{name}{ready}
+	}] {$\cup$};
+	\node [location] (l3) [below of=l1, yshift=-40mm, label={
+		[align=left]left:
+		\textcolor{name}{idle}
+	}] {};
+	\node [location] (l4) [below of=l2, yshift=-40mm, label={
+		[align=left]right:
+		\textcolor{name}{running}
+	}] {};
+	\node [location] (l5) [above of=l2, yshift=40mm] {C};
+	\node [location] (l6) [above of=l1, yshift=40mm] {};
+	\path[->,black] (l0) edge node [midway, below left][align=left]{\textcolor{update}{mayRun()}} (l1);
+	\path[->,black] (l1) edge node [midway, above][align=left]{
+		\textcolor{select}{a: int[0,N-1]}\\
+		\textcolor{guard}{runnableCount() > 0}\\
+		\textcolor{guard}{\&\& runnable[a] == 1}\\
+		\textcolor{sync}{ready!}\\
+		\textcolor{update}{mayRun(), active = a}} (l2);
+	\path[->,black] (l2) edge node [midway, right][align=left]{
+		\textcolor{guard}{runnable[active] == 1}\\
+		\textcolor{sync}{run?}\\
+		\textcolor{update}{updateBattery(), }\\
+		\textcolor{update}{subIdle(), calcCost()}} (l4);
+	\path[->,black] (l4) edge node [midway, below][align=left]{
+		\textcolor{guard}{x >= taskTimes[active][0]}\\
+		\textcolor{update}{subIdle()}} (l3);
+	\path[->,black] (l3) edge node [midway, left][align=left]{
+		\textcolor{guard}{x >= taskTimes[active][1]}\\
+		\textcolor{update}{reset(), dequeue(),}\\
+		\textcolor{update}{x = 0, mayRun()}} (l1);
+	\path[->,black] (l1) edge node [midway, left][align=left]{
+		\textcolor{guard}{runnableCount() == 0}} (l6);
+	\path[->,black] (l6) edge node [midway, above][align=left]{
+		\textcolor{sync}{win?}} (l5);
+	\path[->,black] (l5) edge node [midway, right][align=left]{
+		\textcolor{select}{a: int[0,N-1]}\\
+		\textcolor{sync}{ready!}\\
+		\textcolor{update}{mayRun(), active = a}} (l2);
+	\path[->,black] (l2) edge[bend left=45] node [midway, below][align=left]{
+		\textcolor{guard}{runnable[active] == 0}\\
+		\textcolor{sync}{run?}} (l1);
+	\end{tikzpicture}
+	\caption{Task template}
+	\label{fig:cora_inso}
+\end{figure}
+\subsubsection*{Scheduler}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={[align=left]left:
+		\textcolor{invariant}{checkBattery()}
+	}] {};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]right:
+		\textcolor{invariant}{checkBattery()}
+	}] {$\cup$};
+	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=center]{
+		\textcolor{sync}{ready?}} (l1);
+	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=center]{
+		\textcolor{sync}{run!}} (l0);
+	\end{tikzpicture}
+	\caption{Scheduler template}
+	\label{fig:cora_inso}
+\end{figure}
+
+
+\subsection*{Insolation}
+The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{inSun} and \uppLoc{outSun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{inSun} with the function $increaseBattery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the $OrbitTime$ have passed, the model is forced to take the transition leading to \uppLoc{outSun}, due to the invariants on \uppLoc{inSun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to OrbitTime, in this transition is also were the clocks ins and $splitTime$ is reset.
+
+On line 10 the declaration for $increaseBattery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the $batteryCap$ go over its limit ($BatteryMax$) then is just assign $batteryCap$ to $BatteryMax$, else we add the recharge amount to $batteryCap$. lastly we reset the clock splitTime.
 
 \begin{figure}
 	\centering
@@ -15,68 +91,148 @@ On line 10 the declaration for $increase\_battery()$ is define, the purpose of t
 	%Locations
 	\node [init] (l0) [label={
 		[align=left]above:
-		\textcolor{name}{in\_sun}
+		\textcolor{name}{inSun}
 	}, label={
 		[align=left]left:
-		\textcolor{invariant}{splitTime <= orbitTime / 8}
+		\textcolor{invariant}{splitTime <= OrbitTime / 8}
 	}] {};
 	\node [location] (l1) [right of=l0, xshift=40mm, label={
 		[align=left]above:
-		\textcolor{name}{out\_sun}
+		\textcolor{name}{outSun}
 	}, label={
 		[align=left]right:
-		\textcolor{invariant}{ins <= orbitTime}
+		\textcolor{invariant}{ins <= OrbitTime}
 	}] {};
 	%Edges
 	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=left]{
-			\textcolor{guard}{ins >= orbitTime / 2}\\
-			\textcolor{guard}{\&\& charge\_count == 8}\\
-			\textcolor{update}{charge\_count = 0}} (l1);
+			\textcolor{guard}{ins >= OrbitTime / 2}\\
+			\textcolor{guard}{\&\& chargeCount == 4}\\
+			\textcolor{update}{chargeCount = 0}} (l1);
 	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=left]{
-			\textcolor{guard}{ins >= orbitTime}\\
+			\textcolor{guard}{ins >= OrbitTime}\\
 			\textcolor{update}{ins := 0,}\\
 			\textcolor{update}{splitTime = 0}} (l0);
 	\path[->,black] (l0) edge [loop below] node [midway, below left][align=left]{
-			\textcolor{guard}{splitTime >= orbitTime/8}\\
-			\textcolor{update}{increase\_battery()}} (l0);
+			\textcolor{guard}{splitTime >= OrbitTime/8}\\
+			\textcolor{update}{increaseBattery()}} (l0);
 	\end{tikzpicture}
-	\caption{Template of insolation}
+	\caption{Insolation template}
 	\label{fig:cora_inso}
 \end{figure}
 
 \begin{figure}
 	\begin{lstlisting}[language=my_c, caption={Declarations and function}, label=lst:insolation_code]
 // global declarations
-const int battery_max = 5400;
-const int orbitTime = 90;
-const int chargeRate = 2;
-int battery_cap = 5400;
-int charge_count;
+const int BatteryMax = 5400;
+const int OrbitTime = 90;
+const int ChargeRate = 2;
+int batteryCap = 5400;
+int chargeCcount;
 
 // local declarations
 clock splitTime, ins;
 
-void increase_battery(){
-	if(battery_max <= battery_cap + (chargeRate * orbitTime)/8){
-		battery_cap = battery_max;}
+void increaseBattery(){
+	if(BatteryMax <= batteryCap + (ChargeRate * OrbitTime)/8){
+		batteryCap = BatteryMax;}
 	else{
-		battery_cap += (chargeRate * orbitTime)/8;}
+		batteryCap += (ChargeRate * OrbitTime)/8;}
 	splitTime = 0;
 }
 	\end{lstlisting}
 \end{figure}
 
-The way this is modeled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{in\_sun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be fixed with adding a third initial location, that has transitions to \uppLoc{in\_sun} and \uppLoc{out\_sun}, given a variables that will determine which location we should goto based on the actual position of the satellite, along with change the time of ins to capture where in the orbit the nanosatellite is. 
+The way this is modeled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{inSun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be fixed with adding a third initial location, that has transitions to \uppLoc{inSun} and \uppLoc{outSun}, given a variables that will determine which location we should goto based on the actual position of the satellite, along with change the time of ins to capture where in the orbit the nanosatellite is. 
 
 
 \subsection*{Windows}
+Windows are 
 
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
 	%Locations
 	\node [init] (l0) {C};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=center]above:
+		\textcolor{invariant}{wtime <= window[id][0]}\\
+		\textcolor{name}{notIn}
+	}] {};
+	\node [location] (l2) [right of=l1, xshift=45mm, label={
+		[align=left]above:
+		\textcolor{name}{in}
+	}, label={
+		[align=left]right:
+		\textcolor{invariant}{wtime <= window[id][1]}
+	}] {};
+	\node [location] (l3) [right of=l1, xshift=20mm, yshift=-40mm, label={
+		[align=left]right:
+		\textcolor{invariant}{wtime <= orbitTime}
+	}] {};
+	\path[->,black] (l0) edge node [midway, below][align=left]{
+			\textcolor{update}{alwaysAvailable()}} (l1);
+	\path[->,black] (l1) edge node [midway, below][align=left]{
+			\textcolor{guard}{wtime >= window[id][0]}\\
+			\textcolor{update}{setRunnable()}\\
+			\textcolor{sync}{win!}} (l2);
+	\path[->,black] (l1) edge node [midway, below left][align=left]{
+			\textcolor{guard}{wtime >= orbitTime}\\
+			\textcolor{update}{wtime = 0}\\
+			\textcolor{sync}{win!}} (l3);
+	\path[->,black] (l2) edge node [midway, below right][align=left]{
+			\textcolor{guard}{wtime >= window[id][1]}\\
+			\textcolor{update}{removeRunnable()}\\
+			\textcolor{sync}{win!}} (l3);
 	\end{tikzpicture}
-	\caption{Template of insolation}
+	\caption{Window templates}
 	\label{fig:cora_inso}
+\end{figure}
+
+\begin{figure}
+	\begin{lstlisting}[language=my_c, caption={Declarations and function}, label=lst:insolation_code]
+//Parameters:
+const id_t id
+
+// global declarations
+const int windows = 2;
+typedef int[0,windows-1] id_t;
+const int window[windows][windows] = {{50, 80}, {10, 30}};
+broadcast chan win;
+
+// local declarations
+clock wtime; 
+ void alwaysAvailable() { 
+     int i = 0; int count = 0;
+     for(i=0;i<N;i++){
+	if(available[i] == 1){count++;}}
+     if(count == 0){
+	for(i = 0; i < N; i++){
+     	if(runInWindow[id][i] == 0){ 
+        	available[i] = 1;}
+     }}
+     else{
+     	for(i = 0; i < N; i++){
+     	if(runInWindow[id][i] == 0 && available[i] == 1){ 
+        	available[i] = 1;}
+     	else{ available[i] = 0;}
+ }}}
+ 
+
+//const bool runInWindow0[N] = {1, 0, 0, 0, 0}; 
+//const bool runInWindow1[N] = {0, 1, 1, 1, 0};
+
+ void setRunnable(){ 
+     int i= 0; 
+     for (i = 0; i < N; i++){
+         if(runInWindow[id][i] == 1){ 
+             available[i] = 1; 
+ }}} 
+ 
+ void removeRunnable(){
+     int i= 0; 
+     for (i = 0; i < N; i++){ 
+         if(runInWindow[id][i] == 1){ 
+             available[i] = 0; 
+ }}}
+	\end{lstlisting}
 \end{figure}
