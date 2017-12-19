@@ -5,9 +5,9 @@ The \gls{cora} model takes a set of tasks with some rules and constrains in orde
 \subsection*{Task}
 \subsection*{Scheduler}
 \subsection*{Insolation}
-The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{in\_sun} and \uppLoc{out\_sun} to ensure that the nanosatellite can only recharge its battery when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{in\_sun} with the function $increase\_battery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the orbitTime have passed, the model is forced to take the transition leading to location \uppLoc{out\_sun}, due to the invariants on \uppLoc{in\_sun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to orbitTime, in this transition is also were the clocks ins and splitTime is reset.
+The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{in\_sun} and \uppLoc{out\_sun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{in\_sun} with the function $increase\_battery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the orbitTime have passed, the model is forced to take the transition leading to \uppLoc{out\_sun}, due to the invariants on \uppLoc{in\_sun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to orbitTime, in this transition is also were the clocks ins and splitTime is reset.
 
-On line 10 the declaration for $increase\_battery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the battery_cap go over its limit (battery\_max) then is just assign battery_cap to battery\_max, else we add the recharge amount to battery\_cap. lastly we reset the clock splitTime.
+On line 10 the declaration for $increase\_battery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the battery\_cap go over its limit (battery\_max) then is just assign battery\_cap to battery\_max, else we add the recharge amount to battery\_cap. lastly we reset the clock splitTime.
 
 \begin{figure}
 	\centering
@@ -70,3 +70,13 @@ The way this is modeled have a few limitations, as previous said we only recharg
 
 
 \subsection*{Windows}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) {C};
+	\end{tikzpicture}
+	\caption{Template of insolation}
+	\label{fig:cora_inso}
+\end{figure}
