@@ -1,21 +1,34 @@
 \section{Future Work} \label{sec:future}
+This section primarily outline some of the idea or discoveries done during our development that we weren't able to include in the final project. 
 
-\subsection{Memory Considerations}
-Payloads produce data that needs to be stored
+\subsection*{Memory Considerations}
+This topic concerns the physical memory on the nanosatellite in respect to payloads producing certain amount of memory during execution, additionally payloads would delete memory when sending data to earth. Our meeting with GomSpace provides us with new information, that during an orbit for the nanosatellite it would have multiple windows where could potentially send data to earth, but depending on the geographical location it would cost a fee to use the service of other countries satellite dishes. Given that our meeting with GomSpace was late in the semester and wasn't feasible to incorporate this feature into the final project.
 
-\subsection{Start Orbit Time}
-Just like the start SOC in the INI file
+\subsection*{Start Orbit Time}
+In \cref{sec:cora} it was mentioned that our schedule-generator would only generate schedules for a nanosatellite when 
+For applications uses this would be a must-have feature, but in terms of generating a schedule to illustrate the capabilities based on profit this is not a necessity, rather just a small improvement to the overall project.
 
-\subsection{The moon is in our way}
-less energy gained per insolation
+\subsection*{Celestial bodies obstructing line of sight to sun}
+The most common celestial body to obstruct the nanosatellite from recharging is the moon with the exception of earth. 
+It is questionable how much this would effect the generations of schedules. If it were to have an real thread the moon and nanosatellite would need to have close to similar inclination and altitude with is unlikely, likewise given that GomSpace nanosatellites have minimum battery threshold level to ensure that the nanosatellite always have power, the damage for not accounting for this would only result in the nanosatellites going under the threshold in a few cases, which would impact the schedule but not the survivability of the nanosatellite.
 
-\subsection{A followed by B}
-After running one L-band job we must run two X-band before running another L
+\subsection*{Oval orbits}
+Our models assumes that an orbit is circular so it take equal time the travel a half orbit from any starting point in the orbit. This was not include to simplify the model and deemed unnecessary because the generated schedules only spanning between 12 to 24 hours. 
 
-\subsection{Satellite facing}
-does the satellite face earth of other
+\subsection*{Payload Dependencies}
+Currently a payload can state if another payload needs to be execute before allow in first payload to be executed. But no rule in our project define if a payload can be execute multiple times after the depending payload have finished running. In other words this mean that we only allow one execution before the depending payload are required again.
 
-\subsection{Internal Storage}
-How can storage impact the schedule generation
+\subsection*{Satellite Attitude \& Drag}
+Our program have no notion of satellite attitude, this is intentionally left out, because a payloads execution is defined by the user and could just include the time it takes to slew the nanosatellite in the payload description. By doing it this way we reduce the number of possible schedules that can exist. Some complications arise when going this direction, if slew is calculated in a payload that mean if another payload needs to face the same angle it also needs to add the time required to slew the nanosatellite. which is wasteful because they would be able to save time if the could slew and perform two payloads and then resume its original orientation.
 
-\subsection{Battery Decay}
+\subsection*{Battery Decay}
+Battery deteriorating over time is not directly supported in our solution, but since the user can theoretically calculate the actual capacity of the battery and use it as the input parameter for battery capacity, the can add that information to the model. Additionally battery decay is not something that our scheduler tries to minimize when generating a schedule. This decision was\afx{I need to write stuff here, please make it good.....}
+
+\subsection*{Schedule Shipping}
+%4.3 Schedule Shipping
+%In order to uplink a schedule to GomX–3, several comma separated files (.csv)
+%are generated. Each file contains a list of job opportunities of a certain type,
+%for example L-Band (see below), given by two timestamps representing the start
+%time and the end time of the job window respectively, the implied duration of
+%the timestamps, as well as a flag that shows whether the opportunity should be
+%taken.
