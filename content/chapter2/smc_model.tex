@@ -41,3 +41,200 @@ simulate \quad 1 \quad [<=432000] \quad \{a,b\}
 
 The advantages of running these queries is, that even though the runs in \gls{cora} conclude that a schedule is viable, the probability query may be able to find that running the trace could lead to energy depletion. Also tacking the state of the battery may help to see the effect of the solar panels and the tasks stress on the battery. This is relevant as one or two repetitions of the schedule may not deplete the battery but perhaps ten would, in such case it may be relevant to change some parameters and run it again.
 \afx{skriv om robustheden også}
+
+
+
+\subsection*{Templates}
+\subsubsection*{Processor}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) {$\cup$};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]above:
+		\textcolor{name}{PrepNext}},
+		label={
+		[align=center]below:
+		\textcolor{invariant}{totalTime <= RunStart[payloadNumber]}
+	}] {};
+	\node [location] (l2) [right of=l1, xshift=80mm, label={
+		[align=left]above:
+		\textcolor{name}{Ready}
+	}] {};
+	\node [location] (l3) [below of=l0, yshift=-40mm, label={
+		[align=left]below:
+		\textcolor{name}{Done}
+	}] {};
+	\node [location] (l4) [below of=l1, yshift=-40mm, label={
+		[align=left]below:
+		\textcolor{name}{Idle}\\
+		\textcolor{invariant}{x <= D}
+	}] {};
+	\node [location] (l5) [below of=l2, yshift=-40mm, label={
+		[align=left]below:
+		\textcolor{name}{Running}\\
+		\textcolor{invariant}{x <= W}
+	}] {};
+	\path[->,black] (l0) edge node [midway, above][align=left]{
+		\textcolor{update}{t=0,i = IIdle,}\\
+		\textcolor{update}{setActive()}} (l1);
+	\path[->,black] (l1) edge node [midway, above][align=center]{
+		\textcolor{guard}{totalTime >=RunStart[payloadNumber]}\\
+		\textcolor{sync}{ready!}\\
+		\textcolor{update}{x=0, t=0,}\\
+		\textcolor{update}{dequeue()}} (l2);
+	\path[->,black] (l2) edge node [midway, left][align=left]{
+		\textcolor{sync}{run?}\\
+		\textcolor{update}{x := 0,}\\
+		\textcolor{update}{setActive(),}\\
+		\textcolor{update}{enqueue()}} (l5);
+	\path[->,black] (l5) edge[bend right=45] node [midway, right][align=left]{
+		\textcolor{sync}{empty?}} (l2);
+	\path[->,black] (l4) edge node [midway, left][align=left]{
+		\textcolor{sync}{skip?}\\
+		\textcolor{update}{payloadNumber ++,}\\
+		\textcolor{update}{skipped()}} (l2);
+	\path[->,black] (l5) edge node [midway, below][align=left]{
+		\textcolor{guard}{x >= B}\\
+		\textcolor{update}{i = IIdle, active = -1,}\\
+		\textcolor{update}{payloadNumber ++}} (l4);
+	\path[->,black] (l4) edge node [midway, left][align=left]{
+		\textcolor{guard}{x >= D \&\&}\\
+		\textcolor{guard}{!done()}\\
+		\textcolor{update}{setActive()}} (l1);
+	\path[->,black] (l4) edge node [midway, below][align=left]{
+		\textcolor{guard}{done()}\\
+		\textcolor{update}{on = false,}\\
+		\textcolor{update}{active = -1}} (l3);
+	\end{tikzpicture}
+	\caption{Processor template}
+	\label{fig:smc_P}
+\end{figure}
+
+\subsubsection*{Insolation}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]left:
+		\textcolor{invariant}{charge<= OrbitTime/2}
+		}] {};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]right:
+		\textcolor{invariant}{charge <=OrbitTime}
+		}] {};
+	\path[->,black] (l0) edge[bend left=45] node [midway, above][align=left]{
+		\textcolor{guard}{charge >= OrbitTime/2}\\
+		\textcolor{update}{insolation = false}} (l1);
+	\path[->,black] (l1) edge[bend left=45] node [midway, below][align=left]{
+		\textcolor{guard}{charge >= OrbitTime}\\
+		\textcolor{update}{insolation = true,}\\
+		\textcolor{update}{charge :=0}} (l0);
+	\end{tikzpicture}
+	\caption{Insolation template}
+	\label{fig:smc_I}
+\end{figure}
+
+\subsubsection*{EnergySource}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]left:
+		\textcolor{invariant}{a' == -on*i+k*(b/(1-c)-a/c)}\\
+		\textcolor{invariant}{\&\& b' == -k*(b/(1-c)-a/c)}\\
+		\textcolor{invariant}{+(insolation * RechargeRate)}
+	}] {};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]right:
+		\textcolor{invariant}{a' == -on*i+k*(b/(1-c)-a/c)}\\
+		\textcolor{invariant}{\&\& b' == -k*(b/(1-c)-a/c)}
+	}] {};
+	\path[->,black] (l0) edge node [midway, above][align=left]{
+		\textcolor{guard}{b > MaxB}\\
+		\textcolor{sync}{capacityFull!}} (l1);
+	\path[->,black] (l1) edge[bend left=45] node [midway, below][align=left]{
+		\textcolor{guard}{b < c\_C}\\
+		\textcolor{sync}{capacityFull!}} (l0);
+	\path[->,black] (l1) edge[loop above] node [midway, above][align=left]{
+		\textcolor{guard}{on \&\& a <= 0}\\
+		\textcolor{sync}{empty!}\\
+		\textcolor{update}{on = false, i = 0}} (l1);
+	\path[->,black] (l0) edge[loop above] node [midway, above][align=left]{
+		\textcolor{guard}{on \&\& a <= 0}\\
+		\textcolor{sync}{empty!}\\
+		\textcolor{update}{on = false, i = 0}} (l0);
+	\end{tikzpicture}
+	\caption{EnergySource template}
+	\label{fig:smc_ES}
+\end{figure}
+
+\subsubsection*{Scheduler}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) {};
+	\node [location] (l1) [below of=l0, yshift=-40mm, label={
+		[align=left]below:
+		\textcolor{invariant}{t <= Payloads[Queue[payloadNumber]][2] - }\\
+		\textcolor{invariant}{Payloads[Queue[payloadNumber]][1]}
+	}] {};
+	\path[->,black] (l1) edge[bend left=50] node [midway, left][align=left]{
+		\textcolor{guard}{t == Payloads[Queue[payloadNumber]][2] - }\\
+		\textcolor{guard}{Payloads[Queue[payloadNumber]][1]}\\
+		\textcolor{sync}{skip!}
+	} (l0);
+	\path[->,black] (l0) edge node [midway, left][align=left]{
+		\textcolor{sync}{ready?}} (l1);
+	\path[->,black] (l1) edge[bend right=45] node [midway, right][align=left]{
+		\textcolor{guard}{on \&\& mayRun() \&\&}\\
+		\textcolor{guard}{FirmThreshold < a * exp(-k2*W)+}\\
+		\textcolor{guard}{(((a+b)*k2*c-(IPayload+IIdle))*(1.0-exp(-k2*W))}\\
+		\textcolor{guard}{-(IPayload+IIdle)*c*(k2*W-1.0+exp(-k2*W)))/k2}\\
+		\textcolor{sync}{run!}\\
+		\textcolor{update}{runs[active] ++,}\\
+		\textcolor{update}{totalRuns[active] ++}
+	} (l0);
+	\end{tikzpicture}
+	\caption{Task template}
+	\label{fig:cora_inso}
+\end{figure}
+
+\subsubsection*{OrbitWindows}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]left:
+		\textcolor{invariant}{wtime <= Window[id][0]}}] {};
+	\node [location] (l1) [right of=l0, xshift=40mm, label={
+		[align=left]right:
+		\textcolor{invariant}{wtime <= Window[id][1]}
+	}] {};
+	\node [location] (l2) [below of=l0, xshift=25mm, yshift=-40mm, label={
+		[align=left]below:
+		\textcolor{invariant}{wtime <= OrbitTime}
+	}] {};
+	\path[->,black] (l0) edge node [midway, above][align=left]{
+		\textcolor{guard}{wtime >= Window[id][0]}\\
+		\textcolor{update}{setRunnable(),}\\
+		\textcolor{update}{inWindow[id] = 1}
+	} (l1);
+	\path[->,black] (l1) edge node [midway, right][align=left]{
+		\textcolor{guard}{wtime >= Window[id][1]}\\
+		\textcolor{update}{setRunnable(),}\\
+		\textcolor{update}{inWindow[id] = 0}
+	} (l2);
+	\path[->,black] (l2) edge node [midway, left][align=left]{
+		\textcolor{guard}{wtime >= OrbitTime}\\
+		\textcolor{update}{wtime = 0}
+	} (l0);
+	\end{tikzpicture}
+	\caption{OrbitWindows template}
+	\label{fig:smc_OW}
+\end{figure}

@@ -1,39 +1,39 @@
 \chapter{Problem Analysis} \label{cha:problem}
-*Introduction to chapter*
+In this chapter we will present the previous work that have been done in regards to the GomX-3 nanosatellite adn then introduce the aspects we want to improve upon.
 
-\section{Problem Statement}
-We introduced the GomX-3 article in the introduction as the starting point for our project. They discuss the problem of resource management in regards to power consumption. They want to perform experiments and other missions when they are launching a nanosatellite and they want to do so as efficient as possible. Efficient in the sense that they want to maximize their payload utilisation while in-orbit. 
+\section{The GomX-3 Experience Article}
+We introduced the GomX-3 article as the starting point for our project. They discuss the problem of resource management in regards to power consumption. They want to perform experiments and other missions when they are launching a nanosatellite and want to do so as efficient as possible. Efficient in the sense that they want to maximize their payload utilisation while in-orbit. 
 
 % payload
-A payload is a piece of equipment or software which helps the satellite achieve its goal. For example, the GomX-3 nanosatellite wants to use its transmitters or software defined radio module payloads. When we are referring to a payload we will refer to the usage of it, so when we are talking about the software radio it is the action of using it we will model, the process of transmitting or receiving data. % fjern model delen
+A payload is a piece of equipment or software which helps the satellite achieve its goal. For example, the GomX-3 nanosatellite wants to use its transmitters or software defined radio module payloads. When we are referring to a payload we will refer to the usage of it, so when we are talking about the software radio it is the action of using it e.g. the process of transmitting or receiving data.
+
+% Human error and models
+GomSpace have several tools that assist them in producing a schedule for their nanosatellite, but some parts of the process is done by hand. This is a problem as it introduces a greater risk of human error in an environment where mistakes can be fatal for the missions. It is a highly complex task to manually plan the operations that the nanosatellite has to perform while still considering the battery capacity. This problem can be diminished by automating the process of scheduling the payloads, which they did do by modelling their nanosatellite in UPPAAL \gls{cora}. Their model allowed them to produce a schedule which their nanosatellite could interpret and execute.
 
 % insolation
-GomSpace have several tools that assist them in producing a schedule for their nanosatellite, but some parts of the process is done by hand. This is a problem as it introduces a greater risk of human error in an environment where mistakes can be fatal for the missions. It is a highly complex task to manually plan the operations that the nanosatellite has to perform while still considering the battery capacity. The GomX-3 nanosatellite is equipped with solar panels which it uses to power its hardware and to charge its battery which it draws upon when it enters eclipse, as the panels may only generate power when exposed to the sun(insolation). The battery's capacity is a resource that has be tightly monitored as all of the nanosatellite's operations consumes power and it will not be able to perform any functions if it is depleted.\cite{gomx3}
+The GomX-3 nanosatellite is equipped with solar panels which it uses to power its hardware and to charge its battery which it draws upon when it enters eclipse, as the panels may only generate power when exposed to the sun(insolation). The battery's capacity is a resource that has be tightly monitored as all of the nanosatellite's operations consumes power and it will not be able to perform any functions if it is depleted.\cite{gomx3}
+
+% constraints (windows and dependencies)
+\cite{gomx3} made the observation that some payloads should be dependant on other payloads. If one payload represents the task of collecting experiment data, the payload that is responsible for downloading the data to earth may only be executed after the completion of the aforementioned payload. It would be wasteful to schedule a payload that downloads data if no data have been collected! Additionally, they observed that they would need to schedule two download payloads when one of their data collection payloads had been executed. This means that a simple dependency that checks whether or not a payload have been executed, is not enough. We will sometimes need to also check how many times the payload have been executed, and then later reset this counter in order to let this payload cycle restart.\\
+The GomX-3 nanosatellite communicated with a specific centre one earth when it had to download its experiment data, but the centre was not always in line of sight and was therefore not able to always download its data. In order to download its data it must reside within an interval window which is defioned by two timestamps, one for when the payload becomes available and one for when it expires. \cite{gomx3} states that when a data collection payload is started, it must also finish within the window, as payloads that are aborted early or started late are not considered interesting.
+
+\section{Improvements and Additions}
+In this section we will present the improvements we believe will be beneficial when producing a schedule. % to short? \Anders
+
+% Dynamic Scheduling
+\cite{gomx3} wanted their schedule to be dynamic in the sense that the prices should be updated based on the schedule produces so far. This is a limitation in UPPAAL \gls {cora} that they wanted to sidestep, which they did by dividing their schedule into multiple disjointed subintervals. They would then carry over the state of the model from one subinterval to the next and then update the prices, or costs, based on the state. They noted that this was a trade-off between optimality and being dynamic because it made the schedule more greedy. We believe it is possible to avoid this solution of creating multiple schedules that has to be conjoined, while still being able to choose between payloads based on the state. \afx{refernce til hvor vi har vores løsning på dette. (vores brug af dpendencies)}
 
 % robustness
-The article therefore presented a solution for producing schedules that are specifically tailored to maximise payload utilisation while still minimising the risk of battery depletion. We believe it is possible to improve upon their solution by introducing the 
-notion of robustness as there are uncertainties connected with how the satellite will behave and the environment it is operating in. We will explain what we understand by robustness in \cref{sec:schedule} \nameref{sec:schedule}.
+The article therefore presented a solution for producing schedules that are specifically tailored to maximise payload utilisation while still minimising the risk of battery depletion. We believe it is possible to improve upon their solution by introducing the notion of robustness as there are uncertainties connected with how the satellite will behave and the environment it is operating in. We will explain what we understand by robustness in \cref{sec:schedule} \nameref{sec:schedule}.
 
 % worthwhile/profit
 The best way to preserve the battery capacity is to not execute any of the payloads, but this not a good idea as nothing useful is done, as pointed out in \textbf{Wognsen et al. 2015}\cite{score_function}. They identified that the battery lifetime would be extended if the nanosatellite would not execute any payloads that significantly changed the SoC, this observation is also true for this case even though we are just considering the battery capacity.\\
 In order to insure that the nanosatellite is doing something worthwhile it is operating, we want to introduce the abstract \textit{profit} variable. A payload's profit signifies how much value it adds by executing it. Profit is not necessary expressed in currency, but could also reflect that experiment data have been collected or alike. This allows us to prioritise such that the more profitable(valuable) payloads are executed more often than the not so profitable.
 %It does not help if the battery will last for 15 years if nothing useful is done in those years!
 
-% constraints (windows and dependencies)
-\cite{gomx3} made the observation that some payloads should be dependant on other payloads. If one payload represents the task of collecting experiment data, the payload that is responsible for downloading the data to earth may only be executed after the completion of the aforementioned payload. It would be wasteful to schedule a payload that downloads data if no data have been collected! % jeg er kommet hertil
+% battery wear
+\cite{score_function} presented a battery lifetime scoring function that evaluated how much wear a SoC profile will have on a battery. One of their major points where that a great amount of wear can be avoided by performing shallow \gls{dod} cycling. It is desirable for nanosatellite to not wear the battery too quickly as it will reduce the total capacity, which may complicate the process of producing a schedule that will not drain the battery below the safety threshold. The article did also mention other aspects which may influence the battery lifetime such as dwelling at a certain SoC and the end of charge voltage which also affects the SoC. It would be beneficial to consider these aspects when producing the schedule, and finding a desirable ratio between payload utilisation and battery lifetime preservation.
 
-
-% schedule length 
-% The mission times to be considered for automatic scheduling span between 24
-%and 72 h. Longer durations are not of interest since orbit predictions are highly
-%accurate only for a time horizon of a handful of days, and because GomX?3 is
-%as a whole an experimental satellite, requiring periods of manual intervention.
-%However, even a 24 h schedule computation constitutes a challenge for plain
-%CORA, since the number of states grows prohibitively large.
-
-% Dynamic Scheduling
-
-The introduction presented this problem statement:\\
-\textit{How is it possible to produce a schedule that considers multiple requirements, and how is it possible to verify the robustness of such a schedule?}
-
-%In this chapter we will describe the process of making a system capable of constructing a schedule for nanosatellite. We will define and describe an input-language, construct a model capable of creating said model, and explain relevant theory for creating such system.
+The schedule we will produce will need to consider the requirements that was already made by the experience paper, staying above a SoC threshold, payload efficiency, payload windows etc. and the new ones we propose: monitoring of profit, reducing battery wear and being robust. These requirements results in the problem statement we presented in the introdduction:\\
+\textit{How is it possible to produce a schedule that considers multiple requirements, and how is it possible to verify the robustness of such a schedule?}\\
+We will try and answer this by modelling the nanosatellite such that the model is capable of considering all of these requirements, and then producing a schedule which can be verified in regards to its robustness.
