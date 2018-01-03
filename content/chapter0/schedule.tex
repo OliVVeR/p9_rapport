@@ -1,21 +1,12 @@
 \section{Schedule} \label{sec:schedule}
-In order to produce a schedule we will first have to define what is considered a viable schedule. Different considerations goes into this, most impotently what is the requirements for a reliable schedule? The produced schedule should be correct and validated according to the specifications given as input.
+A schedule is a set of instruction of when each payload is suppose to start and end, furthermore we define a valid schedule to obey the following criteria (i) payloads should only run when dependencies are uphold (ii) payloads with windows should only run during their windows (iii) during the schedule battery levels may not go below the specified threshold at any point during the entire schedule.
 
-First we will discuss what type of real-time the satellite is considered to be. It may be considered soft real-time, which means that if some deadlines fails it is not mission critical, it should however not be a common occurrence. In favour of the system being hard real-time is that the satellite can only perform some payloads within certain windows of time, such as communicating with earth, and must at that point be available to receive new schedules. \textit{As there are both soft- and hard real-time aspects to the satellite mission, it will be considered weakly hard real-time. This means that some deadlines must be upheld, where as others are not of the same level of importance.}
+Since a schedule has a concept of time it is relevant to discuss the type of real-time category the schedule are in.
+Three categories exist within real-time systems, hard, firm, and soft. Hard defines that if a payload exceed its deadline it will have catastrophic consequence or system failure. Firm will have no critical consequence but the data gathered by the payload will be of no value if it go over its deadline. Lastly soft will diminish is results the longer it misses its deadline. 
+
+Our schedule is either firm or soft depending on how we tend to interoperate the above definition. Let say we need to do two payloads that each transmit data to earth and give some unforeseen consequences only one of the payload are able to be executed within time, that leaves the nanosatellite with some data that it would have otherwise send. So given this the nanosatellite could either save the old data and generate the remaining data to be able to send two payloads at the next window. This can be categories as soft real-time because the data is still relevant when the next window is met. The other case is to erase the old data and generate entirely new data. Given that we are unable to adjust when he schedule is running on the nanosatellite the last case is much more likely, this would result in the old data being of zero value and is therefore categorized as firm real-time.  
 
 The schedule will need to be robust, meaning being capable of handling errors, such as; the satellite will sometimes have to restart at unforeseen times, or maybe the moon blocks the sun and the battery would therefore not recharge as much as expected. This may cause the satellite to fall behind schedule and would in some way need to compensate for this.
-The battery level will have to be considered at all times, when producing and validating the schedule, and may never fall below a specified level, as it results in the satellite entering a safe mode where only the most necessary processes are allowed.
-Therefore the schedule must accommodate this in a way such that there are no risk of the power level ever falling below the specified level.
-
-A schedule is considered viable if it upholds the following criteria
-\begin{enumerate}
-	\item Battery level must at all times be above a certain level
-	\item Schedule must give instructions from start to end
-	\item Schedule must be optimal in regards to profit, while upholding other requirements such as battery level
-\end{enumerate}
-The first requirement will be referred to as a threshold and must be specified by the user during configuration.\\
-The second requirement is there to allow the user to inspect every single step of the schedule, from start to end.\\ 
-The goal of the third requirement is make sure that the nanosatellite are doing something worthwhile. This is why we introduce the profit aspect which should reflect actions that provides value, such as collecting data.
 
 % Weakly hard
 % http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=919277

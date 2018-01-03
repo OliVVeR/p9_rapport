@@ -1,5 +1,8 @@
 \section{Improvements and Additions}
-In this section we will present the improvements we believe will be beneficial when producing a schedule. % to short? \Anders
+In this section we will present the improvements we believe will be beneficial when producing a schedule. % To short? \Anders
+% Have we considered other improvments and additions? \Jacob
+% If yes, why were they not included in here? \Jacob
+\jfx{Hvorfor har vi valgt lige præcis at kigge på disse ting?}
 
 % Dynamic Scheduling
 \cite{gomx3} wanted their schedule to be dynamic in the sense that the prices should be updated based on the schedule produces so far. This is a limitation in UPPAAL \gls {cora} that they wanted to sidestep, which they did by dividing their schedule into multiple disjointed subintervals. They would then carry over the state of the model from one subinterval to the next and then update the prices, or costs, based on the state. They noted that this was a trade-off between optimality and being dynamic because it made the schedule more greedy. We believe it is possible to avoid this solution of creating multiple schedules that has to be conjoined, while still being able to choose between payloads based on the state. %\afx{refernce til hvor vi har vores losning på dette. (vores brug af dpendencies)}
