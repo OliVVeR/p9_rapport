@@ -20,30 +20,33 @@ The decision for whether or not to cancel a payload in regards to its deadline g
 \textbf{Dependencies} contains a list of other payloads which the current payload is waiting for to be completed. A payload may only be executed if all payloads expressed in its dependencies have previously been activated. The user may specify logic "or" to signify that just one of they payloads is needed to complete before the dependency is fulfilled.
 %type a $|$ which means logic "or" or the can type $\&$ which means logic "and".\\
 %The user can set parentheses to
+
 Some payloads can only be executed in certain time \textbf{widows}, such as when they are above the communication station on earth.
 This is why we have added the Window variable which restricts when the payload can be executed as it may only happen within the window. The window is specified by a range which goes from 0 to orbit time. They user may also not specify a window in which case it as allowed to be executed at any given time.
+
+In addition we have added the concept of \textbf{MaxRuns} which indicates the amount of times each payload can be executed before the count is reset. This is in order to avoid running the same payload for the duration of the schedule as soon as its dependencies are fulfilled.
 \begin{figure}[H]
 \begin{lstlisting}[caption={An example of how five payloads can be defined}, label=lst:csv, language=text]
-Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window
-Slew,	2-5,	10,		1,		85,			-1,			-1
-L1,		90-90,	20,		5,		120,		-1,			-1
-L2,		90-90,	20,		5,		120,		-1,			-1
-X,		15-15,	10,		3,		30,			L1|L2,		45-60
-UHF,	15-15,	15,		1,		45,			-1,			20-65
+Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window,MaxRuns
+Slew,	2-5,	10,		1,		85,			-1,			-1,		3
+L1,		90-90,	20,		5,		120,		-1,			-1,		3
+L2,		90-90,	20,		5,		120,		-1,			-1,		2
+X,		15-15,	10,		3,		30,			L1|L2,		45-60,	2
+UHF,	15-15,	15,		1,		45,			-1,			20-65,	1
 \end{lstlisting}
 \end{figure}
-
+\ofx{should we use an example that is actually supported? no L1|L2}
 \subsection{Configuration Specification} \label{subsec:init}
 The nanosatellite and its enviroment is specified by a configuration which consists of a list of variables and constants. The configuration is read from an INI file which we have provided an example of below in \cref{lst:ini}.
 The configuration is divided into three sections System, Cora, and SMC.\\
 The System specific variables describes the satellite and the time constraints.
 The variables are:
 \begin{itemize}
-	\item schedule_length
-	\item orbit_time
-	\item battery_capacity
-	\item idle_cost
-	\item safe_threshold
+	\item schedule\_length
+	\item orbit\_time
+	\item battery\_capacity
+	\item idle\_cost
+	\item safe\_threshold
 	\item soc
 \end{itemize}
 The \textbf{schedule\_length} defines how long the produced schedule should be, in minutes. \textbf{orbit\_time} defines how long it takes to complete one orbit, in minutes. The \textbf{battery\_capacity} is an constant that defines the maximum capacity of the on-board battery. We do not expect that the user defines every single operation that the satellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
@@ -58,9 +61,9 @@ This will result in a huge loss of potential profit as we are no longer able to 
 It is critical that the schedules we produce will never go below this threshold.\\
 We have four variables that are related to the \gls{smc} model where three of them is used in its battery model.
 \begin{itemize}
-	\item rec_rate
-	\item f_rate
-	\item ac_width
+	\item rec\_rate
+	\item f\_rate
+	\item ac\_width
 	\item certainty
 \end{itemize}
 \textbf{rec\_rate} defines the recharge rate when the satellite goes trough insolation, such that the value is added to the battery's capacity every minute.
