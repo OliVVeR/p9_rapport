@@ -4,7 +4,7 @@ The \gls{cora} model takes a set of tasks with some rules and constrains in orde
 
 
 \subsection*{Task}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -59,7 +59,7 @@ The \gls{cora} model takes a set of tasks with some rules and constrains in orde
 	\label{fig:cora_inso}
 \end{figure}
 \subsubsection*{Scheduler}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -85,7 +85,7 @@ The implementation of insolation and battery charge can be seen in \cref{fig:cor
 
 On line 10 the declaration for $increaseBattery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the $batteryCap$ go over its limit ($BatteryMax$) then is just assign $batteryCap$ to $BatteryMax$, else we add the recharge amount to $batteryCap$. lastly we reset the clock splitTime.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -120,7 +120,7 @@ On line 10 the declaration for $increaseBattery()$ is define, the purpose of thi
 	\label{fig:cora_inso}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{lstlisting}[language=my_c, caption={Declarations and function}, label=lst:insolation_code]
 // global declarations
 const int BatteryMax = 5400;
@@ -148,7 +148,7 @@ The way this is modeled have a few limitations, as previous said we only recharg
 \subsection*{Windows}
 Windows are 
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -188,7 +188,7 @@ Windows are
 	\label{fig:cora_inso}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{lstlisting}[language=my_c, caption={Declarations and function}, label=lst:insolation_code]
 //Parameters:
 const id_t id

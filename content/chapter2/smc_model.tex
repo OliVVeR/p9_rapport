@@ -1,5 +1,5 @@
 \section{SMC model} \label{sec:smc_model}
-After having produced a near optimal trace from the \gls{cora} model, it will be used to update a \gls{smc} model on which other relevant queries can be run.
+After having produced the best trace from the \gls{cora} model, we get a trace that contains descriptions of when different payloads are executed. These instruction is given to the smc model along with relevant information from the global config like battery settings.
 
 The \gls{smc} model is equipped with an implementation of \gls{kibam}\cref{sec:kibam}, in order to make a more accurate representation of the battery dis- or recharge. The \gls{smc} model preserves the solar template in order to allow it to charge during periods of insolation.
 
@@ -46,7 +46,7 @@ The advantages of running these queries is, that even though the runs in \gls{co
 
 \subsection*{Templates}
 \subsubsection*{Processor}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -113,7 +113,7 @@ The advantages of running these queries is, that even though the runs in \gls{co
 \end{figure}
 
 \subsubsection*{Insolation}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -138,7 +138,7 @@ The advantages of running these queries is, that even though the runs in \gls{co
 \end{figure}
 
 \subsubsection*{EnergySource}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -173,7 +173,7 @@ The advantages of running these queries is, that even though the runs in \gls{co
 \end{figure}
 
 \subsubsection*{Scheduler}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -205,7 +205,7 @@ The advantages of running these queries is, that even though the runs in \gls{co
 \end{figure}
 
 \subsubsection*{OrbitWindows}
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
