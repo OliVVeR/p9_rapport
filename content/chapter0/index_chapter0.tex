@@ -1,39 +1,6 @@
 \chapter{Problem Analysis} \label{cha:problem}
-*Introduction to chapter*
+In this chapter we will present the previous work that have been done in regards to the GomX-3 nanosatellite and then introduce the aspects we want to improve upon along with terminology within this context.
 
-\section{Problem Statement}
-We introduced the GomX-3 article in the introduction as the starting point for our project. They discuss the problem of resource management in regards to power consumption. They want to perform experiments and other missions when they are launching a nanosatellite and they want to do so as efficient as possible. Efficient in the sense that they want to maximize their payload utilisation while in-orbit. 
-
-% payload
-A payload is a piece of equipment or software which helps the satellite achieve its goal. For example, the GomX-3 nanosatellite wants to use its transmitters or software defined radio module payloads. When we are referring to a payload we will refer to the usage of it, so when we are talking about the software radio it is the action of using it we will model, the process of transmitting or receiving data. % fjern model delen
-
-% insolation
-GomSpace have several tools that assist them in producing a schedule for their nanosatellite, but some parts of the process is done by hand. This is a problem as it introduces a greater risk of human error in an environment where mistakes can be fatal for the missions. It is a highly complex task to manually plan the operations that the nanosatellite has to perform while still considering the battery capacity. The GomX-3 nanosatellite is equipped with solar panels which it uses to power its hardware and to charge its battery which it draws upon when it enters eclipse, as the panels may only generate power when exposed to the sun(insolation). The battery's capacity is a resource that has be tightly monitored as all of the nanosatellite's operations consumes power and it will not be able to perform any functions if it is depleted.\cite{gomx3}
-
-% robustness
-The article therefore presented a solution for producing schedules that are specifically tailored to maximise payload utilisation while still minimising the risk of battery depletion. We believe it is possible to improve upon their solution by introducing the 
-notion of robustness as there are uncertainties connected with how the satellite will behave and the environment it is operating in. We will explain what we understand by robustness in \cref{sec:schedule} \nameref{sec:schedule}.
-
-% worthwhile/profit
-The best way to preserve the battery capacity is to not execute any of the payloads, but this not a good idea as nothing useful is done, as pointed out in \textbf{Wognsen et al. 2015}\cite{score_function}. They identified that the battery lifetime would be extended if the nanosatellite would not execute any payloads that significantly changed the SoC, this observation is also true for this case even though we are just considering the battery capacity.\\
-In order to insure that the nanosatellite is doing something worthwhile it is operating, we want to introduce the abstract \textit{profit} variable. A payload's profit signifies how much value it adds by executing it. Profit is not necessary expressed in currency, but could also reflect that experiment data have been collected or alike. This allows us to prioritise such that the more profitable(valuable) payloads are executed more often than the not so profitable.
-%It does not help if the battery will last for 15 years if nothing useful is done in those years!
-
-% constraints (windows and dependencies)
-\cite{gomx3} made the observation that some payloads should be dependant on other payloads. If one payload represents the task of collecting experiment data, the payload that is responsible for downloading the data to earth may only be executed after the completion of the aforementioned payload. It would be wasteful to schedule a payload that downloads data if no data have been collected! % jeg er kommet hertil
-
-
-% schedule length 
-% The mission times to be considered for automatic scheduling span between 24
-%and 72 h. Longer durations are not of interest since orbit predictions are highly
-%accurate only for a time horizon of a handful of days, and because GomX?3 is
-%as a whole an experimental satellite, requiring periods of manual intervention.
-%However, even a 24 h schedule computation constitutes a challenge for plain
-%CORA, since the number of states grows prohibitively large.
-
-% Dynamic Scheduling
-
-The introduction presented this problem statement:\\
-\textit{How is it possible to produce a schedule that considers multiple requirements, and how is it possible to verify the robustness of such a schedule?}
-
-%In this chapter we will describe the process of making a system capable of constructing a schedule for nanosatellite. We will define and describe an input-language, construct a model capable of creating said model, and explain relevant theory for creating such system.
+\input{content/chapter0/the_gomx3_experience_article.tex}
+\input{content/chapter0/schedule.tex}
+\input{content/chapter0/improvements_and_additions.tex}
