@@ -3,7 +3,7 @@ UPPAAL \gls{smc} is one of the newer versions of UPPAAL, it works with statistic
 Mentioned in \cref{sec:upp_cora}, \gls{cora} only support linearly priced timed automata, \gls{smc} uses non-linear priced timed automata which makes it possible to implement \gls{kibam}, based on our information from \cref{sec:kibam} this will greatly improve our battery estimations. \gls{smc} looks similar to previous tools in UPPAAL in form of GUI, but it adds new functionality which will be showcased in the rest of this section, this will include probability and simulate queries and how the results of these queries can be interpreted and understood. \\
 Lets say we want to check what the probability for the system reaching a specific location. First we model the system as shown in \cref{fig:example}, which contains one initial and four other locations. The initial locations is committed, which means that time is not allowed to pass when we are in that location.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
@@ -61,13 +61,13 @@ Running the query in \cref{eq:q1} return the following probability range [0.1874
 
 Simulate was another feature introduced in \gls{smc}, it is used to run the modelled system a number of time and capture some values during simulation, to illustrate this a new model it needed, which can be found in \cref{fig:showcase01} along with its declarations in \cref{lst:showcase1_declarations}. Three clock are defined in this example, and a model that has two locations where it is possible to go from one location to the other when the clock t is between $[5-10]$. Depending on the location either \uppVar{x} or \uppVar{y} can increment with respectively rates 1 and 2.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{lstlisting}[language=my_c, caption={Declarations}, label=lst:showcase1_declarations]
 	clock x, y, t;
 	\end{lstlisting}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations

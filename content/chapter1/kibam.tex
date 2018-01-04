@@ -12,7 +12,7 @@ Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
-\begin{table}[]
+\begin{table}[H]
 	\centering
 	\scalebox{0.8}{
 	\begin{tabular}{|llllll|lllll|}
@@ -55,7 +55,7 @@ L=H(\frac{C}{IH})^k
 
 \cref{table:t-Peukert} showcases the estimations using Peukert. In most cases Peukert overestimate except for one instance in test T10, it underestimate with 3.17\%. It seems to become more accurate the smaller the amps are, with the outlines, T5 and T6 Similarly to \cref{table:t-Ideal}. One thing to notices is that for variable loads it still has a high mismatch compared to measured values, this is due to Peukerts model not taken recovery effect into account. But overall Peukert performance better than the Ideal model.
 
-\begin{table}[]
+\begin{table}[H]
 	\centering
 	\scalebox{0.8}{
 	\begin{tabular}{|llllll|lllll|}
@@ -86,7 +86,7 @@ T10 & 3.0 & 12690 & 12288 & -402 & -3.17\% & C10 & 142.7 & 148.8 & 6.1 & 4.27\% 
 
 \gls{kibam} uses two wells as an abstract concept to represent a battery. It consist of an available charge and a bound charge as shown in \cref{fig:kibam_wells}, c determines the ratio of the two wells based on the total capacity. Current can only be drawn from the available charge, when the available charges height $h_2$ is lower then bound charge height $h_1$, charge start o flow from bound charge to available charge until both wells are at equal height. The rate of this flow is determined by the value k, this simulate the recovery effect of the battery like previous models was not able to capture. To calculate $y{1}$ and $y{2}$ can be seen in \cref{eq:y1} and\cref{eq:y2} along with a short description of the variables used in these equations. 
 
-\begin{figure}
+\begin{figure}[H]
 	\center
 	\includegraphics[width=\textwidth/2]{graphics/kibam.jpg}
 	\caption{Displays the two wells of \gls{kibam}}
@@ -147,7 +147,7 @@ Looking at all the results for the three battery models, it show that Peukerts m
 	\item Peukert model - non-linear representation of the battery with no support of recovery effect
 	\item \gls{kibam} - abstract representation of the battery with support of recovery effect
 \end{itemize}
-Since CORA can't use \gls{kibam}, Peukert model will be the second best options. \afx{Vi mangler at forklarer hvorfor at CORA ikke kan bruge KiBaM. Forklar floats og ekspontielle ting}
+Since CORA can't use \gls{kibam} or Peukert model because \gls{cora} only support linearly priced automata and only natural numbers. The Ideal model will have to suffice.
 
 %Dualfoil model is based on the chemical proceses taking place in a battery, It is one of the most accruate models in the field. But the downside to this model is its complexity. It requires more than 50 parameters related to the battery properties to be set, and it uses six non-linear differential equations. Given the large set of parameters makes it difficult to configure corretly and in most cases often used purely as a comparison against other models.
 

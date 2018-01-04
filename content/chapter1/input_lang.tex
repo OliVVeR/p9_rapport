@@ -39,11 +39,11 @@ The configuration is divided into three sections System, Cora, and SMC.\\
 The System specific variables describes the satellite and the time constraints.
 The variables are:
 \begin{itemize}
-	\item schedule_length
-	\item orbit_time
-	\item battery_capacity
-	\item idle_cost
-	\item safe_threshold
+	\item schedule\_length
+	\item orbit\_time
+	\item battery\_capacity
+	\item idle\_cost
+	\item safe\_threshold
 	\item soc
 \end{itemize}
 The \textbf{schedule\_length} defines how long the produced schedule should be, in minutes. \textbf{orbit\_time} defines how long it takes to complete one orbit, in minutes. The \textbf{battery\_capacity} is an constant that defines the maximum capacity of the on-board battery. We do not expect that the user defines every single operation that the satellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
@@ -58,9 +58,9 @@ This will result in a huge loss of potential profit as we are no longer able to 
 It is critical that the schedules we produce will never go below this threshold.\\
 We have four variables that are related to the \gls{smc} model where three of them is used in its battery model.
 \begin{itemize}
-	\item rec_rate
-	\item f_rate
-	\item ac_width
+	\item rec\_rate
+	\item f\_rate
+	\item ac\_width
 	\item certainty
 \end{itemize}
 \textbf{rec\_rate} defines the recharge rate when the satellite goes trough insolation, such that the value is added to the battery's capacity every minute.
