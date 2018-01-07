@@ -1,43 +1,41 @@
 \section{Reading the Input} \label{sec:read_input}
-In order to model the payloads and environment, we will need some information from the user. The payloads are described through a CSV file where the dimensions represents the variables we will consider when producing the schedule. The environment, the satellites properties, and the robustness parameters are all described in a configuration file.\\
-We have filled out both files to provide examples of how to use them. It is expected that the user changes all of the variables to represent their system.
+In order to model the payloads and environment, we will need some information from the user. The payloads are described through an input file where the dimensions represents the variables which will be used when producing the schedule. The other properties related to the nanosatellite, is described in a configuration file.\\
+We have filled out both files to provide examples of how to use them. It is expected that the user sets all of the variables in order to represent their system as closely as possible.
 
 \subsection{Payload Specification} \label{subsec:csv}
-The payloads are defined by seven variables and are defined in a CSV file. An example of a CSV file with five payloads can be seen in \cref{lst:csv}. These payloads are based on those from the GomX-3 nanosatellite\cite{gomx3}.\\
-The seven variables are name, time, energy, profit, deadline, dependencies, and window.\\
-\textbf{Name} should indicate what the payload represents. When being modelled a payloads name will be translated into a number. The numeric name will also be used when it is referenced in the produced schedule. The first defined payload will be number zero and the n'th payload will be named n-1.\\
+The payloads are defined by eight variables and are defined in a CSV file. An example of this file with five payloads can be seen in \cref{lst:csv}. These payloads are based on those from the GomX-3 nanosatellite\cite{gomx3}.\\
+The eight variables are name, time, energy, profit, deadline, dependencies, window, and maximum runs.\\
+\textbf{Name} should indicate what the payload represents. When being modelled a payloads name will be translated into a number in range $0 to N-1 | where N is the amount of payloads$. The numeric name will also be used when it is referenced in the produced schedule.\\
 \textbf{time} specifies how much time, in minutes, it will take to complete the payload. It is defined by a range in order to allow for uncertainty in regards to the timing of the payloads. It is valid to specify a number that is higher than the orbit duration, but a time may not be below 0.\\
 \textbf{Energy} specifies how high a load, in mAh, the payload applies on the battery every minute it is running.\\
 %The total load over the duration of one payload can therefore be calculated by multiplying energy with time.
-\textbf{Profit} is expressed within a range from 1 to 5, which signifies how valuable or profitable it is to complete a payload.
-1 being the least profitable and 5 being the most.
-In the example from below, L1 and L2 represents the use of the L-Band transmitter that the GomX-3 nanosatellite use to communicate with other satellites, which allows it to collect valuable data. Which is why it has been given a 5 in profit as it is the most profitable payload. The first payload Slew represents the action of slewing the satellite. This does not directly generate any profit for the satellite as no data is gathered. The accumulated profit will be monitored when producing a schedule making it possible to manually filter out schedules that results in a lower total profit over its duration.\\
+\textbf{Profit} is expressed within a range from 1 to 5, which signifies how valuable or profitable it is to complete a payload. 1 being the least profitable and 5 being the most.
+In the example from below, L1 and L2 represents the use of the L-Band transmitter that the GomX-3 nanosatellite use to communicate with other satellites, which allows it to collect valuable data. Which is why it has been given a profit of 5 as it is the most profitable payload. The first payload Slew represents the action of slewing the satellite. This does not directly generate any profit for the satellite as no data is gathered. The accumulated profit will be monitored when producing a schedule making it possible to manually filter out schedules that results in a lower total profit over its duration.\\
 \textbf{Deadline} is a positive integer and is used to cancel payloads which are delayed too much.
-The minimum value is the maximum execution time time and the maximum is undefined.
+The minimum value for the deadline is that of the maximum execution time and the maximum is undefined.
 The scheduler may chose to wait before executing a payload and we can therefore risk that it is no longer relevant to execute the next payload in the queue.
-The decision for whether or not to cancel a payload in regards to its deadline goes as follows: \textit{if the time we have spent waiting for the next payload to start plus the time it takes to complete the payload, exceeds the deadline; then cancel}. We want make sure that we only start payloads that are guaranteed to finish within their deadline\\
+The decision for whether or not to cancel a payload in regards to its deadline goes as follows: \textit{if the time we have spent waiting for the next payload to start plus the time it takes to complete the payload, exceeds the deadline; then cancel}. We want to make sure that we only start payloads that are guaranteed to finish within their deadline\\
 %waited\_time + execute\_time > Deadline \longrightarrow cancel\\
-\textbf{Dependencies} contains a list of other payloads which the current payload is waiting for to be completed. A payload may only be executed if all payloads expressed in its dependencies have previously been activated. The user may specify logic "or" to signify that just one of they payloads is needed to complete before the dependency is fulfilled.
+\textbf{Dependencies} contains a list of other payloads which the current payload is waiting for to be completed. A payload may only be executed if all payloads expressed in its dependencies have previously been activated. The user may specify a dependency of multiple executions of another tasks.
 %type a $|$ which means logic "or" or the can type $\&$ which means logic "and".\\
 %The user can set parentheses to
 
 Some payloads can only be executed in certain time \textbf{widows}, such as when they are above the communication station on earth.
-This is why we have added the Window variable which restricts when the payload can be executed as it may only happen within the window. The window is specified by a range which goes from 0 to orbit time. They user may also not specify a window in which case it as allowed to be executed at any given time.
-
-In addition we have added the concept of \textbf{MaxRuns} which indicates the amount of times each payload can be executed before the count is reset. This is in order to avoid running the same payload for the duration of the schedule as soon as its dependencies are fulfilled.
+This is why we have added the Window variable which restricts when payloads can be executed as it may only happen within the window. The window is specified by a range which goes from 0 to orbit time. If a payload does not have an associated window it will be allowed to run at any given time, given its dependencies are fulfilled.
+In addition we have added the concept of \textbf{MaxRuns} which indicates the amount of times each payload can be executed before the count is reset. This is in order to avoid running the same payload for the duration of the schedule as soon as its dependencies are fulfilled. This will remain constant throughout the simulations, and all should be set to $1$ or higher. 
 \begin{figure}[H]
 \begin{lstlisting}[caption={An example of how five payloads can be defined}, label=lst:csv, language=text]
 Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window,MaxRuns
 Slew,	2-5,	10,		1,		85,			-1,			-1,		3
 L1,		90-90,	20,		5,		120,		-1,			-1,		3
 L2,		90-90,	20,		5,		120,		-1,			-1,		2
-X,		15-15,	10,		3,		30,			L1|L2,		45-60,	2
-UHF,	15-15,	15,		1,		45,			-1,			20-65,	1
+X,		15-15,	10,		3,		30,			0 2 2 0 0,	45-60,	2
+UHF,	15-15,	15,		1,		45,			0 0 0 0 1,	20-65,	1
 \end{lstlisting}
 \end{figure}
-\ofx{should we use an example that is actually supported? no L1|L2}
+
 \subsection{Configuration Specification} \label{subsec:init}
-The nanosatellite and its enviroment is specified by a configuration which consists of a list of variables and constants. The configuration is read from an INI file which we have provided an example of below in \cref{lst:ini}.
+The nanosatellite and its environment is specified by a configuration which consists of a list of variables and constants. The configuration is read from an INI file which we have provided an example of below in \cref{lst:ini}.
 The configuration is divided into three sections System, Cora, and SMC.\\
 The System specific variables describes the satellite and the time constraints.
 The variables are:
