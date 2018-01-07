@@ -1,30 +1,37 @@
 \section{Cora Model} \label{sec:cora}
-The \gls{cora} model takes a set of tasks with some rules and constrains in order to generate a schedule that upholds the specifications. These are fed to the model from the csv file via our own translator.
+Based on the previous sections we have constructed a model in \gls{cora} capable of generating schedule\ofx{for the nanosatellite?}.The \gls{cora} model takes a set of payloads with some rules and constrains, as described in \cref{sec:read_input}, in order to generate a schedule that upholds the specifications. These are fed to the model from the via our own translator.\\
+The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and TaskWindow. These models different aspects of the nanosatellite and its environment, and are all described separately below.\\
+The templates Processor and Scheduler, are roughly based on those presented in \cite{gomx3}\ofx{name ref?}, but have been modified to fit our context as well as handle the added parameters.\\
+The model is made to optimise in regards to profit, see \cref{sec:read_input}, this is done as a result of \ofx{some ref to talk with Lars Alminde} telling that the battery level is rarely a problem. We therefore chose the approach where we found the schedule that would yield the highest profit, according to input specification, while having the batter level in mind.\\
+The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.
 
+\subsection*{Processor}
+First we will describe the Processor template as it is the base for the entire model. This models the nanosatellite in the sense that it is the one symbolising that the processor is active or idling, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}. \\
+The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so. If it is not allowed to execute the payload it will start idling until a change in its environment occurs, indicated by the synchronisation \textit{win?}. If the Scheduler indicates it is possible to execute the payload, it may be the case that the environment does not allow it, e.g. if the payload is dependant on a window which the nanosatellite is not currently in, the processor will will try to select another payload to run. If the Scheduler approves and all dependencies are fulfilled, the Processor will transition to Running where it will remain for the worst case execution time for the selected payload before it transitions to Wait where it will remain for the duration of the payloads deadline.
 
-
-\subsection*{Task}
+\ofx{update to match actual model - add invariants}
+\ofx{swap colour of update and sync}
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
 	%Locations
 	\node [init] (l0) {$\cup$};
-	\node [location] (l1) [right of=l0, xshift=40mm] {$\cup$};
+	\node [location] (l1) [right of=l0, xshift=30mm] {$\cup$};
 	\node [location] (l2) [right of=l1, xshift=40mm, label={
 		[align=left]right:
 		\textcolor{name}{ready}
 	}] {$\cup$};
-	\node [location] (l3) [below of=l1, yshift=-40mm, label={
+	\node [location] (l3) [below of=l1, yshift=-30mm, label={
 		[align=left]left:
 		\textcolor{name}{idle}
 	}] {};
-	\node [location] (l4) [below of=l2, yshift=-40mm, label={
+	\node [location] (l4) [below of=l2, yshift=-30mm, label={
 		[align=left]right:
 		\textcolor{name}{running}
 	}] {};
-	\node [location] (l5) [above of=l2, yshift=40mm] {C};
-	\node [location] (l6) [above of=l1, yshift=40mm] {};
-	\path[->,black] (l0) edge node [midway, below left][align=left]{\textcolor{update}{mayRun()}} (l1);
+	\node [location] (l5) [above of=l2, yshift=25mm] {C};
+	\node [location] (l6) [above of=l1, yshift=25mm] {};
+	\path[->,black] (l0) edge node [midway, below ][align=center]{\textcolor{update}{mayRun()}} (l1);
 	\path[->,black] (l1) edge node [midway, above][align=left]{
 		\textcolor{select}{a: int[0,N-1]}\\
 		\textcolor{guard}{runnableCount() > 0}\\
@@ -56,9 +63,14 @@ The \gls{cora} model takes a set of tasks with some rules and constrains in orde
 		\textcolor{sync}{run?}} (l1);
 	\end{tikzpicture}
 	\caption{Task template}
-	\label{fig:cora_inso}
+	\label{fig:cora_pro}
 \end{figure}
+
+
+
 \subsubsection*{Scheduler}
+Next we will describe the Scheduler. The scheduler always checks if there are enough remaining energy, when receiving the synchronisation \textit{ready?} it will answer back with \textit{run!}. If there are no more energy this template will result in a deadlock, and it was therefore not possible to generate a schedule.
+
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -145,9 +157,9 @@ void increaseBattery(){
 The way this is modeled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{inSun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be fixed with adding a third initial location, that has transitions to \uppLoc{inSun} and \uppLoc{outSun}, given a variables that will determine which location we should goto based on the actual position of the satellite, along with change the time of ins to capture where in the orbit the nanosatellite is. 
 
 
-\subsection*{Windows}
+\subsection*{TaskWindow}
 Windows are 
-
+\ofx{update figure}
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
