@@ -7,7 +7,7 @@ The model is made to always use the worst case execution time, meaning the time 
 
 \subsection*{Processor}
 First we will describe the Processor template as it is the base for the entire model. This models the nanosatellite in the sense that it is the one symbolising that the processor is active or idling, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}. \\
-The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so. If it is not allowed to execute the payload it will start idling until a change in its environment occurs, indicated by the synchronisation \uppSync{win?}. If the Scheduler indicates it is possible to execute the payload, it may be the case that the environment does not allow it, e.g. if the payload is dependant on a window which the nanosatellite is not currently in, the processor will will try to select another payload to run. If the Scheduler approves and all dependencies are fulfilled, the Processor will transition to \uppLoc{Running} where it will remain for the worst case execution time for the selected payload before it transitions to \uppLoc{Wait} where it will remain for the duration of the payloads deadline.
+The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so. If it is not allowed to execute the payload it will start idling until a change in its environment occurs, indicated by the synchronisation \uppSync{win?}. If the Scheduler indicates it is possible to execute the payload, it may be the case that the environment does not allow it, e.g. if the payload is dependant on a window which the nanosatellite is not currently in, the processor will try to select another payload to run. If the Scheduler approves and all dependencies are fulfilled, the Processor will transition to \uppLoc{Running} where it will remain for the worst case execution time for the selected payload before it transitions to \uppLoc{Wait} where it will remain for the duration of the payloads deadline.
 
 \ofx{update to match actual model - add invariants}
 \ofx{swap colour of update and sync}
@@ -76,7 +76,7 @@ The processor template synchronise with the scheduler every time it is ready to 
 
 
 \subsubsection*{Scheduler}
-Next we will describe the Scheduler. The scheduler always checks if there are enough remaining energy, when receiving the synchronisation \textit{ready?} it will answer back with \textit{run!}. If there are no more energy this template will result in a deadlock, and it was therefore not possible to generate a schedule.
+Next we will describe the Scheduler. The scheduler always checks if there are enough remaining energy, when receiving the synchronisation \uppSync{ready?} it will answer back with \uppSync{run!}. If there are no more energy this template will result in a deadlock, and it was therefore not possible to generate a schedule.
 
 \begin{figure}[H]
 	\centering
@@ -100,9 +100,11 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 
 
 \subsection*{Insolation}
-The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{inSun} and \uppLoc{outSun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{inSun} with the function $increaseBattery()$. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the $OrbitTime$ have passed, the model is forced to take the transition leading to \uppLoc{outSun}, due to the invariants on \uppLoc{inSun} location and guard on the transition. Afterward the next transition is available when ins clock is greater or equal to OrbitTime, in this transition is also were the clocks ins and $splitTime$ is reset.
+The implementation of insolation and battery charge can be seen in \cref{fig:cora_inso} with relevant declarations and functions in \cref{lst:insolation_code}. The model consist of two locations \uppLoc{inSun} and \uppLoc{outSun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}. To minimize the number of states generate through queries recharging will only happen eight times during an orbit. When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one orbit, the model is forced to transition to \uppLoc{outSun}, due to the invariants on \uppLoc{inSun}. 
+It will then remain in \uppLoc{outSun}, until the \uppVar{OrbitTime} is reached
+Afterwards the transition back to \uppLoc{inSun} is available when \uppClock{ins} reaches \uppVar{OrbitTime}.
 
-On line 10 the declaration for $increaseBattery()$ is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the $batteryCap$ go over its limit ($BatteryMax$) then is just assign $batteryCap$ to $BatteryMax$, else we add the recharge amount to $batteryCap$. lastly we reset the clock splitTime.
+On line 10 the declaration for \uppUpdate{increaseBattery()} is define, the purpose of this function is to add energy to the battery and make sure we cannot go over the maximum capacity defined on line 2, the if statement check if the potentially added recharge will make the battery capacity exceed the maximum battery capacity, if so it will be set to the maximum capacity, otherwise the recharge amount is added to \uppVar{batteryCap}.
 
 \begin{figure}[H]
 	\centering
@@ -161,8 +163,7 @@ void increaseBattery(){
 	\end{lstlisting}
 \end{figure}
 
-The way this is modeled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{inSun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be fixed with adding a third initial location, that has transitions to \uppLoc{inSun} and \uppLoc{outSun}, given a variables that will determine which location we should goto based on the actual position of the satellite, along with change the time of ins to capture where in the orbit the nanosatellite is. 
-
+The way this is modelled have a few limitations, as previous said we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules we are able to run. Secondly the model always assume we are starting in \uppLoc{inSun}, resulting in our schedule only being able to generate schedules for a nanosatellite when it matches our starting point. This could be corrected by adding new initial location, that have transitions to both \uppLoc{inSun} and \uppLoc{outSun}, given a variable that will determine which location there should be transitioned to based on the actual position of the satellite.
 
 \subsection*{TaskWindow}
 The last remaining template is the TaskWindow, this template have one instance for each window defined. TaskWindow is used for 
