@@ -20,14 +20,14 @@ The first
 		\textcolor{invariant}{t <= Payloads[Queue[payloadNumber]][2] - }\\
 		\textcolor{invariant}{Payloads[Queue[payloadNumber]][1]}
 	}] {};
-	\path[->,black] (l1) edge[bend left=50] node [midway, below][align=left]{
+	\path[->,black, thick] (l1) edge[bend left=50] node [midway, below][align=left]{
 		\textcolor{guard}{t == Payloads[Queue[payloadNumber]][2] - }\\
 		\textcolor{guard}{Payloads[Queue[payloadNumber]][1]}\\
 		\textcolor{sync}{skip!}
 	} (l0);
-	\path[->,black] (l0) edge node [midway, below][align=left]{
+	\path[->,black,thick] (l0) edge node [midway, below][align=left]{
 		\textcolor{sync}{ready?}} (l1);
-	\path[->,black] (l1) edge[bend right=45] node [midway, above][align=left]{
+	\path[->,black,thick] (l1) edge[bend right=45] node [midway, above][align=left]{
 		\textcolor{guard}{on \&\& mayRun() \&\&}\\
 		\textcolor{guard}{0.1 < a * exp(-k2*W)+}\\
 		\textcolor{guard}{(((a+b)*k2*c-(IPayload+IIdle))*(1.0-exp(-k2*W))}\\

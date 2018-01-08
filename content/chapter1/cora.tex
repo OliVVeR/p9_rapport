@@ -42,13 +42,13 @@ UPPAAL \acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed aut
 		\textcolor{invariant}{\&\& time <= 5}
 	}] {};
 	%Edges
-	\path[->,black] (l0) edge node [midway, left][align=left]{
+	\path[->,black, thick] (l0) edge node [midway, left][align=left]{
 			\textcolor{guard}{time >= 3}} (l1);
-	\path[->,black] (l0) edge node [midway, left][align=left]{
+	\path[->,black, thick] (l0) edge node [midway, left][align=left]{
 			\textcolor{guard}{time >= 3}} (l2);
-	\path[->,black] (l1) edge node [midway, right][align=left]{
+	\path[->,black, thick] (l1) edge node [midway, right][align=left]{
 			\textcolor{guard}{time >= 10}} (l3);
-	\path[->,black] (l2) edge node [midway, right][align=left]{
+	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
 			\textcolor{guard}{time >= 7}} (l3);
 	\end{tikzpicture}
 	\caption{Simple model made in \gls{cora}, which displays an increase in cost over time}
