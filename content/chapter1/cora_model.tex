@@ -38,34 +38,34 @@ The processor template synchronise with the scheduler every time it is ready to 
 		\textcolor{name}{Idle}\\
 		\textcolor{invariant}{cost' == 5}
 	}] {};
-	\path[->,black] (l0) edge node [midway, below ][align=center]{\textcolor{update}{mayRun()}} (l1);
-	\path[->,black] (l1) edge node [midway, above][align=left]{
+	\path[->,black, thick] (l0) edge node [midway, below ][align=center]{\textcolor{update}{mayRun()}} (l1);
+	\path[->,black, thick] (l1) edge node [midway, above][align=left]{
 		\textcolor{select}{a: int[0,N-1]}\\
 		\textcolor{guard}{runnableCount() > 0}\\
 		\textcolor{guard}{\&\& runnable[a] == 1}\\
 		\textcolor{sync}{ready!}\\
 		\textcolor{update}{mayRun(), active = a}} (l2);
-	\path[->,black] (l2) edge node [midway, right][align=left]{
+	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
 		\textcolor{guard}{runnable[active] == 1}\\
 		\textcolor{sync}{run?}\\
 		\textcolor{update}{updateBattery(), }\\
 		\textcolor{update}{subIdle(), calcCost()}} (l4);
-	\path[->,black] (l4) edge node [midway, below][align=center]{
+	\path[->,black, thick] (l4) edge node [midway, below][align=center]{
 		\textcolor{guard}{x >= taskTimes[active][0]}\\
 		\textcolor{update}{subIdle()}} (l3);
-	\path[->,black] (l3) edge node [midway, left][align=right]{
+	\path[->,black, thick] (l3) edge node [midway, left][align=right]{
 		\textcolor{guard}{x >= taskTimes[active][1]}\\
 		\textcolor{update}{reset(), dequeue(),}\\
 		\textcolor{update}{x = 0, mayRun()}} (l1);
-	\path[->,black] (l1) edge node [midway, left][align=left]{
+	\path[->,black, thick] (l1) edge node [midway, left][align=left]{
 		\textcolor{guard}{runnableCount() == 0}} (l6);
-	\path[->,black] (l6) edge node [midway, above][align=left]{
+	\path[->,black, thick] (l6) edge node [midway, above][align=left]{
 		\textcolor{sync}{win?}} (l5);
-	\path[->,black] (l5) edge node [midway, right][align=left]{
+	\path[->,black, thick] (l5) edge node [midway, right][align=left]{
 		\textcolor{select}{a: int[0,N-1]}\\
 		\textcolor{sync}{ready!}\\
 		\textcolor{update}{mayRun(), active = a}} (l2);
-	\path[->,black] (l2) edge[bend left=45] node [midway, below][align=center]{
+	\path[->,black, thick] (l2) edge[bend left=45] node [midway, below][align=center]{
 		\textcolor{guard}{runnable[active] == 0}\\
 		\textcolor{sync}{run?}} (l1);
 	\end{tikzpicture}
@@ -89,9 +89,9 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 		[align=left]right:
 		\textcolor{invariant}{checkBattery()}
 	}] {$\cup$};
-	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=center]{
+	\path[->,black, thick] (l0) edge[bend left=30] node [midway, above][align=center]{
 		\textcolor{sync}{ready?}} (l1);
-	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=center]{
+	\path[->,black, thick] (l1) edge[bend left=30] node [midway, below][align=center]{
 		\textcolor{sync}{run!}} (l0);
 	\end{tikzpicture}
 	\caption{Scheduler template}
@@ -125,15 +125,15 @@ On line 10 the declaration for \uppUpdate{increaseBattery()} is define, the purp
 		\textcolor{invariant}{ins <= OrbitTime}
 	}] {};
 	%Edges
-	\path[->,black] (l0) edge[bend left=30] node [midway, above][align=left]{
+	\path[->,black, thick] (l0) edge[bend left=30] node [midway, above][align=left]{
 			\textcolor{guard}{ins >= OrbitTime / 2}\\
 			\textcolor{guard}{\&\& chargeCount == 4}\\
 			\textcolor{update}{chargeCount = 0}} (l1);
-	\path[->,black] (l1) edge[bend left=30] node [midway, below][align=left]{
+	\path[->,black, thick] (l1) edge[bend left=30] node [midway, below][align=left]{
 			\textcolor{guard}{ins >= OrbitTime}\\
 			\textcolor{update}{ins := 0,}\\
 			\textcolor{update}{splitTime = 0}} (l0);
-	\path[->,black] (l0) edge [loop below] node [midway, below left][align=left]{
+	\path[->,black, thick] (l0) edge [loop below] node [midway, below left][align=left]{
 			\textcolor{guard}{splitTime >= OrbitTime/8}\\
 			\textcolor{update}{increaseBattery()}} (l0);
 	\end{tikzpicture}
@@ -189,17 +189,17 @@ The last remaining template is the TaskWindow, this template have one instance f
 		[align=left]right:
 		\textcolor{invariant}{wtime <= orbitTime}
 	}] {};
-	\path[->,black] (l0) edge node [midway, below][align=left]{
+	\path[->,black, thick] (l0) edge node [midway, below][align=left]{
 			\textcolor{update}{alwaysAvailable()}} (l1);
-	\path[->,black] (l1) edge node [midway, below][align=left]{
+	\path[->,black, thick] (l1) edge node [midway, below][align=left]{
 			\textcolor{guard}{wtime >= window[id][0]}\\
 			\textcolor{update}{setRunnable()}\\
 			\textcolor{sync}{win!}} (l2);
-	\path[->,black] (l1) edge node [midway, below left][align=left]{
+	\path[->,black, thick] (l1) edge node [midway, below left][align=left]{
 			\textcolor{guard}{wtime >= orbitTime}\\
 			\textcolor{update}{wtime = 0}\\
 			\textcolor{sync}{win!}} (l3);
-	\path[->,black] (l2) edge node [midway, below right][align=left]{
+	\path[->,black, thick] (l2) edge node [midway, below right][align=left]{
 			\textcolor{guard}{wtime >= window[id][1]}\\
 			\textcolor{update}{removeRunnable()}\\
 			\textcolor{sync}{win!}} (l3);
