@@ -5,6 +5,9 @@ Since \gls{smc} allows for non-linear priced automata along with rational number
 
 Our \gls{smc} model consist four templates plus some additional template instance depending on the number of windows described in the input format. For the moment there need to be at least one window defined in the input. This makes a total of at least 5 templates, which are Processor, Insolation, EnergySource, Scheduler, and OrbitWindows.
 
+The overall model is in large part taken from \cite{battery_aware_scheduling}. It covered the basics scheduling aspect combined with capturing battery levels. In the rest of this section we will go over each of the important changes and addition we made to the model, this include the concept of recharging, windows for payload, and dependencies for payloads. 
+
+The first 
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -24,9 +27,10 @@ Our \gls{smc} model consist four templates plus some additional template instanc
 		\textcolor{sync}{ready?}} (l1);
 	\path[->,black] (l1) edge[bend right=45] node [midway, above][align=left]{
 		\textcolor{guard}{on \&\& mayRun() \&\&}\\
-		\textcolor{guard}{FirmThreshold < a * exp(-k2*W)+}\\
+		\textcolor{guard}{0.1 < a * exp(-k2*W)+}\\
 		\textcolor{guard}{(((a+b)*k2*c-(IPayload+IIdle))*(1.0-exp(-k2*W))}\\
 		\textcolor{guard}{-(IPayload+IIdle)*c*(k2*W-1.0+exp(-k2*W)))/k2}\\
+		\textcolor{guard}{\&\& Threshold < checkB(a,b,totalTime)}\\
 		\textcolor{sync}{run!}\\
 		\textcolor{update}{runs[active] ++,}\\
 		\textcolor{update}{totalRuns[active] ++}
