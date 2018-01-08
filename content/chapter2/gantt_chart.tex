@@ -1,7 +1,7 @@
 \subsection{Gantt Chart} \label{subsec:gantt}
 A Gantt chart is generated based on the UPPAAL \gls{cora} schedule, an example of this can be seen in \cref{fig:gantt}. From the Gantt chart the user will be able to see when the individual payloads will be executed, additionally the insolation periods, and windows that specifies when some payloads are allowed to be executed, in is shown in the chart to help the user get a better understanding of the schedule and how the payloads are executed accordingly to their respective windows. On the right side of the chart, information about the different coloured bars, are shown, they represent the payloads, insolation periods, and windows. 
 
-We have decided to not represent the SoC on the chart, since the UPPAAL \gls{cora} model uses the linear battery model. We believe it may be miss leading as the battery model is imprecise. \afx{Det med at naevne at SMC heller ikke er korrekt virker trivielt. Det er jo klart siden at det er statistical model cheking. Se det udkommenterede for org text}
+We have decided to not represent the SoC on the chart, since the UPPAAL \gls{cora} model uses the linear battery model. We believe it may be miss leading as the battery model is imprecise.
 %Likewise the UPPAAL \gls{smc} model is not a one-to-one representation of the UPPAAL \gls{cora} schedule due to its potential difference in execution lengths it will also not be a good representation of the battery levels during the schedule if their are compared to the UPPAAL \gls{cora} schedule.
 
 \begin{figure}[!h]
