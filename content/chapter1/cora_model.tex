@@ -3,7 +3,13 @@ Based on the previous information gained during the previous sections we have co
 The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and TaskWindow. These models different aspects of the nanosatellite and its environment, and are all described separately below.\\
 The templates Processor and Scheduler, are roughly based on those presented in the GomX-3 article\cite{gomx3}, but have been modified to fit our context as well as handle the added parameters.\\
 The model is made to optimise in regards to profit, see \cref{sec:read_input}, this is done as a result of Lars Alminde from GomSpace, during a meeting expressing that the battery level is rarely a concern. We therefore chose the approach where we found the schedule that would yield the highest profit, according to input specification, while having the battery level in mind. As a result of this the model implements a linear battery model\\
-The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.
+The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.\\
+The only query run in the \gls{cora} model is the one seen in query \ref{eq:cora_q}. In this query \uppVar{t\_time} it the accumulated time, and \uppVar{ScheduleLength} is the desired length of the schedule. This query is run with the trace setting \textit{Best}, meaning it will find the schedule that results in the lowest \textit{cost}, i.e. the highest profit. 
+The result of this query is the schedule, and this is what will the \gls{smc} model will build upon.
+
+\begin{equation} \label{eq:cora_q}
+E<> t\_time == ScheduleLength
+\end{equation}
 
 \subsection*{Processor}
 First we will describe the Processor template as it is the base for the entire model. This models the nanosatellite in the sense that it is the one symbolising that the processor is active or idling, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}. \\
