@@ -1,44 +1,24 @@
-\chapter{Introduction}\label{cha:intro}
+\chapter{Introduction} \label{cha:intro}
 When creating a schedule for an embedded system that is sent into space, it is important that the schedule is correct according to the specified behaviour, as bad schedules may result in a depleted battery or other unwanted consequences. 
-Some\ofx{er det ikke alle?} satellites are only able to communicate with their control centres on earth at given time intervals and will therefore need a schedule that lasts at least until the next communication opportunity.
-There are many factors which needs to be considered for such a schedule, such as time, power, and battery wear. 
+Some satellites are only able to communicate with their control centres on earth at given time intervals and will therefore need a schedule that lasts at least until the next communication opportunity.
+There are many factors which need to be considered for such a schedule, such as time, power, and battery wear. 
 Additionally, the harsh environment of outer space may affect the device and cause it to crash or otherwise hinder its execution.
-This means the schedule have to be robust, as some unfavourable events may occur, such as a sudden need for a reboot which may cause the system to become delayed. If such an event occur it should be possible to correct for the delay.
+This means the schedule has to be robust, as some unfavourable events may occur, such as a sudden need for a reboot which may cause the system to become delayed. 
+If such an event occur it should be possible to correct for the delay.
 
-This project aims to accommodate this problem by providing a tool that can produce schedules for such systems and test the robustness of the schedules in order to calculate how confident the model is in its correctness.
+This project aims to accommodate this problem by providing a tool that can produce schedules for such systems and test the robustness of the schedules in order to calculate how confident the tool is in its correctness.
 
 \paragraph{Problem statement}
-\textit{How is it possible to produce a schedule that considers multiple requirements, and how is it possible to verify the robustness of such a schedule?}
+\textit{How is it possible to produce a schedule that consider multiple requirements, and how is it possible to verify the robustness of such a schedule?}
 
-Generating a schedule with respect to profit and energy consumption has already been done with the GomX-3 mission\cite{gomx3}. 
-Their solution was to generate a schedule, that uses orbit and power predictions as input for the scheduler, which was modelled in UPPAAL \gls{cora}.\\
-We have chosen their work as the starting point for our model, as we deemed many of their findings relevant for solving the problem.
+Generating a schedule with respect to profit and energy consumption has already been done with the GomX-3 mission\cite{gomx3}.
+Their solution were to generate a schedule, that uses orbit and power predictions as input for the scheduler, which was modelled in UPPAAL \gls{cora}.\\
+We have chosen their work as the starting point for our model, as we consider many of their findings relevant for solving the problem.
 
 %our goal
-Our goal for this project is to generate a validated schedule which is produced by analysing a model, which models the behaviour and battery of a nanosatellite. \\
-We will try to achieve this by creating a model in \gls{cora} which will take a file input which represents the environment, and the payloads which the user is trying to schedule.
-The schedule will be tested in regards to its robustness by the use of UPPAAL \gls{smc}, a tool for statistical simulation and verification. 
-When a schedule have been accepted it will be printed in a readable format, such that it can be inspected by the users. \\
-The process should be automated such that the only necessary input from the user is the specified file and, optionally, specifying some parameters. 
+Our goal for this project is to generate a validated schedule which is produced by analysing a model, which models the behaviour and battery of a nanosatellite.\\
+We will try to achieve this by creating a model in UPPAAL \gls{cora} which will take a input configuration that represent the environment, and the payloads the user is trying to schedule.
+The schedule will be tested in regards to its robustness by the use of UPPAAL \gls{smc}. %, a tool for statistical simulation and verification. 
+When a schedule have been accepted it will be printed in a readable format, such that it can be inspected by the users.\\
+The process should be automated such that the only necessary input from the user is the specified configuration.
 The solution should be generalised so it may be used in other embedded systems and not just nanosatellites.
-
-
-%Their scheduler incorporated a battery model which allowed them to monitor their power consumptions.
-%However, do to some limitations in \gls{cora}, the battery model they created were linear and did not provide an accurate enough depiction of the power consumption.
-%One problem they encountered was the large number of states when generating a schedule for 24 hours or more. 
-%To counter weight this, they added heuristics that would reduce the number of options each state had in some cases. 
-%They used a simple linear battery model that was integrated with the schedule generator, and the second one was an analytical model called kinetic battery model (KiBaM), which were used to validate candidate schedules. 
-%When a final schedule had been selected, a csv file was then generated with all the information about the schedule. 
-%The two most effective heuristics they used where "Force discard of schedules on depletion" and "Impose upper bound on discharging loads", the first one forces the schedule into a deadlock when the battery reaches a non positive state of charge, and the schedule is then discarded, the second one put limits on the amount of time a task that draws a lot of power can be executed\cite{gomx3}. 
-
-%Generate entire schedule vs segments of a schedule (pros and cons?)
-%Our approach is similar at the beginning, in which we require the engineer to define the input parameters and let \gls{cora} derive a schedule for us. But after that we purpose to construct a new model in \gls{smc} to verify the schedule also using KiBaM, but with the focus of detecting if a schedule will still be viable if one or several of the tasks goes over their estimated time. \gls{smc} can do probabilistic analyse on our model to estimate the percentage of which a schedule will succeed. The entire solution will be a black box so the engineers do not need have any knowledge about the UPPAAL tools. This tool is meant to be used from a command line, where they will be able to specify which parameters to optimize for, like profit, energy saving etc.
-
-
-%GomX-3 not inclucded: 
-% Chance of actual sucess if something goes wrong (task take longer than expected)
-% Instead of making one candicate schedule, produce a few more with enough varaity that the engineers can chose the plan that suits them the best.
-
-%Problem statement 1
-%How can a tool that allows engineers to more easily generate a schedule that fits their needs be developed, which can be configured and tweaked on a number of factors. to accommodate power level and other critical factors that are involved when operating a satellite in space, with minimal knowledge of PTA or similar models.
-%How can a tool that allows engineers to more easily generate a schedule, which can be configured and tweaked on a number of factors, to accommodate power level and other critical factors that are involved when operating a satellite in space, with minimal knowledge of PTA or similar models be developed.
