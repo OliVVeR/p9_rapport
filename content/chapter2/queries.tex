@@ -1,12 +1,15 @@
 \subsection{Queries}\label{sec:queries}
-In order to verify the generated schedule and output relevant data, we have included several queries which may be run in UPPAAL \gls{smc}. We want to verity that we do not fall below the battery threshold, and the payloads that are scheduled are actually executed. Additionally, we want to monitor different variables in order to present the user with all the relevant data we are able to extract.
+In order to verify the generated schedule and output relevant data, we have included several queries which can be run in UPPAAL \gls{smc}. We want to verity that we do not fall below the battery threshold, and the payloads that are scheduled are actually executed.\ofx{make sure there are other variables} Additionally, we want to monitor different variables in order to present the user with all the relevant data we are able to extract.\ofx{mention confidence}
 
 % impotant
-\begin{equation} \label{eq:smc2}
-	Pr\; [<=ScheduleLength] \; (<>\; a\ <\ a\ *(Threshold/100))
+\begin{equation} \label{eq:smc1}
+	Pr\; [<=ScheduleLength] \; (<>\; a\ <\ 0.1)
 \end{equation}
-Query \ref{eq:smc2} will result in a probability that reflects the risk of the battery going below the threshold. This threshold is specified in the configuration file from \cref{subsec:init} \nameref{subsec:init}. This is as previously mentioned a state which may not occur, as it would cause the nanosatellite to enter a safe mode where it is not possible to communicate with it.
+Query \ref{eq:smc2} will result in a probability that reflects the risk of the battery's available charge falling below $0.1$. We added this query as depletion of the available charge can result in scheduled payloads being skipped.
 
+\begin{equation} \label{eq:smc2}
+	Pr\; [<=ScheduleLength] \; (<>\; b\ <\ ((1-c)*C) * (ThresholdPercentage / 100)
+\end{equation}
 It is expected that battery usage in the \gls{smc} model differs from that in the \gls{cora} model as they use two different battery models, Ideal and \gls{kibam}. The usage may also vary because of the possible difference in time usage that the individual payloads takes to complete. The time it takes to complete one payload in \gls{cora} are constant but in \gls{smc}it may vary, as we want to model the uncertainty.
 
 We expect that we will use less energy in the \gls{smc} model because \gls{kibam} under estimates the energy consumption whereas the model used in \gls{cora} will overestimate. The \gls{smc} model is also guaranteed to use the same amount, or less, time to complete a payload than \gls{cora}. This is due to \gls{cora} model using the worst case time when executing the payloads.
