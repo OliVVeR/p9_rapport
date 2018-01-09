@@ -9,3 +9,7 @@ Battery Decay
 
 \subsection{SMC flaw}
 scheduler predict cost of the next payload based on a and b? but dose not take recharge into account or the waiting period of the payload has executed, so potentially it is possible for the battery to go under the threshold if the waiting period after the payload and the next one is enough to have idle energy cost make the battery go under the threshold,  
+
+\subsection{Improving Insolation}
+As mentioned in \cref{sec:cora} the model always assume an initial state of insolation, that the nanosatellite is in the sun. Resulting in our schedule only being able to generate schedules for the nanosatellite when it matches our starting point.
+This could be corrected by adding new initial location, that have transitions to both of the existing locations, given a variable that will determine which location there should be transitioned to based on the actual position of the satellite.
