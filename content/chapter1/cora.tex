@@ -1,5 +1,8 @@
 \section{UPPAAL CORA}\label{sec:upp_cora}
-UPPAAL \acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed automata to find optimal paths satisfying certain goals, based on lowest accumulated cost\cite{cs_cora}. Cost is a variable that can be only be interacted with through locations, where it is possible to define the incremental rate with which it will grow, with the passing of time. It allows \gls{cora} to prune traces, if two traces reach the same location where all variables for each of the traces are identical expect for the cost variable, the trace with the lowest cost will be kept to preserve memory. Due to the underlying structure of \gls{cora} it is only possible to do simple reachability checks, and does not allow for liveness checks such as deadlocks. Only best first search is support when using cost and cost is not allow to be used in an expression\ofx{tydeliggør dette}. Lastly \gls{cora} cannot guarantee termination unless the modelled system is acyclic and clocks are bound by invariants.
+UPPAAL \acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed automata to find optimal paths satisfying certain goals, based on lowest accumulated cost\cite{cs_cora}. Cost is a variable that can be only be interacted with through locations, where it is possible to define the incremental rate with which it will grow, with the passing of time. 
+Which means that if a location's rate is 5, and two time units passes, the cost will grow by 10. It allows \gls{cora} to prune traces, if two traces reach the same location where all variables for each of the traces are identical expect for the cost variable, the trace with the lowest cost will be kept to preserve memory. 
+Due to the underlying structure of \gls{cora} it is only possible to do reachability checks, and does not allow for liveness or deadlocks checks.
+Only best first search is supported when we are searching for the best trace. Lastly \gls{cora} cannot guarantee termination unless the modelled system is acyclic and clocks are bound by invariants.
 
 \Gls{cora} have been used in a range of problems regarding scheduling problems, the most related case for our problem is GomX-3 case, where they used \gls{cora} to generate a battery aware schedule for CubeSat satellite. Their solution takes a set of parameters to generate fractions of the entire schedules and, when all parts of the schedule is generated, they are assembled by appending them in a chronological order. Lastly, the acummulated schedule is tested with an external \gls{kibam} battery model.
 
@@ -62,7 +65,7 @@ In UPPAAL we can then run the query seen in \cref{eq:cora_get_c}, a simple query
 E<> Template.C
 \label{eq:cora_get_c}
 \end{align}
-This is beneficial as the optimal route may not always be the obvious one. We see in \cref{fig:cora_eks} that \uppLoc{B1} only have a cost of three per tic whereas \uppLoc{B2} have a cost of four per tic, however it is required to stay in \uppLoc{B1} for a longer period of time, actually causing the bottom route to become cheaper.
+This is beneficial as the optimal route may not always be what seems to be the obvious one. We see in \cref{fig:cora_eks} that \uppLoc{B1} only have a cost of three per tic whereas \uppLoc{B2} have a cost of four per tic, however it is required to stay in \uppLoc{B1} for a longer period of time, actually causing the bottom route to become cheaper.
 The model in \cref{fig:cora_eks} is of course a simple one,
 
 %This can be advantageous for modelling systems such as satellites where energy is an important and limited resource which can be represented by the cost. After running a query it is possible to extract a trace, which can be used to represent the generated schedule.
