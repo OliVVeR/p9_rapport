@@ -1,0 +1,88 @@
+\chapter{\gls{cora} models}\label{cp:cora_models}
+
+
+\subsection*{Insolation}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]above:
+		\textcolor{name}{inSun}
+	}, label={
+	[align=left]left:
+	\textcolor{invariant}{splitTime <= OrbitTime / 8}\\
+	\textcolor{invariant}{\&\& ins <= OrbitTime / 2}
+}] {};
+\node [location] (l1) [right of=l0, xshift=40mm, label={
+	[align=left]above:
+	\textcolor{name}{outSun}
+}, label={
+[align=left]right:
+\textcolor{invariant}{ins <= OrbitTime}
+}] {};
+%Edges
+\path[->,black, thick] (l0) edge[bend left=30] node [midway, above][align=left]{
+	\textcolor{guard}{ins >= OrbitTime / 2}\\
+	\textcolor{guard}{\&\& chargeCount == 4}\\
+	\textcolor{update}{chargeCount = 0}} (l1);
+\path[->,black, thick] (l1) edge[bend left=30] node [midway, below][align=left]{
+	\textcolor{guard}{ins >= OrbitTime}\\
+	\textcolor{update}{ins := 0,}\\
+	\textcolor{update}{splitTime = 0}} (l0);
+\path[->,black, thick] (l0) edge [loop below] node [midway, below left][align=left]{
+	\textcolor{guard}{splitTime >= OrbitTime/8}\\
+	\textcolor{update}{increaseBattery()}} (l0);
+\end{tikzpicture}
+\caption{Insolation template}
+\label{fig:cora_inso}
+\end{figure}
+\subsection*{TaskWindows}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) {C};
+	\node [location] (l1) [right of=l0, xshift=30mm, label={
+		[align=center]above:
+		\textcolor{name}{notIn}\\
+		\textcolor{invariant}{wtime <= window[id][0]}
+	}] {};
+	\node [location] (l2) [right of=l1, xshift=45mm, label={
+		[align=center]above:
+		\textcolor{name}{in}\\
+		\textcolor{invariant}{wtime <=}\\
+		\textcolor{invariant}{window[id][1]}
+	}] {};
+	\node [location] (l3) [right of=l1, xshift=20mm, yshift=-60mm, label={
+		[align=center]below:
+		\textcolor{invariant}{wtime <= orbitTime}
+	}] {};
+	\node [location] (l4) [right of=l2, xshift=45mm]{C};
+	\path[->,black, thick] (l0) edge node [midway, below][align=left]{
+		\textcolor{update}{alwaysAvailable()}} (l1);
+	\path[->,black, thick] (l1) edge node [midway, below][align=center]{
+		\textcolor{guard}{wtime >= window[id][0]}\\
+		\textcolor{update}{setRunnable()}\\
+		\textcolor{sync}{win!}} (l2);
+	\path[->,black, thick] (l3) edge node [midway, below left][align=right]{
+		\textcolor{guard}{wtime >= orbitTime}\\
+		\textcolor{update}{wtime = 0}\\
+		\textcolor{sync}{win!}} (l1);
+	\path[->,black, thick] (l2) edge node [midway, below right][align=left]{
+		\textcolor{guard}{wtime >= window[id][1]}\\
+		\textcolor{update}{removeRunnable()}\\
+		\textcolor{sync}{win!}} (l3);
+	\path[->,black, thick] (l2) edge node [midway, below][align=center]{
+		\textcolor{sync}{ready?}} (l4);
+	\path[->,black, thick] (l4) edge[bend left=30] node [midway, below][align=center]{
+		\textcolor{guard}{ins+TaskTimes[active][1]}\\
+		\textcolor{guard}{ >= Window[id][1]}\\
+		\textcolor{update}{runnable[active] = 0}}(l2);
+	\path[->,black, thick] (l4) edge[bend right=30] node [midway, above][align=center]{
+		\textcolor{guard}{ins+TaskTimes[active][1]}\\
+		\textcolor{guard}{<= Window[id][1]}}(l2);
+	\end{tikzpicture}
+	\caption{Window templates}
+	\label{fig:cora_window}
+\end{figure}
