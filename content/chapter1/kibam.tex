@@ -1,13 +1,13 @@
 \section{Battery Models} \label{sec:kibam}
-Part of the propose solution is to ensure that battery level are maintain at an expectable level, in order to do this we need some way of modelling a battery, this section will go over three different battery models to determine what drawbacks there may be when using a certain model. An important factor to consider when examining the battery models is the recovery effect, which can have large impact on the expected lifetime. Recovery effect happen after a battery has been discharged for a period of time, the amount of current applied to the battery effects the recovery effect along with the battery capacity. The performance of the different models will be compared to the actual measured of a lithium-ion battery, measured are taken from \cite{battery_lifetime_analysis}.
+Part of the proposed solution is to ensure that battery level are maintain at an expectable level, in order to do this we need some way of modelling a battery, this section will go over three different battery models to determine what drawbacks there may be when using certain battery models. An important factor to consider when examining the battery models is the recovery effect, which can have large impact on the expected lifetime. Recovery effect happen after a battery has been discharged for a period of time, the amount of current applied to the battery effects the recovery effect along with the battery capacity. The performance of the different models will be compared to the actual measured of a lithium-ion battery, measured are taken from \cite{battery_lifetime_analysis}, unfortunatly we are unable to obtain the specification for the lithium battery used in the paper as they are not listed in the paper.
 
-The Ideal model is very simplistic due to it only taking two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity relates to the batteries amount of amp-hours, and load current is the constant discharge on the battery in amps. The formal for this is shown in \cref{eq:bm}.
+The Ideal model is very simplistic due to it only having two variables to determine the batteries lifetime(L), capacity(C) and load current(I). Capacity relates to the batteries amount of amp-hours, and load current is the constant discharge on the battery in amps. The formal for this is shown in \cref{eq:bm}.
 
 \begin{equation}\label{eq:bm}
 L=C/I
 \end{equation}
 
-Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is divided into two parts, constant load and variable load, the column ``Meas, min'' show the actual measured readings of the lithium-ion battery under different loads. To the right the Ideal estimation are shown. In general the Ideal model overestimate the expected lifetime in all cases, shown in T1 the deviation from the actual measures differs by 28.58\%, a trend seems to appear in that lower amps often results in better predictions from the Ideal model with constant loads. Only T5 and T6 dose not apply to this, because T5 have a better prediction then T6 even though T5 has a higher load. During variable loads all cases overestimate by a substantial amount, the closes approximation is C5 with a 18.5\% overestimation. The data shows that the Ideal model does a poor job of estimating the actual lifetime of a battery, which is properly because the Ideal model assumes linear effect for lifetime estimation. Additionally for variables loads the Ideal model does not consider recovery effect of the battery which further misses the measured minutes. 
+Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is divided into two parts, constant load and variable load, the column ``Meas, min'' show the actual measured readings of the lithium-ion battery under different loads. To the right the Ideal estimation are shown. In general the Ideal model overestimate the expected lifetime in all cases, shown in T1 the deviation from the actual measures differs by 28.58\%, a trend seems to appear in that lower amps often results in better predictions from the Ideal model with constant loads. Only T5 and T6 dose not apply to this, because T5 have a better prediction then T6 even though T5 has a higher load. During variable loads all cases overestimate by a substantial amount, the closest approximation is C5 during variable loads with a 18.5\% overestimation. The data shows that the Ideal model does a poor job of estimating the actual lifetime of a battery, which is properly because the Ideal model assumes linear effect for lifetime estimation. Additionally for variables loads the Ideal model does not consider recovery effect of the battery which further deviate results from the measured values. 
 
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
@@ -41,13 +41,13 @@ Performance of the Ideal model can be seen in \cref{table:t-Ideal}. The table is
 	\label{table:t-Ideal}
 \end{table}
 
-Peukert Model introduces a few new variables in comparison to the Ideal model, like the previous we still want to estimate the expected lifetime, but to better represent the battery a non-linear model is needed. Peukert fixes this by introducing two new variables: discharge time(H) and Peukert Exponent(k), the formal can be see in \cref{eq:pm}. Both values k and h is special in the sense that it is only observable through examination of the battery, this is typically done by the manufacturer. H is the discharge time in hours and k is an exponent often be provided by the battery manufacturers.
+Peukert Model introduces a few new variables in comparison to the Ideal model, like the previous we still want to estimate the expected lifetime, but to better represent the battery a non-linear model is needed. Peukert fixes this by introducing two new variables: discharge time(H) and Peukert Exponent(k), the formal can be see in \cref{eq:pm}. Both values k and H is special in the sense that it is only observable through examination of the battery, this is typically done by the manufacturer. H is the rated discharge time in hours and k is an constant exponent often provided by the battery manufacturers.
 \begin{equation}\label{eq:pm}
 L=H(\frac{C}{IH})^k
 \end{equation}
 \begin{itemize}
 	\item L - lifetime in hours
-	\item H - discharge time in hours based on amp hours(AH)
+	\item H - rated discharge time in hours based on amp hours(AH)
 	\item C - capacity in AH
 	\item I - load current in amps
 	\item k - Peukert Exponent
