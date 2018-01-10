@@ -14,19 +14,25 @@ A possible solution would be to allow the user to chose a number within the orbi
 
 \subsection{Celestial Bodies Obstructing Line of Sight to Sun}
 The most common celestial body to obstruct the nanosatellite from recharging is the moon with the exception of earth.
-It is questionable how much this would affect the generations of schedules. If it were to have an real thread, the moon and nanosatellite would need to have close to similar orbital rotation, which is unlikely. \afx{kom ind paa at mak kune lave en procent for hvor laenge at insolation vs eclipse vare}
+It is questionable how much this would affect the generations of schedules. If it were to have an real thread, the moon and nanosatellite would need to have close to similar orbital rotation, which is unlikely. We did not believe that this for a big problem for the schedule quality, but it made us consider other similar problems.\\
+We have made the assumption that the nanosatellite will spent an equal amount of time in insolation and eclipse. This will not always reflect the actual time distribution. We believe that this can be solved by introducing a constant in the configuration. The constant is a percentage that describes the time spent in insolation or eclipse. 
 
-\subsection{Oval orbits}
+\subsection{Oval Orbits}
 Our models assumes that an orbit is circular so it take equal time the travel a half orbit from any starting point in the orbit. This was not include to simplify the model and deemed unnecessary because the generated schedules only spanning between 12 to 24 hours. 
 
 \subsection{Payload Dependencies}
-Currently a payload can state if another payload needs to be execute before allow in first payload to be executed. But no rule in our project define if a payload can be execute multiple times after the depending payload have finished running. In other words this mean that we only allow one execution before the depending payload are required again.
+Currently a payload can state that is dependant on the successful execution of another payload. We have introduced dependencies in order to make it possible for the user do decide the order of the payloads, such that it is only possible to send data after it have been collected.\\
+This feature can be improved upon as there is not always a one-to-one relation between the number of times a payload should be executed. In the GomX-3 experience paper\cite{gomx3}, they observed than one L-band payload would require two X-band payloads in order to send all of the data that had been collected. Our models does not \textit{directly} allow for such a relation as the completion of the dependency unlocks the execution of dependant payload until a function locks it again. Currently, the locking function is only called when all payloads are no longer allowed to be executed because they have hit their MaxRuns limit. This is what we are refering to when we state that it is possibe to indirectly make this relationship, as the MaxRuns can be set such that the payloads that the payloads which is dependant upon, may only be executed once but the payloads with the dependency may be executed twice.\\
+This however is more of a workaround and we believe that an actually implementation of these dependencies would increase the expressiveness of the payload descriptions
 
 \subsection{Satellite Attitude \& Drag}
-Our program have no notion of satellite attitude, this is intentionally left out, because a payloads execution is defined by the user and could just include the time it takes to slew the nanosatellite in the payload description. By doing it this way we reduce the number of possible schedules that can exist. Some complications arise when going this direction, if slew is calculated in a payload that mean if another payload needs to face the same angle it also needs to add the time required to slew the nanosatellite. which is wasteful because they would be able to save time if the could slew and perform two payloads and then resume its original orientation.
+The attitude of the nanosatellite is not modelled, which results in the schedule not being as payload efficient as it could have been if we did consider the attitude. \textbf{Bisgaard et al. 2016}\cite{gomx3} declared that the X and L-band equipment is installed on opposite surfaces of the GomX-3 nanosatellite, which mean that only of them may be used at the time, as they have to be pointed towards earth. They accommodated this by implementing logic in their model for slewing the nanosatellite into place before the payload was executed. Our approach is to advice the user into including the possible time it takes to slew the satellite before a payload is executed. This has the effect that the worst case execution time of the payloads that are attitude dependent, is increased by that of time it takes to slew into place. Another effect is that the tool may produce a schedule were the nanosatellite has to slew back and forth multiple times in a row, instead of bundling payloads that needs the same orientation.\\
+Support for setting the nanosatellite's attitude, and specifying the dependence of it on payloads would solve this inefficiency.
+The positive effect of not considering this aspect is the reduced statespace in the UPPAAL \gls{cora} model. However, We do believe that it is worth testing how a schedule may be produced differently, if the feature were to be implemented.
+%Our tool have no notion of satellite attitude, this is intentionally left out, because a payloads execution is defined by the user and could just include the time it takes to slew the nanosatellite in the payload description. By doing it this way we reduce the number of possible schedules that can exist. Some complications arise when going this direction, if slew is calculated in a payload that mean if another payload needs to face the same angle it also needs to add the time required to slew the nanosatellite. which is wasteful because they would be able to save time if the could slew and perform two payloads and then resume its original orientation.
 
 \subsection{Battery Decay}
-Battery deteriorating over time is not directly supported in our solution, but since the user can theoretically calculate the actual capacity of the battery and use it as the input parameter for battery capacity, the can add that information to the model. Additionally battery decay is not something that our scheduler tries to minimize when generating a schedule. This decision was\afx{I need to write stuff here, please make it good.....}
+Battery deteriorating over time is not directly supported in our solution, but since the user can theoretically calculate the actual capacity of the battery and use it as the input parameter for battery capacity, the can add that information to the model. Additionally battery decay is not something that our scheduler tries to minimise when generating a schedule. This decision was\afx{I need to write stuff here, please make it good.....}
 
 \subsection{Schedule Shipping}
 %4.3 Schedule Shipping
@@ -41,3 +47,6 @@ Battery deteriorating over time is not directly supported in our solution, but s
 %Læg op til at man se på båndbredde da det også er en ressource
 %    lav tig når vi idler for at gøre dataen mindre
 %        komprimering, fjern afstikkere, udregn facit 
+
+
+\subsection{Restarts}
