@@ -34,5 +34,10 @@ scheduler predict cost of the next payload based on a and b? but dose not take r
 As mentioned in \cref{sec:cora} the model always assume an initial state of insolation, that the nanosatellite is in the sun. Resulting in our schedule only being able to generate schedules for the nanosatellite when it matches our starting point.
 This could be corrected by adding new initial location, that have transitions to both of the existing locations, given a variable that will determine which location there should be transitioned to based on the actual position of the satellite.
 
+
 \subsection{Zero Windows}
 As of now the models, both \gls{cora} and \gls{smc}, does not support there being no defined windows in the payload description as several variables are dependant on this. However, as windows is an important concept for our context we do not believe this to be a problem. Also there is a workaround by defining all payloads as having the window $0-OrbitTime$.
+
+\subsection{Battery Importance}
+During our meeting with Lars Alminde at GomSpace we discussed our approach as well as potential new approaches. They expressed that nanosatellites battery was not as important as we had initial assumed\cite{gom_space_conversation}. this may be a combination of multiple factors like increased battery capacity and more efficient solar panels. Given that our meeting with GomSpace was late in the project we decided to keep battery as an aspect of our problem statement.
+
