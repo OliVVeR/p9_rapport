@@ -105,7 +105,7 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 \end{figure}
 
 
-\subsection*{Insolation}
+\subsection*{Insolation} 
 The insolation template can be seen in \cref{fig:cora_inso}. The model consist of two locations \uppLoc{inSun} and \uppLoc{outSun} to ensure that the nanosatellite can only recharge when it has a clear line of sight to the sun. The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}. This is done a four times per orbit in order to minimize the state space. When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one orbit, the model is forced to transition to \uppLoc{outSun}.
 A figure of this template can be seen in \cref{cp:cora_models}.
 
