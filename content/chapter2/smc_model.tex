@@ -13,7 +13,7 @@ The bases of these template are based of \cite{battery_aware_scheduling}, which 
 	\centering
 	\begin{tikzpicture}
 	%Locations
-	\node [init] (l0) {$\cup$};
+	\node [init] (l0) [label={[align=left]above:\textcolor{name}{Init}}] {$\cup$};
 	\node [location] (l1) [right of=l0, xshift=40mm, label={
 		[align=left]above:
 		\textcolor{name}{Wait}},
@@ -52,11 +52,12 @@ The bases of these template are based of \cite{battery_aware_scheduling}, which 
 		\textcolor{update}{x := 0,}\\
 		\textcolor{update}{setActive(),}\\
 		\textcolor{update}{enqueue()}\\
-		\textcolor{update}{earnings += Profit[active]}} (l5);
-	\path[->,black, thick] (l4) edge node [midway, left][align=left]{
+		\textcolor{update}{earnings +=}\\
+		\textcolor{update}{Profit[active]}} (l5);
+	\path[->,black, thick] (l2) edge node [midway, left][align=left]{
 		\textcolor{sync}{skip?}\\
 		\textcolor{update}{payloadNumber ++,}\\
-		\textcolor{update}{skipped()}} (l2);
+		\textcolor{update}{skipped()}} (l4);
 	\path[->,black, thick] (l5) edge node [midway, below][align=left]{
 		\textcolor{guard}{x >= B}\\
 		\textcolor{update}{dequeue(), active = -1,}\\
@@ -97,8 +98,8 @@ When the location \uppLoc{Ready} from Processor is active, two transitions is av
 	\path[->,black,thick] (l1) edge[bend right=45] node [midway, above][align=left]{
 		\textcolor{guard}{on \&\& mayRun() \&\&}\\
 		\textcolor{guard}{0.1 < a * exp(-k2*W)+}\\
-		\textcolor{guard}{(((a+b)*k2*c-(IPayload+IIdle))*(1.0-exp(-k2*W))}\\
-		\textcolor{guard}{-(IPayload+IIdle)*c*(k2*W-1.0+exp(-k2*W)))/k2}\\
+		\textcolor{guard}{(((a+b)*k2*c-(Costs[active]+IIdle))*(1.0-exp(-k2*W))}\\
+		\textcolor{guard}{-(Costs[active]+IIdle)*c*(k2*W-1.0+exp(-k2*W)))/k2}\\
 		\textcolor{guard}{\&\& Threshold < checkB(a,b,totalTime)}\\
 		\textcolor{sync}{run!}\\
 		\textcolor{update}{runs[active] ++,}\\
