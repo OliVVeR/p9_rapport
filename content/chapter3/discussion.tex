@@ -33,3 +33,6 @@ scheduler predict cost of the next payload based on a and b? but dose not take r
 \subsection{Improving Insolation}
 As mentioned in \cref{sec:cora} the model always assume an initial state of insolation, that the nanosatellite is in the sun. Resulting in our schedule only being able to generate schedules for the nanosatellite when it matches our starting point.
 This could be corrected by adding new initial location, that have transitions to both of the existing locations, given a variable that will determine which location there should be transitioned to based on the actual position of the satellite.
+
+\subsection{Battery Importance}
+During our meeting with Lars Alminde at GomSpace we discussed our approach as well as potential new approaches. They expressed that nanosatellites battery was not as important as we had initial assumed\cite{gom_space_conversation}. this may be a combination of multiple factors like increased battery capacity and more efficient solar panels. Given that our meeting with GomSpace was late in the project we decided to keep battery as an aspect of our problem statement.
