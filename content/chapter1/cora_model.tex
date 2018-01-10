@@ -112,6 +112,36 @@ A figure of this template can be seen in \cref{cp:cora_models}.
 The way this is modelled have a few limitations, as previous mentioned we only recharge four times during insolation, this can in some case cause the scheduler to not make the best trace, but the reduced amount of spaces greatly improves the length of the schedules that can be generated. 
 Secondly the model always assume we are starting in \uppLoc{inSun}, resulting in our schedule only being able to generate schedules for the nanosatellite when it matches our starting point.
 
+22094.767
+21358.512
+23416.569
+24534.347
+24863.957
+25808.023
+26497.889
+27094.823
+26711.223
+26577.414
+min = 21358.512
+max = 27094.823
+avg = 24895.752
+
+39980.945
+39627.569
+46436.725
+64678.297
+44198.537
+45811.89
+49083.215
+49989.733
+50232.486
+51243.664
+min = 39627.569
+max = 64678.297
+avg = 48128.306
+
+idle in eclipse not subtracted
+
 \subsection*{TaskWindow}
 The last template is the TaskWindow, this template have one instance for each window defined. TaskWindow is used to model part of the nanosatellites environment in the sense that it updates whenever the nanosatellite enters and exits a window during its orbit in which some tasks can be performed. Windows is a important restriction when generating a schedule as some payloads may be pointless to execute in other time periods and would therefore be a waste of energy and time. When a chance to a window occurs it will make the synchronise on the channel \uppChan{win}, with the processor if it is in \uppLoc{Idle} indicating it may now be able to execute some payload. Otherwise it will just transition to the next location updating some global variables indicating if the nanosatellite is within the window or not. 
 A figure of this template can be seen in \cref{cp:cora_models}.
