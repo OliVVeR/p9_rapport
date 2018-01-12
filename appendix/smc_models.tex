@@ -1,7 +1,7 @@
-\chapter{\gls{smc} models}\label{cp:smc_models}
+\chapter{\gls{smc} models}\label{appendix:smc_models}
 \section{Global Declarations}
 \begin{figure}[H]
-\begin{lstlisting}[language=my_c, caption={Global Declarations}, label=lst:global_declarations_code0]
+\begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:global_declarations_code0]
 bool on = true;
 const int ScheduleLength = 360;
 const int N = 5;
@@ -40,7 +40,7 @@ int D = 0; //deadline
 \end{lstlisting}
 \end{figure}
 \begin{figure}[H]
-\begin{lstlisting}[language=my_c, caption={Global Declarations}, label=lst:global_declarations_code1, firstnumber=35]
+\begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:global_declarations_code1, firstnumber=35]
 // Restriction related
 const int Windows = 2;
 const int Window[Windows][2] = {{50, 80}, {10, 30}};
@@ -166,7 +166,6 @@ void skipped() { skips ++; }
 		\textcolor{update}{active = -1}} (l3);
 	\end{tikzpicture}
 	\caption{Processor template}
-	\label{appendix:smc_P}
 \end{figure}
 
 \section{Insolation}
@@ -196,7 +195,7 @@ clock charge;
 		\textcolor{update}{charge :=0}} (l0);
 	\end{tikzpicture}
 	\caption{Insolation template}
-	\label{appendix:smc_I}
+	\label{fig:smc_I}
 \end{figure}
 
 \section{EnergySource}
@@ -235,7 +234,7 @@ double c_C = ((1-c)*C)-10.0;
 		\textcolor{update}{on = false}} (l0);
 	\end{tikzpicture}
 	\caption{EnergySource template}
-	\label{appendix:smc_ES}
+	\label{fig:smc_ES}
 \end{figure}
 
 \section{Scheduler}
@@ -312,7 +311,6 @@ bool mayRun(){
 	} (l0);
 	\end{tikzpicture}
 	\caption{Scheduler template}
-	\label{appendix:smc_S}
 \end{figure}
 
 \section{OrbitWindows}
@@ -356,12 +354,12 @@ void setRunnable(){
 		\textcolor{update}{wtime = 0}
 	} (l0);
 	\end{tikzpicture}
-	\caption{OrbitWindows template}
-	\label{appendix:smc_OW}
+	\caption{Window templates}
+	\label{fig:smc_OW}
 \end{figure}
 \section{System Declarations}
 \begin{figure}[H]
-	\begin{lstlisting}[language=my_c, caption={System Declarations}, label=lst:system_declarations_code]
+	\begin{lstlisting}[language=my_c, caption={System declarations}, label=lst:system_declarations_code]
 system Processor, EnergySource, Scheduler, Insolation, OrbitalWindows;
 	\end{lstlisting}
 \end{figure}
