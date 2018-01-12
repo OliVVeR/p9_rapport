@@ -110,7 +110,7 @@ void skipped() { skips ++; }
 	\node [init] (l0) [label={[align=left]above:\textcolor{name}{Init}}] {$\cup$};
 	\node [location] (l1) [right of=l0, xshift=40mm, label={
 		[align=left]above:
-		\textcolor{name}{Wait}},
+		\textcolor{name}{Idle}},
 	label={
 		[align=center]below:
 		\textcolor{invariant}{totalTime <= RunStart[payloadNumber]}
@@ -125,7 +125,7 @@ void skipped() { skips ++; }
 	}] {};
 	\node [location] (l4) [below of=l1, yshift=-40mm, label={
 		[align=left]below:
-		\textcolor{name}{Idle}\\
+		\textcolor{name}{Wait}\\
 		\textcolor{invariant}{x <= D}
 	}] {};
 	\node [location] (l5) [below of=l2, yshift=-40mm, label={
