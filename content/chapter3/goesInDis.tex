@@ -12,11 +12,13 @@ deadlines is only a problem if changes are made to the \gls{cora} model, this is
 
 In \cref{sec:cora_ins} describing insolation a few inaccuracies to reduce state space and overall running time for producing a schedule. Two mechanics where tweaked to increase performance, dividing the number of updates made to the battery during an orbit, and insolation period lasting precisely half the orbit length 
 
-We made some estimation to determine the severity of reducing the number of updates to the battery during an orbit, that showed a big increase in time taking to produce the schedule and added inaccuracy which we concluded to be neglectable, another side effect that may occurred is if the orbit length and dividing the number of updates produces fractions it will result in the \gls{cora} model only updating the correct amount of times for an orbit.
+We made some estimation to determine the severity of reducing the number of updates to the battery during an orbit, that showed a big decrease in time taking to produce the schedule and an added inaccuracy which we concluded to be neglectable, another side effect that may occurred  if the orbit length divided with the number of updates produces a fractions, that will thus result in the \gls{cora} model not updating the correct amount of times for an orbit, due to \gls{cora} all decimals is rounded down the nearest integer.
+
+taskWindow in \cref{sec:cora_tw} also have a minor inaccuracy in the form of orbits for the nanosatellite is circular and not oval, this is 
 
 
 
 
 
 
- \cref{sec:cora_tw} 
+
