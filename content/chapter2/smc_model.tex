@@ -136,18 +136,32 @@ The OrbitWindows template can be found in \cref{fig:smc_OW}, with three location
 
 
 \subsection{Energy Source} \label{subsec:energy_src}
-During the entire schedule we need to keep track of the battery level, as previously mentioned this is done using \gls{kibam}. It is needed to calculate the values of \uppVar{a} and \uppVar{b}, and enable the battery model to recharge\cite{battery_aware_scheduling}. To add the capability of recharging a new location is added to ensure that \uppVar{b} can not exceed its maximum capacity, which is calculated based on the total capacity, so when the model entered the new location it would not add the values of recharge to b. Additionally a guard is set on the transition leading back to \uppLoc{Charging}, that says \uppVar{b} needs to be drained a small amount of power before going back to the initial location. This is done to prevent damaging the battery further. The final template can be found in \cref{appendix:smc_ES}.
+During the entire schedule we need to keep track of the battery level, as previously mentioned this is done using \gls{kibam}. It is needed to calculate the values of \uppVar{a} and \uppVar{b}, and enable the battery model to recharge\cite{battery_aware_scheduling}. To add the capability of recharging a new location is added to ensure that \uppVar{b} can not exceed its maximum capacity, which is calculated based on the total capacity, so when the model enter the new location it will not add the values of recharge to \uppVar{b}. Additionally a guard is set on the transition leading back to \uppLoc{Charging}, that says \uppVar{b} needs to drain a small amount of power, before going back to the initial location. This is done to prevent damaging the battery further. The final template can be found in \cref{appendix:smc_ES}.
 
-In \cref{sec:kibam} we described how \gls{kibam} worked as a function of time that calculate the value of a and b at time t, but given we store value a and b and calculate the change to a and b each time tick, more elegant implementation can be constructed\cite{battery_aware_scheduling}. 
-\uppVar{a} and \uppVar{b} are represented by clocks and each tick time passes updates the cost on clock \uppVar{a} and \uppVar{b}. This mean that we only need to find the actual increase and decrease that is going to be applied to a and b because we store the value of \uppVar{a} and \uppVar{b}. This is done by the following \gls{smc} invariants presented from the paper and slight modified to work with our restrictions. \uppInv{a' == -i+k*(b/(1-c)-a/c)}, and \uppInv{invariant}{b' == -k*(b/(1-c)-a/c)+(insolation * RechargeRate)}, \uppVar{i} is the current drawn from the battery, which is a combination of \uppVar{IIdle} and \uppVar{Costs[]} depending on where the model is, e.g. if the payload is currently being execute \uppVar{i} will be \uppVar{IIdle} plus \uppVar{Costs[payloadNumber]}. \uppVar{k} determines the flow rate from \uppVar{b} to \uppVar{b}, to check the imbalance between the \uppVar{a} and \uppVar{b} we divide with the ratio of the wells. 
+In \cref{sec:kibam} we described how \gls{kibam} worked as a function of time that calculate the available and bound wells at time t, but given we store these and calculate the change to them each time tick, a more elegant implementation can be constructed\cite{battery_aware_scheduling}. 
+In the model \uppVar{a} and \uppVar{b} are represented by clocks and each passing tick updates the cost on clock \uppVar{a} and \uppVar{b}. This mean that we only need to find the actual increase and decrease to them. This is done using the invariants seen in \cref{eq:calcA} and \cref{eq:calcB}\cite{battery_aware_scheduling}.
+\begin{equation}\label{eq:calcA}
+	\uppInv{a' == -i+k*(b/(1-c)-a/c)} 
+\end{equation}
+\begin{equation}\label{eq:calcB}
+	\uppInv{b' == -k*(b/(1-c)-a/c)+(insolation * RechargeRate)}
+\end{equation}
 
-So for example if we have a capacity of $3000$ and a ratio c of $0.2$ this mean that b will be $2400$ and a $600$, in this case if we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. But lets say a payload had just taken 100 from a in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from b would need to be added to a. The same is done for b but instead of multiplying by k we multiply by minus k so subtract from b value.
-\jfx{skal vi color kode i dette eksempel, jeg syntes ikke det er nødvendigt da det er et eksempel til at vise hvordan udregninger er og ikke har så meget med uppaal at gøre igen.}
+In \cref{eq:calcA} and \cref{eq:calcB} we see the constant $k$, \uppVar{k} determines the flow rate from \uppVar{b} to \uppVar{a}, to check the imbalance between the the two we divide with the ratio of the wells. Also we see the variable $i$, \uppVar{i} is the current which is always drawn from the battery, this is a combination of \uppVar{IIdle} and \uppVar{Costs[active]} depending on the status of the processor. If a payload is currently being executed $i$ is as seen in \cref{eq:calcI}.
 
-Last in the invariant for b is \uppVar{insolation} that is multiplied by \uppVar{RechargeRate}, when we are in an eclipse of the sun \uppVar{insolation} is false result in no recharge being added to \uppVar{b}.
+\begin{align}\label{eq:calcI}
+\begin{split}
+	If Processor.Running & \; \uppVar{i} = \uppVar{IIdle} + \uppVar{Costs[active]} \\
+	Otherwise	& \; \uppVar{i} = \uppVar{IIdle}
+\end{split}
+\end{align}
 
 
-With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on the Insolation tempalte found in \cref{fig:smc_I}, now we only need to consider what queries that should be performed in order to give the most usable data for the users.
+So for example if the battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. Consider a payload had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from bound would be needed to add to available. The same is done for the bound capacity but instead of multiplying by k we multiply by minus k resulting in the value that should be subtracted from the bound well.
+
+In \cref{eq:checkB} we also see the product of \uppVar{insolation} and \uppVar{RechargeRate} being added to \uppVar{b}, when we are in eclipse from the sun, \uppVar{insolation} is false resulting in no recharge being added to \uppVar{b}.
+
+With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on insolation, now we only need to consider what queries should be run in order to give the most usable data for the users.
 
 
 %Where the \gls{cora} model finds a trace, the \gls{smc} model will try and rerun the produced trace. This means the \gls{smc} model will execute tasks in the exact same order as the \gls{cora} model.% As this model implements KiBaM it gives a fairly accurate representation of the energy consumption. 
