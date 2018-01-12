@@ -24,7 +24,7 @@ Some payloads can only be executed in certain time \textbf{widows}, such as when
 This is why we have added the Window variable which restricts when payloads can be executed as it may only happen within the window. The window is specified by a range which goes from 0 to orbit time. If a payload does not have an associated window it will be allowed to run at any given time, given its dependencies are fulfilled.
 In addition we have added the concept of \textbf{MaxRuns} which indicates the amount of times each payload can be executed before the count is reset. This is in order to avoid running the same payload for the duration of the schedule as soon as its dependencies are fulfilled. This will remain constant throughout the simulations, and all should be set to $1$ or higher. 
 \begin{figure}[H]
-\begin{lstlisting}[caption={An example of how five payloads can be defined}, label=lst:csv, language=text]
+\begin{lstlisting}[caption={Example of how five payloads can be defined}, label=lst:csv, language=text]
 Name,	Time,	Energy,	Profit,	Deadline,	Dependencies,Window,MaxRuns
 Slew,	2-5,	10,		1,		85,			-1,			-1,		3
 L1,		90-90,	20,		5,		120,		-1,			-1,		3
@@ -69,7 +69,7 @@ We have four variables that are related to the \gls{smc} model where three of th
 The recovery effect will be described later in \cref{sec:kibam} \nameref{sec:kibam}, together with the \textbf{ac\_width} constant.
 The constant \textbf{certainty} specifies how certain we reauire that UPPAAL \glossary{smc} should be in its results. UPPAAL \gls{smc} is described in \cref{sec:smc} \nameref{sec:smc}.
 \begin{figure}[H]
-\begin{lstlisting}[caption={An example of how the environment can be defined}, label=lst:ini, language=text]
+\begin{lstlisting}[caption={Example of how the environment can be defined}, label=lst:ini, language=text]
 [SYSTEM]
 # System specific
 # schedule length in minutes
