@@ -1,7 +1,7 @@
 \chapter{\gls{smc} models}\label{cp:smc_models}
 \section{Global Declarations}
 \begin{figure}[H]
-\begin{lstlisting}[language=my_c, caption={Global Declarations}, label=lst:global_declarations_code0]
+\begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:global_declarations_code0]
 bool on = true;
 const int ScheduleLength = 360;
 const int N = 5;
@@ -40,7 +40,7 @@ int D = 0; //deadline
 \end{lstlisting}
 \end{figure}
 \begin{figure}[H]
-\begin{lstlisting}[language=my_c, caption={Global Declarations}, label=lst:global_declarations_code1, firstnumber=35]
+\begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:global_declarations_code1, firstnumber=35]
 // Restriction related
 const int Windows = 2;
 const int Window[Windows][2] = {{50, 80}, {10, 30}};
@@ -110,7 +110,7 @@ void skipped() { skips ++; }
 	\node [init] (l0) [label={[align=left]above:\textcolor{name}{Init}}] {$\cup$};
 	\node [location] (l1) [right of=l0, xshift=40mm, label={
 		[align=left]above:
-		\textcolor{name}{Wait}},
+		\textcolor{name}{Idle}},
 	label={
 		[align=center]below:
 		\textcolor{invariant}{totalTime <= RunStart[payloadNumber]}
@@ -125,7 +125,7 @@ void skipped() { skips ++; }
 	}] {};
 	\node [location] (l4) [below of=l1, yshift=-40mm, label={
 		[align=left]below:
-		\textcolor{name}{Idle}\\
+		\textcolor{name}{Wait}\\
 		\textcolor{invariant}{x <= D}
 	}] {};
 	\node [location] (l5) [below of=l2, yshift=-40mm, label={
@@ -356,12 +356,12 @@ void setRunnable(){
 		\textcolor{update}{wtime = 0}
 	} (l0);
 	\end{tikzpicture}
-	\caption{OrbitWindows template}
+	\caption{Window templates}
 	\label{appendix:smc_OW}
 \end{figure}
 \section{System Declarations}
 \begin{figure}[H]
-	\begin{lstlisting}[language=my_c, caption={System Declarations}, label=lst:system_declarations_code]
+	\begin{lstlisting}[language=my_c, caption={System declarations}, label=lst:system_declarations_code]
 system Processor, EnergySource, Scheduler, Insolation, OrbitalWindows;
 	\end{lstlisting}
 \end{figure}
