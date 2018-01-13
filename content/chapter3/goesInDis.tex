@@ -1,5 +1,7 @@
-\section{Evaluating inaccuracies and assumptions}
+\section{Inaccuracies and Assumptions}
 During our development of \gls{cora} and \gls{smc} model, we have made some decisions that may not always be in favour of realistically representing the state of the outside world. This section will go over each of the choices made to evaluate on the potential effect it can have when all of the factor are taking into consideration.
+
+Introducing the variable idle\_cost to our \nameref{subsec:init} \cref{subsec:init} could alleviate the computation time for producing a schedule in \gls{cora}. It is meant to reduce the number of payloads, by removing operational payloads that run frequently and adds no profit and distribute the cost evenly by the value idle\_cost.
 
 In \cref{sec:cora} we mention the need for priorities to indicate the profit for each of the payloads, the prioritisation can be set to a value between zero and five, five being the most important payload to execute in terms of profit. This dose not immediately impose any inaccuracies unless the user defines more than six payloads each with their distinct priority.
 We used an Ideal battery model given \gls{cora} restrictions, This will according to the observations made during \cref{sec:kibam} overestimate the battery compared to a real battery, which produces schedules that uses more energy than they have. The impact of this is mitigated with our \gls{smc} model having a more pessimistic battery model.
@@ -20,6 +22,8 @@ Modifications to the \gls{smc} model were also been done, described in \cref{sec
 
 To conclude on this we can divide the behaviours into two categories, "will", and "may" effect schedule. will includes battery models, worst payload running time, general insolation because these factors will always have an effect on the produced schedule. May on the other hand can be tweaked by the user to have no effect on the produced schedule, these are number of updates per orbit on the battery, five prioritisation limit on payloads, deadline on payloads.
 \jfx{Too short? What can we then say?}
+
+%Starting value from future work \cref{ssec:start_val}
 
 
 
