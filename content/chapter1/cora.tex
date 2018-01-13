@@ -1,4 +1,4 @@
-\section{UPPAAL CORA}\label{sec:upp_cora}
+\section{UPPAAL CORA} \label{sec:upp_cora}
 \acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed automata to find optimal paths satisfying certain goals, based on lowest accumulated cost\cite{cs_cora}. Due to the underlying structure of \gls{cora} it is only possible to do reachability checks, and does not allow for liveness or deadlocks checks. Lastly \gls{cora} cannot guarantee termination unless the modelled system is acyclic and clocks are bound by invariants\cite{uppaal_cora_download}.
 
 \gls{cora} can be configured in a set of different way depending on the selected options, one of the more useful options is best diagnostic trace. Which mean that \gls{cora} ensures that the path found with this option selected is the best path with respect to minimizing cost. The other alternative is to use some diagnostic trace option, this will not guarantee that the path found is to most optimal in respect to cost.

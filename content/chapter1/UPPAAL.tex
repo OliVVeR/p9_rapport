@@ -1,9 +1,42 @@
-\section{UPPAAL}
-When planning satellite missions it is important, that it can be guaranteed no major or unforeseen errors will occur. This may be done via extensive testing or by using a modelling tool capable of verifying, that the proposed actions are correct\cite{cs_smc}. Several such tools exists e.g. Kronos, and UPPAAL. For this project we will be using UPPAAL, specifically the version \gls{cora}, as it have been presented as the more relevant solutions for this project especially after it being used for the GomX3\cite{gomx3}.
+\section{UPPAAL} \label{sec:uppaal}
+We have chosen to use \acrlong{cora}\cite{cs_cora}\cite{cora_tutorial} and \acrlong{smc}\cite{smc_home}\cite{cs_smc} for producing and verifying the schedule. We will describe the common charismatics for both versions and then introduce them before their respective models are presented.
 
-Common for all versions of UPPAAL, is that; it has global decelerations, and templates. One model may have several templates, each with its own local decelerations. The template itself consists of one to many locations and edges, edges connects the locations and when activated indicates a chance in state.\\
-Edges may be decorated with; selects, guards, synchronizations, and updates. Selects are used for introducing new temporary variables. Guards are used to ensure that an edge is not activated prematurely. Synchronizations are used for activating multiple edges across templates simultaneously. Finally updates are used to change variable values, and to call functions written in declarations.\\
-Locations can be given a name, and an invariant. An invariant must always be evaluated to true e.g. if a location have the invariant $time <= 5$, at time five there will be a chance of state.\\
-Also common for the versions of UPPAAL, is that queries can be written in order to ensure sustain properties are upheld, such as; is some location reachable, and will time ever exceed some amount. To complement this there is an available simulator allowing the user to monitor the behaviour of their model, in the simulator the user can decide step by step what the model does, or generate a random trace.
+Common for all versions of UPPAAL, is that; it has global decelerations and templates. 
+An example template can be seen in \cref{fig:uppaal_eksample}.
+One model may have several templates, each with its own local decelerations. The template itself consists of one to many locations and edges that connects the locations.\\
+Edges may be decorated with; selects, guards, synchronizations, and updates. 
+Selects are used for introducing new temporary variables, and are coloured yellow.
+Guards are used to ensure that an edge is not activated prematurely, and are coloured green.
+Synchronizations are used for activating multiple edges across templates simultaneously, and are coloured light blue. If an exclamation mark is used, it indicates that it is calling a synchronisation, whereas a question mark is receiving one.
+Finally updates are used to change variable values, and to call functions written in declarations, and are coloured dark blue.\\
+Locations can be given a name and an invariant. An invariant must always be evaluated to true e.g. if a location have the invariant $time <= 5$, at time five there will be a chance of state. Invariants are coloured pink.\\
+Also common for the versions of UPPAAL, is that queries can be written in order to ensure sustain properties are upheld, such as; is some location reachable, and will time ever exceed some amount.
+\afx{beskriv initial, commited og urgent}
+\begin{figure}[h]
+   \centering
+   \begin{tikzpicture}
+   %Locations
+   \node [init, label = {
+           [align=left]above:
+           \textcolor{name}{location A}
+       }] (l0) {$\cup$};
+   \node [location] (l1) [right of=l0, xshift=30mm, label={
+        [align=right]above:
+       \textcolor{name}{Location B}\\
+       \textcolor{invariant}{x <= myLimit}}
+   ] {};
+   \node [location] (l2) [right of=l1, xshift=40mm, label={
+       [align=right]above:
+       \textcolor{name}{location C}
+   }] {};
 
-
+   \path[->,black, thick] (l0) edge node [midway, below ][align=center]{\textcolor{update}{mayRun()}} (l1);
+   \path[->,black, thick] (l1) edge node [midway, below][align=center]{
+   \textcolor{select}{a: int[0,N-1]}\\
+           \textcolor{guard}{everythingIsGood() == true}\\
+           \textcolor{sync}{ready!}\\
+           \textcolor{update}{changeValue(), myVar = a}} (l2);
+   \end{tikzpicture}
+   \caption{Example template}
+   \label{fig:uppaal_eksample}
+\end{figure}
