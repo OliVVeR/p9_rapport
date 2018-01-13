@@ -6,7 +6,8 @@ The model is made to optimise in regards to profit, see \cref{sec:read_input}, t
 The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.\\
 When setting the cost rate, see \cref{sec:upp_cora}, the user defined profit is used. However, when the user defines the profit, a large number represents that the payload is profitable to execute. In \gls{cora} when running a query where we extract the best diagnostic trace, it is defined as the one with the lowest cost. Because of this we have to calculate the cost as a function based on the defined profit, how this is done can be seen in \cref{lst:calcCost}.\\
 The basics of the function \uppVar{calcCost()} is, to calculate the cost rate by subtracting the defined profit from $5$. However, if the nanosatellite is within a window where another payload can only be performed the cost rate will be multiplied by two.\\
-
+\ofx{write about priority}
+\ofx{write requirements work as restrictions}
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Function calcCost(), used for calculating the cost rate}, label=lst:calcCost]
@@ -162,6 +163,6 @@ Additionally it is assumed that the nanosatellite are always starting in insolat
 
 \subsection*{TaskWindow}\label{ssec:cora_tw}
 The last template is the TaskWindow, this template have one instance for each window defined. TaskWindow is used to model part of the nanosatellites environment in the sense that it updates whenever the nanosatellite enters and exits a window during its orbit in which some tasks can be performed. Windows is a important restriction when generating a schedule as some payloads may be pointless to execute in other time periods and would therefore be a waste of energy and time. When a chance to a window occurs it will make the synchronise on the channel \uppChan{win}, with the processor if it is in \uppLoc{Idle} indicating it may now be able to execute some payload. Otherwise it will just transition to the next location updating some global variables indicating if the nanosatellite is within the window or not. 
-A figure of this template can be seen in \cref{cp:cora_models}.\\
+A figure of this template can be seen in \cref{fig:cora_window}.\\
 It is assumed that the orbit is constant for the duration of the schedule. This means that the defined windows are constant whereas they would more realistically chance during operation, e.g. at start time window(1) will occur at time 10 and end at time 30, then after 5 orbits the window may occur at time 11 to 31.
 

@@ -1,0 +1,17 @@
+\section{Conclusion} \label{sec:conclusion}
+In this section we conclude on the report and project to evaluate on the degree of which we fulfilled the problems discovered during \nameref{cha:problem} \cref{cha:problem} accumulating in the problem statement:
+
+\enquote{How is it possible to produce a schedule that consider multiple requirements, and how is it possible to verify the robustness of such a schedule}
+
+We successfully made a project which is capable of producing a schedule upholding the set of requirements presented in \cref{sec:imp_and_add}, this done using our \gls{cora} model along with the provided information about payloads and global settings. Furthermore we were able to check the robustness of the schedule utilising the \gls{smc} model to output statistical data about the schedule's performance. All of this is bundle into a complete solution to minimize or eliminate any knowledge of the tools used in our solution.
+
+Through our requirements the following items need to be examined in order to determine the degree with have achieved our goals: \\
+\textbf{\Gls{soc} threshold} - This is achieved, through our \gls{cora} model and \gls{smc} model, by deadlocking \gls{cora} traces going under specified \gls{soc} threshold. In our \gls{smc} model we calculate the expected cost of each payload before executing it, if we can not ensure that we stay above \gls{soc} threshold the payload will not be executed.\\
+\textbf{Payload efficiency} - \\
+\textbf{Payload windows} - \\
+\textbf{Maximising profit} - \\
+\textbf{Reducing battery wear} - Goal not reached \\
+\textbf{Robustness} - We described being able to consider, recharge fluctuations, sporadic restarts, and delay on the schedule in \nameref{sec:imp_and_add} \cref{sec:imp_and_add}. But we are in the current build only able to check the effects of delaying the schedule, this is therefore only be partially achieved.
+
+
+
