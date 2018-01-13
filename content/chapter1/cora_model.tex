@@ -6,7 +6,8 @@ The model is made to optimise in regards to profit, see \cref{sec:read_input}, t
 The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.\\
 When setting the cost rate, see \cref{sec:upp_cora}, the user defined profit is used. However, when the user defines the profit, a large number represents that the payload is profitable to execute. In \gls{cora} when running a query where we extract the best diagnostic trace, it is defined as the one with the lowest cost. Because of this we have to calculate the cost as a function based on the defined profit, how this is done can be seen in \cref{lst:calcCost}.\\
 The basics of the function \uppVar{calcCost()} is, to calculate the cost rate by subtracting the defined profit from $5$. However, if the nanosatellite is within a window where another payload can only be performed the cost rate will be multiplied by two.\\
-
+\ofx{write about priority}
+\ofx{write requirements work as restrictions}
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Function calcCost(), used for calculating the cost rate}, label=lst:calcCost]
