@@ -97,7 +97,7 @@ Simulate was another feature introduced in \gls{smc}, it is used to run the mode
 	\label{fig:showcase01}
 \end{figure}
 
-Simulations can now be done with the newly modelled system, the queries for these can be seen in \cref{eq:q2}, in these simulation it runs 100\gls{tu}, and the values specified to be captured during the simulations is \uppVar{x} and \uppVar{y}.
+Simulations can now be done with the newly modelled system, the queries for these can be seen in \cref{eq:q2}, in these simulation it runs 100time units, and the values specified to be captured during the simulations is \uppVar{x} and \uppVar{y}.
 
 \begin{equation}\label{eq:q2}
 simulate 1 [<= 100] {x,y}
@@ -106,17 +106,17 @@ simulate 5 [<= 100] {x,y}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/showcase01.png}
-	\caption{One simulations of the value of two variables \uppVar{x, y} over 100\gls{tu}}
+	\caption{One simulations of the value of two variables \uppVar{x, y} over 100time units}
 	\label{fig:sim01}
 \end{figure}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/showcase02.png}
-	\caption{Five simulations of the value of two variables \uppVar{x, y} over 100\gls{tu}}
+	\caption{Five simulations of the value of two variables \uppVar{x, y} over 100time units}
 	\label{fig:sim02}
 \end{figure}
 
-Two graphs shows the data gather during simulation, in \cref{fig:sim01} and \cref{fig:sim02}. Where the y axis is value and x is time. The simulation runs the system random, if randomness is modelled in the system and will therefore generate new values for the graph each time it is run. Examining the graph we can observe that the value \uppVar{x} tends to around 50 within 100\gls{tu}, so a new question can be raised \textit{``What is the probability that x is above or equal to 50 when 100\gls{tu} have passed?''} in \cref{eq:q3} a query have been constructed to answer the question.
+Two graphs shows the data gather during simulation, in \cref{fig:sim01} and \cref{fig:sim02}. Where the y axis is value and x is time. The simulation runs the system random, if randomness is modelled in the system and will therefore generate new values for the graph each time it is run. Examining the graph we can observe that the value \uppVar{x} tends to around 50 within 100time units, so a new question can be raised \textit{``What is the probability that x is above or equal to 50 when 100time units have passed?''} in \cref{eq:q3} a query have been constructed to answer the question.
 
 \begin{equation}\label{eq:q3}
 Pr[<=150](<> x >= 50)
@@ -124,7 +124,7 @@ Pr[<=150](<> x >= 50)
 
 Like the previous probability example, the query gives us a range of what the probability is that x will be higher or equal to 50 when 100 time units have passed, which in this query results in having a 98\%~ to 100\%~ probability. It is possible to get more information from the query in the form of seven different graphs (probability density distribution, Probability Density Confidence Intervals, Probability Distribution, Probability Confidence Intervals, Cumulative Probability Distribution, Cumulative Probability Confidence Intervals, and Frequency Histogram). 
 
-Frequency Histogram shows the count on the y axis and run duration in time on the x axis, each of the columns represent a time where a number of runs have fulfilled the property. So the first column show that out of the 263 runs three of them had observed the value \uppVar{x} to be higher or equal to 50 at 80.8\gls{tu}. This histogram show that with a 99\% certainty \uppVar{x} will at the earliest be 50 or higher at 80.8 and latest 111.4\gls{tu}.
+Frequency Histogram shows the count on the y axis and run duration in time on the x axis, each of the columns represent a time where a number of runs have fulfilled the property. So the first column show that out of the 263 runs three of them had observed the value \uppVar{x} to be higher or equal to 50 at 80.8time units. This histogram show that with a 99\% certainty \uppVar{x} will at the earliest be 50 or higher at 80.8 and latest 111.4time units.
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/eq3fh.png}
@@ -132,7 +132,7 @@ Frequency Histogram shows the count on the y axis and run duration in time on th
 	\label{fig:eq3fh}
 \end{figure}
 
-Cumulative Probability Distribution shows the accumulated probability over time, so with a 99\% certainty at 112\gls{tu} it has a 100\% probability for \uppVar{x} to be equal or above 50, and at 96.4\gls{tu} there is a 50\% probability.
+Cumulative Probability Distribution shows the accumulated probability over time, so with a 99\% certainty at 112time units it has a 100\% probability for \uppVar{x} to be equal or above 50, and at 96.4time units there is a 50\% probability.
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/eq3cpd.png}
@@ -140,7 +140,7 @@ Cumulative Probability Distribution shows the accumulated probability over time,
 	\label{fig:eq3cpd}
 \end{figure}
 
-The graphs generated by SMC from queries can give useful information about the probability for a query and even more insight, an example of this can be seen the above graphs, when running the query it only returns the probability, but by looking at the graphs we are able to also extract that if this system run for 112 or more \gls{tu} \uppVar{x} will always be 50 or higher.
+The graphs generated by SMC from queries can give useful information about the probability for a query and even more insight, an example of this can be seen the above graphs, when running the query it only returns the probability, but by looking at the graphs we are able to also extract that if this system run for 112 or more time units \uppVar{x} will always be 50 or higher.
 
 %TODO describe queries and afterwards the results.
 
