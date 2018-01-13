@@ -1,12 +1,15 @@
-\section{Inaccuracies and Assumptions}
+\section{Inaccuracies and Assumptions}\label{sec:in_and_ass}
 During our development of \gls{cora} and \gls{smc} model, we have made some decisions that may not always be in favour of realistically representing the state of the outside world. This section will go over each of the choices made to evaluate on the potential effect it can have when all of the factor are taking into consideration.
 
-Introducing the variable idle\_cost to our \nameref{subsec:init} \cref{subsec:init} could alleviate the computation time for producing a schedule in \gls{cora}. It is meant to reduce the number of payloads, by removing operational payloads that run frequently and adds no profit and distribute the cost evenly by the value idle\_cost.
+%More than one window for a payload \cref{ssec:multi_window}
+In \nameref{subsec:csv} \cref{subsec:csv} we describe how a window can be assigned to a payload, but multiple windows for a payload was never explored, even though our models could support it. But given our payload descriptions semantic does not allow for multiple windows this is considered an inaccuracy.
+
+Introducing the variable idle\_cost to our \nameref{subsec:init} \cref{subsec:init} could alleviate the computation time for producing a schedule in \gls{cora}. It is meant to reduce the number of payloads, by removing operational payloads that run frequently and adds no profit to the schedule can be mitigated by converting it into idle\_cost. But this could give misleading results since idle\_cost represent the average energy cost for the operational payloads and not drawing energy similar to payloads. But by setting idle\_cost to zero and specifying all payload running on the nanosatellite this variable will not cause any misrepresentation to the produced schedule.
 
 In \cref{sec:cora} we mention the need for priorities to indicate the profit for each of the payloads, the prioritisation can be set to a value between zero and five, five being the most important payload to execute in terms of profit. This dose not immediately impose any inaccuracies unless the user defines more than six payloads each with their distinct priority.
 We used an Ideal battery model given \gls{cora} restrictions, This will according to the observations made during \cref{sec:kibam} overestimate the battery compared to a real battery, which produces schedules that uses more energy than they have. The impact of this is mitigated with our \gls{smc} model having a more pessimistic battery model.
 
-\gls{cora} processor \cref{ssec:cora_pro} is about what status the current payload is in. Here we mentions two factor that can have an effect on the optimal schedule. A payload is always executed based on its worst execution time, and deadlines force the model to wait a period after the payload has been executed. 
+\gls{cora} processor \cref{ssec:cora_pro} is about the status of the current payload. Here we mentions two factor that can have an effect on the optimal schedule. A payload is always executed based on its worst execution time, and deadlines force the model to wait a period after the payload has been executed. 
 
 Payloads running worst case has the benefit of taken more energy from a battery model that already overestimate the actual value. But schedules produced this way may sometimes be less profitable, compared to schedules generate based on best case running time for payloads, the drawback with this approach is the reduced energy taken from the battery and potentially skipping payloads due to some payloads taking a bit more time then the best case. This can cause a chain reaction of payloads being skipped based on the individual payloads dependencies and windows when the schedule is verified with \gls{smc}. Additionally the way we modelled dependencies would not be able to represent all forms of payload dependencies this will only lead to less optimal schedules if user can not model their payload dependencies with our dependency rules.
 
@@ -20,11 +23,15 @@ taskWindow in \cref{ssec:cora_tw} mentions that our orbit are modelled circular,
 
 Modifications to the \gls{smc} model were also been done, described in \cref{sec:smc_model}, \gls{kibam} is one of the factors that impact the \gls{smc} model, unlike in \gls{cora} where the battery model overestimated the battery, \gls{kibam} underestimate resulting in few schedules being discarded even though the may be viable. Additionally we still assume that charging of the battery occurs half and orbit length as well as orbit being circular. To represent the schedule in the same manner as the \gls{cora} model.
 
+%Starting value from future work \cref{ssec:start_val}
+Our \gls{cora} model does not support knowledge from previous schedules, so the variable \uppVar{runs[]} that keep track of which payloads has been executed will always initialize zero, making it impossible to generate a schedule based on the \uppVar{runs[]} from the previous schedule.
+
 To conclude on this we can divide the behaviours into two categories, "will", and "may" effect schedule. will includes battery models, worst payload running time, general insolation because these factors will always have an effect on the produced schedule. May on the other hand can be tweaked by the user to have no effect on the produced schedule, these are number of updates per orbit on the battery, five prioritisation limit on payloads, deadline on payloads.
 \jfx{Too short? What can we then say?}
 
-%Starting value from future work \cref{ssec:start_val}
 
+
+ 
 
 
 
