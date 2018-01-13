@@ -1,9 +1,9 @@
 \section{UPPAAL CORA} \label{sec:upp_cora}
-\acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed automata to find optimal paths satisfying certain goals, based on lowest accumulated cost\cite{cs_cora}. Due to the underlying structure of \gls{cora} it is only possible to do reachability checks, and does not allow for liveness or deadlocks checks. Lastly \gls{cora} cannot guarantee termination unless the modelled system is acyclic and clocks are bound by invariants\cite{uppaal_cora_download}.
+\acrfull{cora} is a branch of UPPAAL, that uses linearly priced timed automata to find optimal paths satisfying certain goals, based on lowest accumulated cost\cite{cs_cora}. Due to the underlying structure of \gls{cora} it is only possible to do reachability checks, and does not allow for liveness or deadlocks checks. Lastly, \gls{cora} cannot guarantee termination unless the modelled system is acyclic and clocks are bound by invariants\cite{uppaal_cora_download}\cite{cora_tutorial}.
 
-\gls{cora} can be configured in a set of different way depending on the selected options, one of the more useful options is best diagnostic trace. Which mean that \gls{cora} ensures that the path found with this option selected is the best path with respect to minimizing cost. The other alternative is to use some diagnostic trace option, this will not guarantee that the path found is to most optimal in respect to cost.
-
-An example of how cost accumulate over time depending on the location in \gls{cora} can be seen in \cref{fig:cora_eks}.
+\gls{cora} can be configured in a set of different way depending on the selected options, one of these options is the \textit{best} diagnostic trace. 
+Best mean that \gls{cora} ensures that the path found with this option selected is the best path with respect to minimising cost.
+\Cref{fig:cora_eks} will be used in an example that illustrates how cost accumulate over time.
 
 \begin{figure}[H]
 	\centering
@@ -47,32 +47,23 @@ An example of how cost accumulate over time depending on the location in \gls{co
 	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
 			\textcolor{guard}{time >= 7}} (l3);
 	\end{tikzpicture}
-	\caption{Simple model made in \gls{cora}}
+	\caption{Simple template made in \gls{cora}}
 	\label{fig:cora_eks}
 \end{figure}
-
-From \cref{fig:cora_eks} we see a \gls{cora} model with four locations and four edges connecting them. On three of the location there is an invariant bound to the clock "\uppVar{time}" and an associated cost rate. While in the initial location "\uppLoc{A}" the cost rate is one meaning that for every unit of time spend in this \uppLoc{A} the cost will increase by one, it will stay in \uppLoc{A} for three to five units of time before moving on to the next location.\\
-After this is where the model gets interesting, there are at this point two possible transitions, it may move to either "\uppLoc{B1}" or "\uppLoc{B2}". In \uppLoc{B1} the cost will increase with a rate of 3 per unit of time and will stay there until time reaches 10. Alternatively it may transition to \uppLoc{B2} where the cost rate is 4 and will stay there until time is between 7 and 10. After visiting one of these locations it will reach the final state "\uppLoc{C}". \\
-When \gls{cora} traverse the model it will have produce a number of traces depending on which transition is took from \uppLoc{A} and the amount of time that passed it stayed in one of the locations, Lets say it took transition B1 and waited as long as possible in \uppLoc{A} the cost of reaching \uppLoc{C} would be 20 at time 10, on the other hand if it took \uppLoc{B2} and also waited the longest period in \uppLoc{A} the cost would be 13 at time 10 since the last location does not have any cost rate specified it is default 0. \gls{cora} will now be able to discard the trace with cost 20 because it observed a better trace when time is 10, this is done to minimize the memory usage of \gls{cora}.
-
-To get the optimal path to \uppLoc{C} we set diagnostic trace to best and run the query seen in \cref{eq:cora_get_c}, the query asks if \uppLoc{C} is reachable. This will produce a path that waits for 5 time units in \uppLoc{A} before transitioning to \uppLoc{B2} and staying there for 2 time units until it is able to reach \uppLoc{C} with a cost of 13.
+From \cref{fig:cora_eks} we see a \gls{cora} template with four locations and four edges connecting them. 
+Three of the locations have invariants bound to the clock \uppVar{time} and an associated cost rate. 
+For every time unit that passed in the initial location \uppLoc{A}, the cost will increase by 1. 
+The guard and invariant enforces that it will remain there for three to five units of time before transiting to one of the two neighbouring location, either \uppLoc{B1} or \uppLoc{B2}.\\ 
+In \uppLoc{B1} the cost will increase with a rate of 3 per unit of time and will stay there until time reaches 10. 
+Alternatively it may transition to \uppLoc{B2} where the cost rate is 4 and will stay there until time is between 7 and 10. 
+After transitioning to one of these locations it will finally reach location \uppLoc{C}. \\
+When \gls{cora} traverse the model it will produce a number of traces that reflects the possible choices it is able to make, choices such as for how long to wait before taking a transition and which one to take.
+For example, it can wait for as long as \uppLoc{A} allows, and then can take the transition to \uppLoc{B1}, the cost of reaching \uppLoc{C} will then be 20 at time 10.
+Another possibility is to once again wait 5 time units in \uppLoc{A} before taking the transition to \uppLoc{B2} before transitioning to \uppLoc{C} at time 7, the cost of reaching \uppLoc{C} will then be 13 at time 7, it will then be able to wait in \uppLoc{C} until time 10 with no additional cost.
+\gls{cora} will now be able to discard the trace with the cost of 20 because it observed a better path.
 \begin{align}
 E<> Template.C
 \label{eq:cora_get_c}
 \end{align}
-This is beneficial as the optimal path may not always be as easy to find as the one in our example. 
-
-%This can be advantageous for modelling systems such as satellites where energy is an important and limited resource which can be represented by the cost. After running a query it is possible to extract a trace, which can be used to represent the generated schedule.
-
-%http://people.cs.aau.dk/~adavid/cora/download.html#download
-
-
-%optimal sceduling and planning.
-%state-space exploration -> promising and cheap visited first -> prune parts of search tree not improving solution.
-%symbolic data structure -> symbolic state-space representation with cost information -> optimal or near-optimal solutions
-
-%S2,3: problem of cost-optimal reachability -> symbolic branch-and-bound solving this problem.
-% clocks are non-negative real values, can be reset and grow at a fixed rate.
-
-%S5: PTA-related optimization problems -> future support
-
+To get the optimal path to \uppLoc{C} we set diagnostic trace to best and run the query seen in \cref{eq:cora_get_c}, the query asks if \uppLoc{C} is reachable.
+This will produce a path that is equal to best path from our example.
