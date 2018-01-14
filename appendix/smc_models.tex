@@ -1,4 +1,4 @@
-\chapter{\gls{smc} models}\label{appendix:smc_models}
+\chapter{\gls{smc} model}\label{appendix:smc_models}
 \section{Global Declarations}
 \begin{figure}[H]
 \begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:global_declarations_code0]
@@ -102,70 +102,6 @@ bool done() { return payloadNumber >= NumberOfPayloads; }
 
 void skipped() { skips ++; }
 \end{lstlisting}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}
-	%Locations
-	\node [init] (l0) [label={[align=left]above:\textcolor{name}{Init}}] {$\cup$};
-	\node [location] (l1) [right of=l0, xshift=40mm, label={
-		[align=left]above:
-		\textcolor{name}{Idle}},
-	label={
-		[align=center]below:
-		\textcolor{invariant}{totalTime <= RunStart[payloadNumber]}
-	}] {};
-	\node [location] (l2) [right of=l1, xshift=80mm, label={
-		[align=left]above:
-		\textcolor{name}{Ready}
-	}] {};
-	\node [location] (l3) [below of=l0, yshift=-40mm, label={
-		[align=left]below:
-		\textcolor{name}{Done}
-	}] {};
-	\node [location] (l4) [below of=l1, yshift=-40mm, label={
-		[align=left]below:
-		\textcolor{name}{Wait}\\
-		\textcolor{invariant}{x <= D}
-	}] {};
-	\node [location] (l5) [below of=l2, yshift=-40mm, label={
-		[align=left]below:
-		\textcolor{name}{Running}\\
-		\textcolor{invariant}{x <= W}
-	}] {};
-	\path[->,black, thick] (l0) edge node [midway, above][align=left]{
-		\textcolor{update}{t=0,i = IIdle,}\\
-		\textcolor{update}{setActive()}} (l1);
-	\path[->,black, thick] (l1) edge node [midway, above][align=center]{
-		\textcolor{guard}{totalTime >=RunStart[payloadNumber]}\\
-		\textcolor{sync}{ready!}\\
-		\textcolor{update}{x=0, t=0,}\\
-		\textcolor{update}{deadline()}} (l2);
-	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
-		\textcolor{sync}{run?}\\
-		\textcolor{update}{x := 0,}\\
-		\textcolor{update}{setActive(),}\\
-		\textcolor{update}{enqueue()}\\
-		\textcolor{update}{earnings +=}\\
-		\textcolor{update}{Profit[active]}} (l5);
-	\path[->,black, thick] (l2) edge node [midway, left][align=left]{
-		\textcolor{sync}{skip?}\\
-		\textcolor{update}{payloadNumber ++,}\\
-		\textcolor{update}{skipped()}} (l4);
-	\path[->,black, thick] (l5) edge node [midway, below][align=left]{
-		\textcolor{guard}{x >= B}\\
-		\textcolor{update}{dequeue(), active = -1,}\\
-		\textcolor{update}{payloadNumber ++}} (l4);
-	\path[->,black, thick] (l4) edge node [midway, left][align=left]{
-		\textcolor{guard}{x >= D \&\&}\\
-		\textcolor{guard}{!done()}\\
-		\textcolor{update}{setActive()}} (l1);
-	\path[->,black, thick] (l4) edge node [midway, below][align=left]{
-		\textcolor{guard}{done()}\\
-		\textcolor{update}{on = false,}\\
-		\textcolor{update}{active = -1}} (l3);
-	\end{tikzpicture}
-	\caption{Processor template}
 \end{figure}
 
 \section{Insolation}
@@ -282,40 +218,10 @@ bool mayRun(){
 	\end{lstlisting}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}
-	%Locations
-	\node [init] (l0) {};
-	\node [location] (l1) [right of=l0, xshift=40mm, label={
-		[align=left]right:
-		\textcolor{invariant}{t <= Payloads[Queue[payloadNumber]][2] - }\\
-		\textcolor{invariant}{Payloads[Queue[payloadNumber]][1]}
-	}] {};
-	\path[->,black, thick] (l1) edge[bend left=50] node [midway, below][align=left]{
-		\textcolor{guard}{t == Payloads[Queue[payloadNumber]][2] - }\\
-		\textcolor{guard}{Payloads[Queue[payloadNumber]][1]}\\
-		\textcolor{sync}{skip!}
-	} (l0);
-	\path[->,black,thick] (l0) edge node [midway, below][align=left]{
-		\textcolor{sync}{ready?}} (l1);
-	\path[->,black,thick] (l1) edge[bend right=45] node [midway, above][align=left]{
-		\textcolor{guard}{on \&\& mayRun() \&\&}\\
-		\textcolor{guard}{0.1 < a * exp(-k2*W)+}\\
-		\textcolor{guard}{(((a+b)*k2*c-(Costs[active]+IIdle))*(1.0-exp(-k2*W))}\\
-		\textcolor{guard}{-(Costs[active]+IIdle)*c*(k2*W-1.0+exp(-k2*W)))/k2}\\
-		\textcolor{guard}{\&\& Threshold < checkB(a,b,totalTime)}\\
-		\textcolor{sync}{run!}\\
-		\textcolor{update}{runs[active] ++,}\\
-		\textcolor{update}{totalRuns[active] ++}
-	} (l0);
-	\end{tikzpicture}
-	\caption{Scheduler template}
-\end{figure}
 
-\section{OrbitWindows}
+\section{PayloadWindow}
 \begin{figure}[H]
-	\begin{lstlisting}[language=my_c, caption={Declarations for OrbitWindows template}, label=lst:orbitwindows_code]
+	\begin{lstlisting}[language=my_c, caption={Declarations for PayloadWindow template}, label=lst:orbitwindows_code]
 clock wtime;
 
 void setRunnable(){
@@ -354,12 +260,12 @@ void setRunnable(){
 		\textcolor{update}{wtime = 0}
 	} (l0);
 	\end{tikzpicture}
-	\caption{Window templates}
+	\caption{PayloadWindow templates}
 	\label{fig:smc_OW}
 \end{figure}
 \section{System Declarations}
 \begin{figure}[H]
 	\begin{lstlisting}[language=my_c, caption={System declarations}, label=lst:system_declarations_code]
-system Processor, EnergySource, Scheduler, Insolation, OrbitalWindows;
+system Processor, EnergySource, Scheduler, Insolation, PayloadWindow;
 	\end{lstlisting}
 \end{figure}

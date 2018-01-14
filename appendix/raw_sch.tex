@@ -1,25 +1,25 @@
 \chapter{Raw Schedule Example}\label{appendix:raw_example}
 \begin{figure}[H]
-\begin{lstlisting}[caption={The raw schedule format. Note the first transition at line 5 that indicate we enter a running state i.e. we start executing a payload. We stop executing the payload after 15 time units(minutes) have past.}, label=lst:raw, language=text]
-State:
-( Processor.Ready Scheduler._id7 Insolation._id10 taskWindow(0)._id14 taskWindow(1).In )
-ins=50 t_time=2120 Processor.x=20 Insolation.splitTime=6 taskWindow(0).wtime=50 taskWindow(1).wtime=50 on=1 batteryCap=3516 active=0 runs[0]=2 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=11 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=1 cost=7890
-
-Transitions:
-  Scheduler._id7->Scheduler._id8 { 1, run!, 1 }
-  Processor.Ready->Processor.Running { runnable[active] == 1 && !checkBattery(), run?, updateBattery(), calcCost() }
-
-State:
-( Processor.Running Scheduler._id8 Insolation._id10 taskWindow(0)._id14 taskWindow(1).In )
-ins=50 t_time=2120 Processor.x=0 Insolation.splitTime=6 taskWindow(0).wtime=50 taskWindow(1).wtime=50 on=1 batteryCap=3468 active=0 runs[0]=3 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=12 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=2 cost=7890
-
-Delay: 15
-
-State:
-( Processor.Running Scheduler._id8 Insolation._id10 taskWindow(0)._id14 taskWindow(1).In )
-ins=65 t_time=2135 Processor.x=15 Insolation.splitTime=21 taskWindow(0).wtime=65 taskWindow(1).wtime=65 on=1 batteryCap=3468 active=0 runs[0]=3 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=12 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=2 cost=7920
-
-Transitions:
-  Processor.Running->Processor.Wait { x >= TaskTimes[active][1], tau, 1 }
-\end{lstlisting}
+	\begin{lstlisting}[caption={The raw schedule format. Note the first transition at line 5 that indicate we enter a running state i.e. we start executing a payload. We stop executing the payload after 15 time units(minutes) have past.}, label=lst:raw, language=text]
+	State:
+	( Processor.Ready Scheduler._id7 Insolation._id10 PayloadWindow(0)._id14 PayloadWindow(1).In )
+	ins=50 t_time=2120 Processor.x=20 Insolation.splitTime=6 PayloadWindow(0).wtime=50 PayloadWindow(1).wtime=50 on=1 batteryCap=3516 active=0 runs[0]=2 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=11 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=1 cost=7890
+	
+	Transitions:
+	Scheduler._id7->Scheduler._id8 { 1, run!, 1 }
+	Processor.Ready->Processor.Running { runnable[active] == 1 && !checkBattery(), run?, updateBattery(), calcCost() }
+	
+	State:
+	( Processor.Running Scheduler._id8 Insolation._id10 PayloadWindow(0)._id14 PayloadWindow(1).In )
+	ins=50 t_time=2120 Processor.x=0 Insolation.splitTime=6 PayloadWindow(0).wtime=50 PayloadWindow(1).wtime=50 on=1 batteryCap=3468 active=0 runs[0]=3 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=12 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=2 cost=7890
+	
+	Delay: 15
+	
+	State:
+	( Processor.Running Scheduler._id8 Insolation._id10 PayloadWindow(0)._id14 PayloadWindow(1).In )
+	ins=65 t_time=2135 Processor.x=15 Insolation.splitTime=21 PayloadWindow(0).wtime=65 PayloadWindow(1).wtime=65 on=1 batteryCap=3468 active=0 runs[0]=3 runs[1]=3 runs[2]=0 runs[3]=0 runs[4]=1 tRuns[0]=12 tRuns[1]=12 tRuns[2]=6 tRuns[3]=6 tRuns[4]=4 available[0]=1 available[1]=0 available[2]=0 available[3]=0 available[4]=1 runnable[0]=1 runnable[1]=0 runnable[2]=0 runnable[3]=0 runnable[4]=0 Processor.queue[0]=-1 Processor.queue[1]=-1 Processor.queue[2]=-1 Processor.queue[3]=-1 Processor.queue[4]=-1 Processor.runCost=2 Scheduler.threshold=1 Insolation.chargeCount=0 rate=2 cost=7920
+	
+	Transitions:
+	Processor.Running->Processor.Wait { x >= TaskTimes[active][1], tau, 1 }
+	\end{lstlisting}
 \end{figure}

@@ -48,7 +48,7 @@ The \textbf{schedule\_length} defines how long the produced schedule should be, 
 The \textbf{battery\_capacity} is an constant that defines the maximum capacity of the battery. We do not expect that the user defines every single operation that the satellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
 \textbf{idle\_cost} is the load that is imposes on the battery at all times, even when the satellite is idling, not currently executing any of the defined payloads.
 This will allow us to disregard some of the payloads that the satellite may perform as they can be grouped together as one single background process which is always being executed.
-The user should only consider payloads which can be executed in parallel to the defined payloads and only chose those which energy and time cost are trivial.\afx{maybe beskriv i assumption. Man kan bare saette den til nul og skedulere alting selv}
+The user should only consider payloads which can be executed in parallel to the defined payloads and only chose those which energy and time cost are trivial.
 Failing to do so may result in a non representative model of their satellite and therefore a schedule where our guarantees may not be valid.\\
 Based on the findings from Bisgaard et al. 2016\cite{gomx3} we have decided to include the \textbf{safe\_threshold} variable.
 This variable is used to determine when the nanosatellite's \gls{soc} is too low to continue executing the schedule.
