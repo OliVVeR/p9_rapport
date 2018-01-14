@@ -1,6 +1,255 @@
 \chapter{\gls{cora} model}\label{appendix:cora_models}
 
-\subsection*{PayloadWindow}
+\section{Global Declarations}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Global declarations}, label=lst:core_global_declarations_code0]
+bool on = true; // in coulombs, status
+const int N =5;
+const int ScheduleLength = 720;
+const int Windows = 2;
+const int Window[Windows][2] = {{10, 30}, {50, 80}};
+const bool RunInWindow[Windows][N] = {{0, 1, 1, 1, 0},{1, 0, 0, 0, 0}};
+
+const int OrbitTime = 90;
+const int BatteryMax =5400;
+const int BatteryCritical = 40;
+typedef int[0, Windows - 1] id_t;
+
+clock ins;
+clock t_time;
+
+broadcast chan ready, run, win;
+urgent broadcast chan empty;
+
+const int MaxRuns[N] ={9,3,2,2,1};
+const int ChargeRate =1;
+const int IdleCost = 1;
+int batteryCap = 4800 ;
+int active = 0;
+int runs[N] = {0,0,0,0,0};
+int tRuns[N] = {0,0,0,0,0};
+bool available[N] = {0,0,0,0,0};
+bool runnable[N] = {0,0,0,0,0};
+const int Depend[N][N] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,2,2,0,0},{0,0,0,0,0}};
+const int TaskTimes[N][3] = {{10,15,20},{10,15,20},{5,10,15},{5,10,20},{5,15,20}};
+const int Profit[N] = {2,4,3,1,1};
+const int Load[N] = {4,6,4,6,6};
+\end{lstlisting}
+\end{figure}
+
+\section{Processor}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Processor template}, label=lst:core_processor_code0]
+int queue[N] = {-1,-1,-1,-1,-1};
+clock x;
+int runCost = 0;
+void mayRun() {
+	int i, j, ok;
+	for (i = 0; i &lt; N; i++) {
+		for (j = 0; j &lt; N; j++) {
+			if(runs[j] &gt; = Depend[i][j]) {
+				ok++;
+			}
+		}
+		if(ok == N &amp; &amp; available[i] == 1 &amp; &amp; runs[i] &lt; MaxRuns[i]) {
+			runnable[i] = true;
+		}	
+		else {
+			runnable[i] = false;
+		}
+		ok = 0;
+	}
+}
+void setQueue() {
+	int i, j;
+	bool tempqueue[N] = {-1,-1,-1,-1,-1};
+	for (i = 0; i &lt; N; i++) {
+		if (runnable[i] == true) {
+			queue[j] = i;
+			tempqueue[i] = true;
+			j++;
+		}
+	}
+	for (i = 0; i &lt; N; i++) {
+		queue[i] = tempqueue[i];
+	}
+}
+
+void dequeue() {
+	int a, i;
+	a = queue[0];
+	for (i = 0; i &lt; N-1; i++) {
+		queue[i] = queue[i+1];
+	}
+	queue[N-1] = a;
+}
+
+void reset() {
+	int i = 0;
+	int all_done = 0;
+	int j=0;
+	for(i = 0; i &lt; N; i++) {
+		if(runs[i] == MaxRuns[i]) {
+			all_done ++;
+		}
+	}
+	if (all_done == N) {
+		for(j = 0; j &lt; N; j++) {
+			runnable[j] = 0;
+			runs[j] = 0;
+		}
+	}
+}
+\end{lstlisting}
+\end{figure}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Processor template}, label=lst:core_processor_code1, firstnumber=61]
+int runnabeCount() {
+	int count = 0;
+	int i = 0;
+	for (i = 0; i&lt; N; i++) {
+		if(runnable[i] != 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+bool checkBattery() {
+	if(batteryCap - Load[active] * ((TaskTimes[active][0] + TaskTimes[active][1])/2)&lt;
+	BatteryMax * (BatteryCritical /100)){
+		return 1;
+	}
+	else {
+	return 0;
+	}
+}
+
+void updateBattery() {
+	int useage = Load[active] * ((TaskTimes[active][0] + TaskTimes[active][1])/2);
+	batteryCap -= useage;
+	runs[active] ++;
+	x := 0;
+	tRuns[active] ++;
+}
+
+void subIdle() {
+	int idle_cost = IdleCost * (TaskTimes[active][1] - ((TaskTimes[active][0] + TaskTimes[active][1])/2));
+	batteryCap -= idle_cost;
+}
+\end{lstlisting}
+\end{figure}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Processor template}, label=lst:core_processor_code2, firstnumber=94]
+void calcCost() {
+	int i =0;
+	int j=0;
+	int Window_dep=0;
+	int pen = 0;
+	for(i=0; i&lt; Windows; i++) {
+		for(j=0; j&lt; N; j++) {
+			if(RunInWindow[i][j] == 1) {
+				Window_dep ++;
+			}
+		}
+	}
+	if(Window_dep &gt; 0) {
+		for (i=0; i&lt; Windows; i++) {
+			for (j=0; j&lt; N; j++) {
+				if(RunInWindow[i][j] == 1 &amp; &amp; runnable[j] == 1 &amp; &amp; active != j) {
+					pen++;
+				}
+			}
+		}
+	}
+	else {
+		runCost = 5 - Profit[active];
+		return;
+	}
+	for (i=0; i&lt; Windows; i++) {
+		if(pen &amp; &amp; RunInWindow[i][active] == 0) {
+			runCost = (5 - Profit[active]) *2;
+			return;
+		}
+		// else{runCost = 5 - Profit[active];}
+	}
+}
+\end{lstlisting}
+\end{figure}
+\section{Scheduler}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Scheduler template}, label=lst:core_scheduler_code]
+bool threshold = true; 
+bool checkBattery(){ 
+	if(batteryCap &gt; (BatteryMax/100) * BatteryCritical){ 
+		return true;
+	} 
+	else{return false;}
+}
+\end{lstlisting}
+\end{figure}
+
+\section{Insolation}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Insolation template}, label=lst:core_insolation_code]
+clock splitTime; 
+int chargeCount = 0; 
+void increaseBattery(){
+	chargeCount ++;
+	if(BatteryMax &lt;= batteryCap + ((ChargeRate * OrbitTime)-(IdleCost * OrbitTime))/8){
+		batteryCap = BatteryMax;
+	}
+	else{ batteryCap += ((ChargeRate * OrbitTime )-(IdleCost * OrbitTime))/8;}
+	splitTime = 0;
+} 
+void subIdle(){ 
+	batteryCap -= (IdleCost*(OrbitTime/8)); splitTime = 0; chargeCount ++; }
+\end{lstlisting}
+\end{figure}
+
+
+\section{PayloadWindow}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for PayloadWindow template}, label=lst:core_payloadWindow_code]
+clock wtime; 
+void alwaysAvailable() { 
+	int i = 0; int count = 0;
+	for(i=0;i &lt; N;i++){
+		if(available[i] == 1){count++;}
+	}
+	if(count == 0){
+		for(i = 0; i &lt; N; i++){
+			if(RunInWindow[id][i] == 0){
+				available[i] = 1;
+			}
+		}
+	}
+	else{
+		for(i = 0; i &lt; N; i++){
+			if(RunInWindow[id][i] == 0 &amp;&amp; available[i] == 1){available[i] = 1;} 
+			else{ available[i] = 0;}
+		}
+	}
+}
+void setRunnable(){ 
+	int i= 0;
+	for (i = 0; i &lt; N; i++){
+		if(RunInWindow[id][i] == 1){ 
+			available[i] = 1; 
+		}
+	}
+} 
+void removeRunnable(){
+	int i= 0; 
+	for (i = 0; i &lt; N; i++){ 
+		if(RunInWindow[id][i] == 1){ 
+			available[i] = 0;
+		}
+	}
+}
+\end{lstlisting}
+\end{figure}
+
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -48,4 +297,11 @@
 	\end{tikzpicture}
 	\caption{PayloadWindow template}
 	\label{fig:cora_window}
+\end{figure}
+
+\section{System Declarations}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={System Declarations}, label=lst:core_sys_decl_code]
+system Processor, Scheduler, Insolation, PayloadWindow;
+\end{lstlisting}
 \end{figure}
