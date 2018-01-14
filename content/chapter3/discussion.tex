@@ -19,8 +19,19 @@ problem determine SOC when a battery ends
 
 logic or in dependencies
 
-\subsection{Battery Lifetime} \label{subsec:disc_life}
+\subsection{Battery Wear and Lifetime} \label{subsec:disc_life}
+We did not implement any major features that would try to avoid straining the battery. 
+But as Wognsen et al. 2015\cite{score_function} expresses, it is important to predict the battery wear for battery powered systems as it is a central part of predicting the system's lifetime.
+The major reason for why no such features were implemented, where that it was difficult to find a balance between not wearing the battery and executing payloads.
+Wognsen et al. 2015\cite{score_function} presented a scoring function to compare and evaluate the impact of battery usage profiles on cycle life. Their scoring system would have been simple to implement as the \gls{cora} model is always aware of the battery's \gls{soc}. However, the authors conclude that the score does not indicate to what effect the usage profile will have on the battery life. They do note that it is expected that with a large enough amount of experiment data, it would be possible to tailor the function to a specific battery type, such as the one that GomX-3 is equipped with. We were not interested in obtaining this data as we found other problems more pressing during the duration of the project.\\
+It is difficult to use the scoring system without knowing what the scores represent in actual wear, as it makes it hard to determine 
 
+
+We are currently not able to model that the battery deteriorate over time, but since the user can theoretically calculate the actual capacity of the battery and set the maximum capacity to that value, it is possible to pass the information to the model.
+
+However, a location have been added to the UPPAAL \gls{smc} model in order to avoid overcharging the battery, as explained in \ref{subsec:energy_src} \nameref{subsec:energy_src}.\\
+
+We believe that since our tool has an emphasis on battery usage, the ability to model battery wear and avoid schedules that have a high impact on it, will be sensible to implement. 
 
 
 \subsection{Proof of viability}
