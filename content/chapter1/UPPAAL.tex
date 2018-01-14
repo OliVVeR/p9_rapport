@@ -4,6 +4,7 @@ We have chosen to use \acrlong{cora}\cite{cs_cora}\cite{cora_tutorial} and \acrl
 Common for all versions of UPPAAL, is that; it has global decelerations and templates. 
 An example template can be seen in \cref{fig:uppaal_eksample}.
 One model may have several templates, each with its own local decelerations. The template itself consists of one to many locations and edges that connects the locations.\\
+One location in each template must be initial in order for UPPAAL to determine the starting state. In addition a location can be urgent, meaning time is not allowed to pass while the location is active, or committed which is a stronger expression than urgent. Committed indicates that activating an outgoing transition is of priority. If any committed location in the model is part of the current state, at least one transition from a committed location must be part of the next transition.
 Edges may be decorated with; selects, guards, synchronizations, and updates. 
 Selects are used for introducing new temporary variables, and are coloured yellow.
 Guards are used to ensure that an edge is not activated prematurely, and are coloured green.
@@ -11,7 +12,7 @@ Synchronizations are used for activating multiple edges across templates simulta
 Finally updates are used to change variable values, and to call functions written in declarations, and are coloured dark blue.\\
 Locations can be given a name and an invariant. An invariant must always be evaluated to true e.g. if a location have the invariant $time <= 5$, at time five there will be a chance of state. Invariants are coloured pink.\\
 Also common for the versions of UPPAAL, is that queries can be written in order to ensure sustain properties are upheld, such as; is some location reachable, and will time ever exceed some amount.
-\afx{beskriv initial, commited og urgent}
+
 \begin{figure}[h]
    \centering
    \begin{tikzpicture}
