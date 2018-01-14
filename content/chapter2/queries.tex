@@ -65,7 +65,7 @@ Query \ref{eq:smc5} provides two time series that reflects the two wells of the 
 \begin{equation} \label{eq:smc6}
 	E \; [<=\ ScheduleLength;\ 100]\; ( max:\ earnings)
 \end{equation}
-Query \ref{eq:smc6} finds the accumulated profit for the schedule. We will not judge a schedule based on this value, we will let the user decide if it is acceptable, however the schedule is generated to maximize this value, see \cref{sec:cora}, and should therefore be viable. The profit is an abstract variable and we will not be able tell whether or not it is satisfactory.
+Query \ref{eq:smc6} finds the accumulated profit for the schedule. We will not judge a schedule based on this value, we will let the user decide if it is acceptable, however the schedule is generated to maximize this value, see \myref{sec:cora}, and should therefore be viable. The profit is an abstract variable and we will not be able tell whether or not it is satisfactory.
 
 The three last queries, \ref{eq:smc4}, \ref{eq:smc5}, and \ref{eq:smc6}, are tested with simulations. The simulations are great for giving the user insight in the behaviour of the nanosatellite when executing the schedule. \\
 It does however not set any guarantees for the correctness or robustness of the schedule as it only displays the result of the path taken during each of the simulations.

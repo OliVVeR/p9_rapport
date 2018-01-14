@@ -1,14 +1,18 @@
 \chapter{Conclusion} \label{sec:conclusion}
-In this section we conclude on the report and project to evaluate on the degree of which we fulfilled the problems discovered during \nameref{cha:problem} \cref{cha:problem} accumulating in the problem statement:
+In this chapter we conclude on the report and project as a whole to evaluate the degree of which the problems presented during  \myref{cha:problem} have been fulfilled. This culminated in the following problem statement:
 
 \enquote{How is it possible to produce a schedule that consider multiple requirements, and how is it possible to verify the robustness of such a schedule}
 
-To evaluate on this each of the requirements needs to be examined in order to determine the degree of which we have achieve our goals.\\
-\textbf{\Gls{soc} threshold} - This is ensured by our \gls{cora} model, mentioned in \nameref{ssec:cora_sch} \cref{ssec:cora_sch} about traces being discarded due to them going under the threshold. Furthermore during the \gls{smc} model we pre calculate the energy consumption to also enforce a payload can only be executed if \gls{soc} does not go below the threshold.  Which these percussions installed, this goal is achieved.\\
+To conclude on the problem statement and to what degree the different requirements have been fulfilled, we must examine and evaluate each on these.\\
+
+As described in \myref{sec:cora}
+
+\Gls{soc} threshold is ensured by our \gls{cora} model, mentioned in \myref{sec:cora} about traces being discarded due to them going under the threshold. Furthermore during the \gls{smc} model we pre calculate the energy consumption to also enforce a payload can only be executed if \gls{soc} does not go below the threshold.  Which these percussions installed, this goal is achieved.\\
+
 \textbf{Payload efficiency} - We do not currently active execute payloads as soon as they are possible, this resonate in our \gls{cora} model only checking if a payload is executable when a change in the taskWindow template has occurred. This requirements is only partial fulfilled.\\
 \textbf{Payload windows} - In both models we insure that payloads are only executed when they are within their windows achieving this goal \\
-\textbf{Maximising profit} - We used \gls{cora} to achieve this goal with is cost variable described in \nameref{sec:cora} \cref{sec:cora}.\\
+\textbf{Maximising profit} - We used \gls{cora} to achieve this goal with is cost variable described in \myref{sec:cora}.\\
 \textbf{Reducing battery wear} - Ways of preventing tearing on the battery is only considered in our \gls{smc} model enforcing that when the battery reaches max capacity it will not start recharging until a percentage of the capacity has been drained, Given that more could have been done to capture the potential effect of battery wear this is considered partial done. \\
-\textbf{Robustness} - We described being able to consider, recharge fluctuations, sporadic restarts, and delay on the schedule in \nameref{sec:imp_and_add} \cref{sec:imp_and_add}. But we are in the current build only able to check the effects of delaying the schedule, this is therefore only be partially achieved.
+\textbf{Robustness} - We described being able to consider, recharge fluctuations, sporadic restarts, and delay on the schedule in \myref{sec:imp_and_add}. But we are in the current build only able to check the effects of delaying the schedule, this is therefore only be partially achieved.
 
 We were able to construct an optimal schedule using \gls{cora} and check its robustness through \gls{smc} model to give some indication for the confidence in produced schedule. This achieve our goal the main statement. But evaluating some of the requirements to being partially done we will state that we partially achieve our objectives in generating an optimal schedule and doing some robustness checking on it.
