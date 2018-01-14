@@ -1,6 +1,6 @@
 \section{Cora Model} \label{sec:cora}
 Based on the information gained during the previous sections we have constructed a model in \gls{cora} capable of generating schedules for the nanosatellite. The \gls{cora} model takes a set of payloads with some requirements which works as constrains, and other descriptive values, as described in \cref{sec:read_input}, in order to generate a schedule that upholds the specifications. Such descriptions are fed to the model via our own translator.\\
-The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and TaskWindow. These models different aspects of the nanosatellite and its environment, and are all described separately below.\\
+The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and PayloadWindow. These models different aspects of the nanosatellite and its environment, and are all described separately below.\\
 The templates Processor and Scheduler, are roughly based on those presented in the GomX-3 article\cite{gomx3}, but have been modified to fit our context as well as handle the added parameters.\\
 The model is made to optimise in regards to profit, see \cref{sec:read_input}, this is done as the battery level is rarely a concern\cite{gom_space_conversation}. We therefore chose the approach where we found the schedule that would yield the highest profit, according to input specification, while having the battery level in mind. As \gls{kibam} is pessimistic in the sense that it underestimates the state of charge it would be a good choice to implement. However due to the complexity of \gls{kibam} and the need for non-linear rates \gls{cora} in not the right tool for this, therefore we have chosen to model the ideal battery model.\\
 The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.\\
@@ -131,10 +131,51 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 \subsection*{Insolation} \label{ssec:cora_ins}
 The insolation template can be seen in \cref{fig:cora_inso}. The model consist of two locations \uppLoc{inSun} and \uppLoc{inEclipse}. The nanosatellite can only recharge when it has a clear line of sight to the sun, which is indicated by the location \uppLoc{inSun}. The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}. This is done four times per orbit, rather than for each time unit, in order to minimize the state space. When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one half orbit, the model is forced to transition to \uppLoc{inEclipse}. Note that it is assumed that the nanosatellite always spends exactly half its time in insolation.
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+	%Locations
+	\node [init] (l0) [label={
+		[align=left]above:
+		\textcolor{name}{inSun}
+	}, label={
+	[align=left]left:
+	\textcolor{invariant}{splitTime <= OrbitTime / 8}\\
+	\textcolor{invariant}{\&\& ins <= OrbitTime / 2}
+}] {};
+\node [location] (l1) [right of=l0, xshift=40mm, label={
+	[align=left]above:
+	\textcolor{name}{inEclipse}
+}, label={
+[align=left]right:
+\textcolor{invariant}{splitTime <= OrbitTime / 8}\\
+\textcolor{invariant}{\&\& ins <= OrbitTime / 2}
+}] {};
+%Edges
+\path[->,black, thick] (l0) edge[bend left=30] node [midway, above][align=left]{
+	\textcolor{guard}{ins >= OrbitTime / 2}\\
+	\textcolor{guard}{\&\& chargeCount == 4}} (l1);
+\path[->,black, thick] (l1) edge[bend left=30] node [midway, below][align=left]{
+	\textcolor{guard}{ins >= OrbitTime}\\
+	\textcolor{guard}{\&\& chargeCount == 8}\\
+	\textcolor{update}{ins := 0,}\\
+	\textcolor{update}{splitTime = 0}\\
+	\textcolor{update}{chargeCount = 0}} (l0);
+\path[->,black, thick] (l0) edge [loop below] node [midway, below left][align=left]{
+	\textcolor{guard}{splitTime >= OrbitTime/8}\\
+	\textcolor{update}{increaseBattery()}} (l0);
+\path[->,black, thick] (l1) edge [loop below] node [midway, below right][align=left]{
+	\textcolor{guard}{splitTime >= OrbitTime/8}\\
+	\textcolor{update}{subIdle()}} (l1);
+\end{tikzpicture}
+\caption{Insolation template}
+\label{fig:cora_inso}
+\end{figure}
+
 The way this is modelled have a few assumptions, and inaccuracies as previously mentioned we only recharge four times during insolation. This may result in a suboptimal schedule as executing a payload may cause the state of charge to fall below the threshold, and therefore not be executed, where the state of charge should be higher potentially resulting in it being possible to execute the payload. We however believe this to be an edge-case that will rarely occur.
 In \cref{fig:granularity} we see a graph over the state of charge(left) while doing nothing but charging. On the right, is a close-up of the same graph. The blue line shows what the state of charge should be and the orange what it is with our implementation. Clearly our implementation is not entirely accurate, but neither is the ideal battery model, and because of this we believe a small margin of error is acceptable given the much reduced state space.
 
-\begin{figure}[H]%
+\begin{figure}[h]%
 	\centering
 	\subfloat{{\includegraphics[width=7cm]{graphics/granularity.png} }}%
 	\qquad
@@ -144,6 +185,8 @@ In \cref{fig:granularity} we see a graph over the state of charge(left) while do
 \end{figure}
 
 To find the effect of this state-space reduction we generated $2 * 10$ schedules of $12hours$ each, ten with our simplification and ten where recharge was added for every unit of time elapsed. The differences in time spend to generate these were quite significant and can be seen in \cref{tab:runTimes}. There it is seen that the worst case found when charging every time unit was $138.76\%$ more than when using our simplification.
+
+
 
 \begin{table}[H]
 	\centering
@@ -160,8 +203,8 @@ To find the effect of this state-space reduction we generated $2 * 10$ schedules
 Additionally it is assumed that the nanosatellite are always starting in insolation, resulting in our model only being able to generate an accurate schedule for the nanosatellite, when it matches our starting point.
 
 
-\subsection*{TaskWindow}\label{ssec:cora_tw}
-The last template is the TaskWindow, this template have one instance for each window defined. TaskWindow is used to model part of the nanosatellites environment in the sense that it updates whenever the nanosatellite enters and exits a window during its orbit in which some tasks can be performed. Windows is a important restriction when generating a schedule as some payloads may be pointless to execute in other time periods and would therefore be a waste of energy and time. When a chance to a window occurs it will make the synchronise on the channel \uppChan{win}, with the processor if it is in \uppLoc{Idle} indicating it may now be able to execute some payload. Otherwise it will just transition to the next location updating some global variables indicating if the nanosatellite is within the window or not. 
+\subsection*{PayloadWindow}\label{ssec:cora_tw}
+The last template is the PayloadWindow, this template have one instance for each window defined. PayloadWindow is used to model part of the nanosatellites environment in the sense that it updates whenever the nanosatellite enters and exits a window during its orbit in which some tasks can be performed. Windows is an important restriction when generating a schedule as some payloads may be pointless to execute in other time periods and would therefore be a waste of energy and time. When a change to a window occurs it will synchronise on the channel \uppChan{win}, with the processor if it is in \uppLoc{Idle} indicating it may now be possible to execute some payload. Otherwise it will just transition to the next location updating some global variables indicating if the nanosatellite is within the window or not. 
 A figure of this template can be seen in \cref{fig:cora_window}.\\
-It is assumed that the orbit is constant for the duration of the schedule. This means that the defined windows are constant whereas they would more realistically chance during operation, e.g. at start time window(1) will occur at time 10 and end at time 30, then after 5 orbits the window may occur at time 11 to 31.
+It is assumed that the orbit is constant for the duration of the schedule. This means that the defined windows are constant whereas they would more realistically change during operation, e.g. at start time window(1) will occur at time 10 and end at time 30, then after 5 orbits the window may occur at time 11 to 31.
 
