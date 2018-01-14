@@ -1,11 +1,12 @@
+<<<<<<< HEAD
 \section{CORA Model} \label{sec:cora}
 Based on the information gained during the previous sections we have constructed a model in \gls{cora} capable of producing schedules for the nanosatellite.
-The \gls{cora} model takes a set of payloads with some requirements which works as constrains, and other descriptive values, as described in \cref{sec:read_input}, in order to produce a schedule that upholds the specifications.
+The \gls{cora} model takes a set of payloads with some requirements which works as constrains, and other descriptive values, as described in \myref{sec:read_input}, in order to produce a schedule that upholds the specifications.
 Such descriptions are fed to the model via our own translator program.\\
 The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and PayloadWindow.
 They model different aspects of the nanosatellite and its environment, and are all described separately below.\\
 The templates Processor and Scheduler, are roughly based on those presented by Bisgaard et al. 2016\cite{gomx3}, but have been modified to fit our context as to handle the added parameters.\\
-The model is made to optimise in regards to profit, see \cref{sec:read_input}, this is done as the battery level is rarely a concern\cite{gom_space_conversation}.
+The model is made to optimise in regards to profit, see \myref{sec:read_input}, this is done as the battery level is rarely a concern\cite{gom_space_conversation}.
 We therefore chose the approach where we found the schedule that would yield the highest profit, according to the input specification, while having the battery level in mind.
 As \gls{kibam} is pessimistic in the sense that it underestimates the \gls{soc} it would be a good choice to implement.
 However due to the complexity of \gls{kibam} and the need for non-linear rates \gls{cora} in not the right tool for this, therefore we have chosen to model the ideal battery model.\\
@@ -18,6 +19,7 @@ Because of this we have to calculate the cost as a function based on the defined
 The function \uppVar{calcCost()} calculates the cost rate by subtracting the defined profit from $5$.
 However, if the nanosatellite is within a window where another payload can only be performed, the cost rate will be multiplied by two making in order to make it more expensive to execute. 
 This is done in order to make it more attractive for the model to chose the payloads that are restricted by a window, versus those that may be executed at any time.
+
 \begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Function calcCost(), used for calculating the cost rate}, label=lst:calcCost]
 void calcCost(){
