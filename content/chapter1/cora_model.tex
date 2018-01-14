@@ -80,9 +80,9 @@ If the Scheduler indicates it is possible to execute the payload, it may be the 
 	\path[->,black, thick] (l2) edge[bend right=35] node [midway, left][align=center]{
 		\textcolor{sync}{run?}}(l6);
 	\path[->,black, thick] (l4) edge node [midway, below][align=center]{
-		\textcolor{guard}{x >= taskTimes[active][1]}} (l3);
+		\textcolor{guard}{x >= TaskTimes[active][1]}} (l3);
 	\path[->,black, thick] (l3) edge node [midway, left][align=right]{
-		\textcolor{guard}{x >= taskTimes[active][2]}\\
+		\textcolor{guard}{x >= TaskTimes[active][2]}\\
 		\textcolor{update}{reset(), dequeue(),}\\
 		\textcolor{update}{x = 0, mayRun()}} (l1);
 	\path[->,black, thick] (l1) edge node [midway, left][align=left]{
@@ -101,8 +101,6 @@ If the Scheduler indicates it is possible to execute the payload, it may be the 
 	\caption{Processor template}
 	\label{fig:cora_pro}
 \end{figure}
-
-
 
 \subsubsection*{Scheduler}\label{ssec:cora_sch}
 Next we will describe the Scheduler. The scheduler always checks if there are enough remaining energy. When receiving the synchronisation \uppSync{ready?} it will answer back with \uppSync{run!}. And if there are at any time is no more energy this template will result in a deadlock, discarding the current trace and attempting another one. If all traces results in a deadlock it was not possible to generate a schedule with the specified parameters.
@@ -126,7 +124,6 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 	\caption{Scheduler template}
 	\label{fig:cora_schedule}
 \end{figure}
-
 
 \subsection*{Insolation} \label{ssec:cora_ins}
 The insolation template can be seen in \cref{fig:cora_inso}. The model consist of two locations \uppLoc{inSun} and \uppLoc{inEclipse}. The nanosatellite can only recharge when it has a clear line of sight to the sun, which is indicated by the location \uppLoc{inSun}. The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}. This is done four times per orbit, rather than for each time unit, in order to minimize the state space. When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one half orbit, the model is forced to transition to \uppLoc{inEclipse}. Note that it is assumed that the nanosatellite always spends exactly half its time in insolation.

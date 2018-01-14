@@ -218,9 +218,10 @@ bool mayRun(){
 	\end{lstlisting}
 \end{figure}
 
-\section{OrbitWindows}
+
+\section{PayloadWindow}
 \begin{figure}[H]
-	\begin{lstlisting}[language=my_c, caption={Declarations for OrbitWindows template}, label=lst:orbitwindows_code]
+	\begin{lstlisting}[language=my_c, caption={Declarations for PayloadWindow template}, label=lst:orbitwindows_code]
 clock wtime;
 
 void setRunnable(){
@@ -259,12 +260,12 @@ void setRunnable(){
 		\textcolor{update}{wtime = 0}
 	} (l0);
 	\end{tikzpicture}
-	\caption{Window templates}
+	\caption{PayloadWindow templates}
 	\label{fig:smc_OW}
 \end{figure}
 \section{System Declarations}
 \begin{figure}[H]
 	\begin{lstlisting}[language=my_c, caption={System declarations}, label=lst:system_declarations_code]
-system Processor, EnergySource, Scheduler, Insolation, OrbitalWindows;
+system Processor, EnergySource, Scheduler, Insolation, PayloadWindow;
 	\end{lstlisting}
 \end{figure}

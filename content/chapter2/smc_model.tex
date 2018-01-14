@@ -3,7 +3,7 @@
 
 Since \gls{smc} allows clocks to have non-linear rate along with rational numbers, it is possible to implement \gls{kibam}, see \ref{sec:kibam} \nameref{sec:kibam}. The advantage of using the battery model over ideal, implemented in \gls{cora}, is that \gls{kibam} is pessimistic in the sense that \gls{kibam} tends to underestimate the actual battery levels. Because of this \gls{kibam} will be implemented in the \gls{smc} model, instead of the ideal
 
-Our \gls{smc} model consist of four templates plus one instance of a template for each window described in the payload specification. However, it is required that at least one window is defined in the input. This makes a total of 5 plus templates, which are Processor, Insolation, EnergySource, Scheduler, and OrbitWindows(i).\\ 
+Our \gls{smc} model consist of four templates plus one instance of a template for each window described in the payload specification. However, it is required that at least one window is defined in the input. This makes a total of 5 plus templates, which are Processor, Insolation, EnergySource, Scheduler, and PayloadWindow(i).\\ 
 The \gls{smc} model is based on a UPPAAL implementation of \gls{kibam} \cite{battery_aware_scheduling}, and our \gls{cora} model. The UPPAAL implementation of \gls{kibam} covers scheduling with uncertainty, combined with capturing battery levels during execution of the schedule. \\
 The rest of this section we will go over each of the important points in the model, this include the concept of recharging, windows for payloads, payload dependencies ect. 
 \ofx{det er ikke blevet beskrevet hvorfor vi laver denne model! ud fra dette ville jeg gætte på det er for KiBaM}
@@ -130,8 +130,8 @@ If for some reason it is not possible to perform the transition it waits until w
 	\label{fig:smc_S}
 \end{figure}
 
-\subsection{Orbit Windows}
-The OrbitWindows template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them. The overall functionality is similar to the template TaskWindow in the \gls{cora} model. Like in the \gls{cora} model, one instance of OrbitWindows occurs for each defined window. However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and is only responsible for keeping track of the window by updating a global variable when a change occur.
+\subsection{Payload Window}
+The PayloadWindow template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them. The overall functionality is similar to the template PayloadWindow in the \gls{cora} model. Like in the \gls{cora} model, one instance of PayloadWindow occurs for each defined window. However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and is only responsible for keeping track of the window by updating a global variable when a change occur.
 %When the first transition, from the initial location, is taken it indicates that the window is now active by changing the global variable \uppVar{inWindow[id]} to 1. When time has passed and window is no longer inside the window the next transition is taken, changing \uppVar{inWindow[id]} to 0. lastly when a full orbit has been performed it resets the clock \uppVar{wtime} with the last transition ending in the initial location.
 
 
