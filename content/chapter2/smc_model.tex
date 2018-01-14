@@ -130,8 +130,8 @@ If for some reason it is not possible to perform the transition it waits until w
 	\label{fig:smc_S}
 \end{figure}
 
-\subsection{Orbit Windows}
-The OrbitWindows template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them. The overall functionality is similar to the template TaskWindow in the \gls{cora} model. Like in the \gls{cora} model, one instance of OrbitWindows occurs for each defined window. However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and is only responsible for keeping track of the window by updating a global variable when a change occur.
+\subsection{Payload Window}
+The PayloadWindow template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them. The overall functionality is similar to the template PayloadWindow in the \gls{cora} model. Like in the \gls{cora} model, one instance of PayloadWindow occurs for each defined window. However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and is only responsible for keeping track of the window by updating a global variable when a change occur.
 %When the first transition, from the initial location, is taken it indicates that the window is now active by changing the global variable \uppVar{inWindow[id]} to 1. When time has passed and window is no longer inside the window the next transition is taken, changing \uppVar{inWindow[id]} to 0. lastly when a full orbit has been performed it resets the clock \uppVar{wtime} with the last transition ending in the initial location.
 
 
