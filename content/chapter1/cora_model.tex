@@ -46,7 +46,7 @@ Therefore the result of this query is the schedule with the highest profit, and 
 E<> t\_time == ScheduleLength
 \end{equation}
 
-\subsection*{Processor} \label{ssec:cora_pro}
+\subsection{Processor} \label{ssec:cora_pro}
 We will describe the Processor template first as it is the base for the entire model.
 It models the nanosatellite's processor in the sense that it models when the processor should be idling or executing a payload, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}.\\
 The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so.
@@ -118,7 +118,7 @@ If the Scheduler approves and all dependencies are fulfilled, the Processor will
 	\label{fig:cora_pro}
 \end{figure}
 
-\subsubsection*{Scheduler} \label{ssec:cora_sch}
+\subsubsection{Scheduler} \label{ssec:cora_sch}
 The scheduler always checks if there are enough remaining energy.
 When receiving the synchronisation \uppSync{ready?} it will answer back with \uppSync{run!}.
 The template is also responsible for deadlocking if the battery \gls{soc} goes below the safety threshold, thereby discarding the current trace which will force it to try another one.
@@ -145,7 +145,7 @@ The Scheduler template can be seen in \cref{fig:cora_schedule}.
 	\label{fig:cora_schedule}
 \end{figure}
 
-\subsection*{Insolation} \label{ssec:cora_ins}
+\subsection{Insolation} \label{ssec:cora_ins}
 The model consist of two locations \uppLoc{inSun} and \uppLoc{inEclipse}, as seen in \cref{fig:cora_inso}.
 The nanosatellite can only recharge when it has a clear line of sight to the sun, which is indicated by the location \uppLoc{inSun}.
 The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}.
@@ -229,10 +229,11 @@ Our implementation would recharge at time 11, 22, 33 and, 44 as the orbit time w
 Additionally it is assumed that the nanosatellite are always starting in insolation, resulting in our model only being able to produce an accurate schedule for the nanosatellite that matches our starting point.
 
 
-\subsection*{PayloadWindow}\label{ssec:cora_tw}
+\subsection{PayloadWindow}\label{ssec:cora_tw}
 The last template is the PayloadWindow, this template have one instance for each defined window.
 The template is used to model the windows as described in \myref{sec:read_input}.
 Windows is an important restriction when producing a schedule as some payloads may be pointless to execute outside of their respective windows.
 When a change to a window occurs it will synchronise with the processor on the channel \uppChan{win}, if it is in \uppLoc{Idle} which indicates it may execute some payload.
 Otherwise it will transition to the next location updating some variables indicating if the nanosatellite is within the window or not.
 A figure of this template can be seen in \cref{fig:cora_window}.\\
+It is assumed that an orbit is constant, meaning if the orbit starts whit the nanosatellite over Paris the orbit will also end there.  
