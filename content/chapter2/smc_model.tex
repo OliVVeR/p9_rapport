@@ -1,30 +1,30 @@
-\section{SMC Model} \label{sec:smc_model}
-Because \Gls{smc} avoid exhaustive exploration of the state space, it is more favourable to use than \gls{cora} as ranges are introduced to various variables. 
-Additionally, \gls{smc} allows for queries that help us test and verify properties that was otherwise not possible in \gls{cora}. 
-This section will focus on how a \gls{smc} model can be constructed to provide further insight about the schedules' robustness.
-%Additionally the \gls{smc} model will need variables mentioned in \myref{sec:read_input}.
+\section{SMC model} \label{sec:smc_model}
+\Gls{smc} is chosen because \gls{cora} handles randomness poorly making it inadequate to perform robustness check, because of its deterministic approach, compared to \gls{smc} which can perform undeterministic choices. This section will focus on how a \gls{smc} model can be constructed to provide further insight about the schedules robustness produced by the \gls{cora} model. Additionally the \gls{smc} model will need variables mentioned in \myref{sec:read_input}.
 
-Since \gls{smc} allows clocks to have a non-linear rate along with rational numbers, it is possible to implement \gls{kibam}, see \myref{sec:kibam}. The advantage of using \gls{kibam} over Ideal, implemented in \gls{cora}, is that \gls{kibam} is pessimistic in the sense that \gls{kibam} tends to underestimate the actual battery levels.
-Because of this \gls{kibam} will be implemented in the \gls{smc} model, instead of the Ideal.
+Since \gls{smc} allows clocks to have non-linear rate along with rational numbers, it is possible to implement \gls{kibam}, see \myref{sec:kibam}. The advantage of using the battery model over ideal, implemented in \gls{cora}, is that \gls{kibam} is pessimistic in the sense that \gls{kibam} tends to underestimate the actual battery levels. Because of this \gls{kibam} will be implemented in the \gls{smc} model, instead of the ideal
 
-Our \gls{smc} model consist of four templates Processor, Insolation, EnergySource, Scheduler, and PayloadWindow. 
-The model is based on a UPPAAL implementation of \gls{kibam} constructed and presented by Wognsen et al. 2003\cite{battery_aware_scheduling}, and our own \gls{cora} model.
-The UPPAAL implementation of \gls{kibam} covers scheduling with uncertainty, combined with capturing battery levels during execution of the schedule.\\
+Our \gls{smc} model consist of four templates plus one instance of a template for each window described in the payload specification. However, it is required that at least one window is defined in the input. This makes a total of 5 plus templates, which are Processor, Insolation, EnergySource, Scheduler, and PayloadWindow(i).\\ 
+The \gls{smc} model is based on a UPPAAL implementation of \gls{kibam} \cite{battery_aware_scheduling}, and our \gls{cora} model. The UPPAAL implementation of \gls{kibam} covers scheduling with uncertainty, combined with capturing battery levels during execution of the schedule. \\
+The rest of this section we will go over each of the important points in the model, this include the concept of recharging, windows for payloads, payload dependencies ect. 
 
 \subsection{Processor}
-The initial version of this template was based on a the UPPAAL implementation of \gls{kibam}, which we have then modified to fit our context.
-The processor template describes the status of the nanosatellite's processor, it indicates if it is currently executing a payload, waiting for a payload's deadline to be reached, or idling.\\
-As the model receives its schedule, it does not need to decide on a payload to execute, instead it will look for the next entry in the array describing what payloads to execute, such an array can be seen in \cref{lst:queue}.
-This template is responsible for updating the queue, and keeping track of how many payloads have been skipped.
-It is also responsible for tracking the total earnings which is calculated from the specified profit.\\
-The processor in this model also differs from the \gls{cora} model's processor as it may remain in \uppLoc{Running} for a varying amount of time, instead of just the worst execution time for the payload.\\
-It synchronises with the scheduler template on the channel \uppSync{ready!} and then awaits a synchronisation on either \uppSync{run?} or \uppSync{skip?}, while the scheduler determines whether or not to execute the next payload.
+The initial version of this template was based on a the UPPAAL implementation of \gls{kibam}, which we have then modified to fit our context. The processor template describes the status of the nanosatellites processor, it indicates if it is currently executing a payload, waiting for a payloads deadline to be reached or idling.\\
+As the \gls{smc} model receives a schedule from \gls{cora} it does not need to find a payload to execute, instead it will look for the next entry in the array describing what payloads to execute, such an array can be seen in \cref{lst:queue}. This template is responsible for updating the queue, and keeping track of how many payloads have been skipped, and the earnings, in regards to the specified profit.\\
+The processor in this model also differs form the one in the \gls{cora} model in the way that in this model, the processor may remain in \uppLoc{Running} for a varying amount of time instead of just the worst execution time for the payload.\\
+It synchronises with the scheduler template onthe channel \uppSync{ready!} and then awaits a synchronisation on either \uppSync{run?} or \uppSync{skip?}, while the scheduler determines what to do with the next payload.
 \begin{figure}[H]
-	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the schedule}, label=lst:queue, firstnumber=57]
+	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the \gls{cora} model}, label=lst:queue, firstnumber=53]
+	.
+	.
+	.
+//from cora
 int Queue[NumberOfPayloads] = {4, 0, 1, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0};
 const int RunStart[NumberOfPayloads] = {0, 50, 100, 140, 190, 230, 280, 320, 370, 410, 460, 500, 550, 590, 640, 680};
 	\end{lstlisting}
 \end{figure}
+
+
+
 
 \begin{figure}[H]
 	\centering
@@ -93,17 +93,10 @@ const int RunStart[NumberOfPayloads] = {0, 50, 100, 140, 190, 230, 280, 320, 370
 \end{figure}
 
 \subsection{Scheduler}
-When the location \uppLoc{Ready} in the Processor is active, two transitions is available. 
-One that executes and one that skips the current payload, each of the transitions are dependent on the scheduler template seen in \cref{fig:smc_S}.
-This template is responsible for determining if a payload can be executed based on all of the restrictions defined in the payload and environment description.
-This includes dependencies, windows, maximum runs, and the battery levels.
-It checks the windows, dependencies, and the maximum amount of runs per reset, whereas for the battery level it calculates an estimate of what it would be at after executing the payload. 
-This is done for the available, bound and total charge.
-This is necessary to ensure that a payload does not draw more power than currently available.
-All of these checks are done on the transition that broadcast \uppSync{run!} indicating that it is safe to execute the payload.\\
-If for some reason it is not possible to perform the transition, it waits until we either have recharged enough energy or a change in the windows have occurred, allowing the execution of the payload.
-If we are not able to perform the payload before the deadline, which is calculated by subtracting worst from the payload deadline, then the other transition is activated leading to the payload being skipped.
-With dependencies this can have significant consequences to the schedule, because the next payload in the schedule may have depended on the skipped payload, thus resulting in a chain of skipped payloads.
+When the location \uppLoc{Ready} from Processor is active, two transitions is available to either execute or skip the current payload, each of the transitions are dependent on the scheduler template seen in \cref{fig:smc_S}. This template is responsible for determining if a payload can be run based on all of the restrictions defined, in the payload and environment description, by the user. This includes dependencies, windows, and the battery levels. It checks the windows, dependencies, and the maximum amount of runs per reset, whereas for the battery level it calculates an estimate of what it would be after executing the payload, this is done for both the available, bound and total level.
+This is necessary to ensure that a payload does not draw more power than currently available. All of these checks are done on the transition that broadcast \uppSync{run!} indicating that it is safe to execute the payload. \\
+If for some reason it is not possible to perform the transition it waits until we either have recharged enough energy or a chance in the windows have occurred, allowing for execution of the payload. If we are not able to perform the payload before the deadline, which is calculated by subtracting worst from the payload deadline, then the other transition is activated leading to a skip of the payload. With dependencies this can have significant consequences to the schedule because the next payload in the schedule may have depended the skipped payload thus resulting in a chain of skipped payloads.
+
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}
@@ -136,40 +129,26 @@ With dependencies this can have significant consequences to the schedule, becaus
 	\label{fig:smc_S}
 \end{figure}
 
-\subsection{Payload Window}
-The PayloadWindow template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them.
-The overall functionality is similar to the template of the same name in the \gls{cora} model.
-Equal to the \gls{cora} model, one instance of PayloadWindow occurs for each defined window.
-However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and it is only responsible for keeping track of the window by updating a global variable when a change occur.
-It is required that at least one window is defined in the input for the model to work.
+\subsection{PayloadWindow}
+The PayloadWindow template can be found in \cref{fig:smc_OW}, with three locations that each have an in and out going transition creating a loop between them. The overall functionality is similar to the template PayloadWindow in the \gls{cora} model. Like in the \gls{cora} model, one instance of PayloadWindow occurs for each defined window. However, in this model it is independent from the rest of the model, in the sense that there are no synchronisations, and is only responsible for keeping track of the window by updating a global variable when a change occur.
+%When the first transition, from the initial location, is taken it indicates that the window is now active by changing the global variable \uppVar{inWindow[id]} to 1. When time has passed and window is no longer inside the window the next transition is taken, changing \uppVar{inWindow[id]} to 0. lastly when a full orbit has been performed it resets the clock \uppVar{wtime} with the last transition ending in the initial location.
 
-\subsection{Energy Source} \label{subsec:energy_src}
-During the entire schedule we need to keep track of the \gls{soc}, as previously mentioned this is done using \gls{kibam}.
-It is needed to calculate the values of \uppVar{a} and \uppVar{b}, and enable the battery model to recharge\cite{battery_aware_scheduling}.
-To add the capability of recharging a new location is added to ensure that \uppVar{b} can not exceed its maximum capacity, which is calculated based on the total capacity, so when the model enter the new location it will not add the values of recharge to \uppVar{b}. Additionally a guard is set on the transition leading back to \uppLoc{Charging}, that says \uppVar{b} needs to drain a small amount of power, before going back to the initial location. This is done to prevent damaging the battery further. The final template can be found in \cref{fig:smc_ES}.
 
-In \myref{sec:kibam} we described how \gls{kibam} worked as a function of time that calculate the available and bound wells at time t, but given we store these and calculate the change to them each time tick, a more elegant implementation can be constructed\cite{battery_aware_scheduling}. 
-In the model \uppVar{a} and \uppVar{b} are represented by clocks and each passing tick updates the cost on clock \uppVar{a} and \uppVar{b}. This mean that we only need to find the actual increase and decrease to them. This is done using the invariants seen in \cref{eq:calcA} and \cref{eq:calcB}\cite{battery_aware_scheduling}.
+\subsection{EnergySource} \label{subsec:energy_src}
+During the entire schedule we need to keep track of the battery level, as mentioned in the start of this section we are using \gls{kibam}. In \myref{sec:kibam} we show the equations for calculating the available and bound charge as a function of time. In order to use it in our \gls{smc} model we need to change the equation, to not be a function of time and only give us the difference changes to the available and bound charge each time unit. We are able to do this, because we store the value of available and bound charge as each time unit passes in two clocks, \uppVar{a} and \uppVar{b}. At the start of the model we assign \uppVar{a} to \gls{soc} multiply with the ratio c. likewise we assign \uppVar{b} to \gls{soc} multiply by one minus c.
+
+The equation used to calculate clock \uppVar{a} can be seen in \cref{eq:calcA}. The equation has two purposes, subtract the amount of energy being used by the running payload represented with the variable \uppVar{i}, and add energy to \uppVar{a} from \uppVar{b} based on the difference between the two wells calculated by $k*(b/(1-c)-a/c)$.
 \begin{equation}\label{eq:calcA}
-	\uppInv{a' == -i+k*(b/(1-c)-a/c)} 
+\uppInv{a' == -i+k*(b/(1-c)-a/c)} 
 \end{equation}
+
+Similar for clock \uppVar{b}, It needs to subtract the amount of energy add to \uppVar{a} and add the amount of charge gained from \uppVar{RechargeRate}. \uppVar{insolation} is a bool that is either one or zero depending on the Insolation template and determines if \uppVar{b} gains charge.
 \begin{equation}\label{eq:calcB}
-	\uppInv{b' == -k*(b/(1-c)-a/c)+(insolation * RechargeRate)}
+\uppInv{b' == -k*(b/(1-c)-a/c)+(insolation * RechargeRate)}
 \end{equation}
 
-In \cref{eq:calcA} and \cref{eq:calcB} we see the constant $k$, \uppVar{k} determines the flow rate from \uppVar{b} to \uppVar{a}, to check the imbalance between the the two we divide with the ratio of the wells. Also we see the variable $i$, \uppVar{i} is the current which is always drawn from the battery, this is a combination of \uppVar{IIdle} and \uppVar{Costs[active]} depending on the status of the processor. If a payload is currently being executed $i$ is as seen in \cref{eq:calcI}.
-
-\begin{align}\label{eq:calcI}
-\begin{split}
-	If Processor.Running & \; \uppVar{i} = \uppVar{IIdle} + \uppVar{Costs[active]} \\
-	Otherwise	& \; \uppVar{i} = \uppVar{IIdle}
-\end{split}
-\end{align}
-
-
-So for example if the battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. Consider a payload had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from bound would be needed to add to available. The same is done for the bound capacity but instead of multiplying by k we multiply by minus k resulting in the value that should be subtracted from the bound well.
-
-In \cref{eq:calcB} we also see the product of \uppVar{insolation} and \uppVar{RechargeRate} being added to \uppVar{b}, when we are in eclipse from the sun, \uppVar{insolation} is false resulting in no recharge being added to \uppVar{b}.
+An illustration can be seen below, showing how the difference is calculated along with k's impact on how much get transferred from \uppVar{b} to \uppVar{a}.
+Assume a battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. Consider a payload had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from bound would be needed to add to available. The same is done for the bound capacity but instead of multiplying by k we multiply by minus k resulting in the value that should be subtracted from the bound well.
 
 With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on insolation, now we only need to consider what queries should be run in order to give the most usable data for the users.
 
