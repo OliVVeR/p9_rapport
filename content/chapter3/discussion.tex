@@ -29,12 +29,10 @@ However, a location have been added to the UPPAAL \gls{smc} model in order to av
 We believe that since our tool has an emphasis on battery usage, the ability to model battery wear and avoid schedules that have a high impact on it, will be sensible to implement. 
 
 \subsection*{Improving Insolation}
-As mentioned in \myref{sec:cora} the model always assume an initial state of insolation, that the nanosatellite is in the sun. Resulting in our schedule only being able to generate schedules for the nanosatellite when it matches our starting point.
-This could be corrected by adding new initial location, that have transitions to both of the existing locations, given a variable that will determine which location there should be transitioned to based on the actual position of the satellite.
-
+In our \gls{cora} model under Insolation template. We always start in \uppVar{inSun} location, this should be changed to allow schedule starting in the other location \uppVar{inEclipse}. Similar our clocks used in the template is always initialize to zero, this will create a problem for the user if they want to start their schedule midway through an eclipse. A solution can be done, by introducing a new initial committed location that has edges to \uppVar{inSun} and \uppVar{inEclipse}. On each of the new edges a guard will need to be in place, that should check a user defined value to indicate which starting location it should transition to. Additionally on both edges there should be an update function, which set the clock to the correct times according to what the user has specified in the configuration specifications.
 
 \subsection*{Zero Windows}
-As of now the models, both \gls{cora} and \gls{smc}, does not support there being no defined windows in the payload description as several variables are dependant on this. However, as windows is an important concept for our context we do not believe this to be a problem. Also there is a workaround by defining all payloads as having the window $0-OrbitTime$.
+As of now the models, both \gls{cora} and \gls{smc}, does not support there being no defined windows in the payload description as several variables are dependant on this. However, as windows is an important concept for our context we do not believe this to be a problem. Also there is a workaround by defining one payload having the window times $0-OrbitTime$.
 
 \subsection*{Battery Importance}
 During our meeting with Lars Alminde at GomSpace we discussed our approach as well as potential new approaches. They expressed that nanosatellites battery was not as important as we had initial assumed\cite{gom_space_conversation}. this may be a combination of multiple factors like increased battery capacity and more efficient solar panels. Given that our meeting with GomSpace was late in the project we decided to keep battery as an aspect of our problem statement.
