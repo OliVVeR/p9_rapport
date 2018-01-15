@@ -27,11 +27,11 @@ All of these queries are relevant to verify that the battery will hold up. Howev
 
 \subsubsection*{Verifying the Payload Order}
 % impotant
-\begin{equation} \label{eq:smc3}
-	Pr\; [<=ScheduleLength] \; (<> \ skips \ !=\ 0)
-\end{equation}
-Query \ref{eq:smc3} are used for finding the probability of any scheduled payloads are not run. The reason for it not doing so may vary but it will often be as a result of a low battery level as a result of a more precise battery model, which over predicts the energy consumption, implemented in the \gls{smc} model.\\
+Query \ref{eq:smc3} are used for finding the probability of any scheduled payloads are not run. The reason for it not doing so may vary but it will often be as a result of a low battery level as a result of a more pessimistic battery model, which over predicts the energy consumption, implemented in the \gls{smc} model.\\
 This query does not give any of information about what went wrong, however it does say that the generated schedule does not hold completely.
+\begin{equation} \label{eq:smc3}
+Pr\; [<=ScheduleLength] \; (<> \ skips \ !=\ 0)
+\end{equation}
 
 % extra
 \begin{equation} \label{eq:smc4}
