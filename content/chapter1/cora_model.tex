@@ -1,16 +1,27 @@
-\section{Cora Model} \label{sec:cora}
-Based on the information gained during the previous sections we have constructed a model in \gls{cora} capable of generating schedules for the nanosatellite. The \gls{cora} model takes a set of payloads with some requirements which works as constrains, and other descriptive values, as described in \myref{sec:read_input}, in order to generate a schedule that upholds the specifications. Such descriptions are fed to the model via our own translator.\\
-The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and PayloadWindow. These models different aspects of the nanosatellite and its environment, and are all described separately below.\\
-The templates Processor and Scheduler, are roughly based on those presented in the GomX-3 article\cite{gomx3}, but have been modified to fit our context as well as handle the added parameters.\\
-The model is made to optimise in regards to profit, see \myref{sec:read_input}, this is done as the battery level is rarely a concern\cite{gom_space_conversation}. We therefore chose the approach where we found the schedule that would yield the highest profit, according to input specification, while having the battery level in mind. As \gls{kibam} is pessimistic in the sense that it underestimates the state of charge it would be a good choice to implement. However due to the complexity of \gls{kibam} and the need for non-linear rates \gls{cora} in not the right tool for this, therefore we have chosen to model the ideal battery model.\\
-The model is made to always use the worst case execution time, meaning the time it takes to complete a payload may vary. Since no one has control over this we chose to assume the worst. This means more energy will be consumed during simulation that what would more likely be the actual consumption.\\
-When setting the cost rate, see \myref{sec:upp_cora}, the user defined profit is used. However, when the user defines the profit, a large number represents that the payload is profitable to execute. In \gls{cora} when running a query where we extract the best trace, it is defined as the one with the lowest cost. Because of this we have to calculate the cost as a function based on the defined profit, how this is done can be seen in \cref{lst:calcCost}.\\
-The basics of the function \uppVar{calcCost()} is, to calculate the cost rate by subtracting the defined profit from $5$. However, if the nanosatellite is within a window where another payload can only be performed the cost rate will be multiplied by two making it more expensive run perform.\\
-
+\section{CORA Model} \label{sec:cora}
+Based on the information gained during the previous sections we have constructed a model in \gls{cora} capable of producing schedules for the nanosatellite.
+The \gls{cora} model takes a set of payloads with some requirements which works as constrains, and other descriptive values, as described in \myref{sec:read_input}, in order to produce a schedule that upholds the specifications.
+Such descriptions are fed to the model via our own translator program.\\
+The \gls{cora} model is composed of four templates; Processor, Scheduler, Insolation, and PayloadWindow.
+They model different aspects of the nanosatellite and its environment, and are all described separately below.\\
+The templates Processor and Scheduler, are roughly based on those presented by Bisgaard et al. 2016\cite{gomx3}, but have been modified to fit our context as to handle the added parameters.\\
+The model is made to optimise in regards to profit, see \myref{sec:read_input}, this is done as the battery level is rarely a concern\cite{gom_space_conversation}.
+We therefore chose the approach where we found the schedule that would yield the highest profit, according to the input specification, while having the battery level in mind.
+As \gls{kibam} is pessimistic in the sense that it underestimates the \gls{soc} it would be a good choice to implement.
+However due to the complexity of \gls{kibam} and the need for non-linear rates, \gls{cora} is not the right tool for this, therefore we have chosen to model the ideal battery model.\\
+Since there is uncertainty in regards to how long it takes to complete some payloads, we chose to assume the worst.
+This means that it is likely that more energy will be consumed during simulation than in orbit.\\
+When setting the cost rate, see \myref{sec:upp_cora}, the user defined profit is used.
+When the user defines the profit, large numbers represents that the payload is more profitable than payloads with with lower profit  values.
+In \gls{cora}, when running a query where we extract the best trace, it is defined as the trace with the lowest cost.
+Because of this we have to calculate the cost as a function based on the defined profit, how this is done can be seen in \cref{lst:calcCost}.\\
+The function \uppVar{calcCost()} calculates the cost rate by subtracting the defined profit from $5$.
+However, if the nanosatellite is within a window where another payload can only be performed, the cost rate will be multiplied by two in order to make it more expensive to execute. 
+This is done to make it more attractive for the model to chose the payloads that are restricted by a window, versus those that may be executed at any time.
 
 \begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Function calcCost(), used for calculating the cost rate}, label=lst:calcCost]
-void calcCost(){
+void calcCost() {
 	.
 	.
 	.
@@ -26,17 +37,22 @@ void calcCost(){
 \end{figure}
 
 
-The only query run in the \gls{cora} model is the one seen in query \ref{eq:cora_q}. In this query \uppVar{t\_time} it the accumulated time, and \uppVar{ScheduleLength} is the desired length of the schedule. This query is run with the trace setting \textit{Best}, meaning it will find the schedule that results in the lowest \textit{cost}, i.e. the highest profit. 
-Therefore the result of this query is the schedule with the highest profit, and this is what the \gls{smc} model will build upon.
+The only query that is run in the \gls{cora} model is the one seen in query \ref{eq:cora_q}.
+In this query \uppVar{t\_time} is the accumulated time, and \uppVar{ScheduleLength} is the desired length of the schedule.
+This query is run with the trace setting \textit{Best}, meaning it will find the schedule that results in the lowest \textit{cost}, i.e. the highest profit.
+Therefore the result of this query is the schedule with the highest profit, and this is what the \gls{smc} model will be build upon.
 
 \begin{equation} \label{eq:cora_q}
 E<> t\_time == ScheduleLength
 \end{equation}
 
-\subsection*{Processor}\label{ssec:cora_pro}
-First we will describe the Processor template as it is the base for the entire model. This models the nanosatellite in the sense that it is the one symbolising that the processor is active or idling, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}. \\
-The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so. If it is not allowed to execute the payload it will start idling until a change in its environment occurs, indicated by the synchronisation \uppSync{win?}. 
-If the Scheduler indicates it is possible to execute the payload, it may be the case that the environment does not allow it, e.g. if the payload is dependant on a window which the nanosatellite is not currently in, the processor will try to select another payload to run. If the Scheduler approves and all dependencies are fulfilled, the Processor will transition to \uppLoc{Running} where it will remain for the worst case execution time for the selected payload before it transitions to \uppLoc{Wait} where it will remain for the duration of the payloads deadline.
+\subsection*{Processor} \label{ssec:cora_pro}
+We will describe the Processor template first as it is the base for the entire model.
+It models the nanosatellite's processor in the sense that it models when the processor should be idling or executing a payload, as well as consuming power while doing so, as seen in \cref{fig:cora_pro}.\\
+The processor template synchronise with the scheduler every time it is ready to execute a payload, the scheduler will then send back a synchronisation if the Processor is allowed to do so.
+If it is not allowed to execute the payload it will start idling until a change in its environment occurs, indicated by the synchronisation \uppSync{win?}.
+If the Scheduler indicates it is possible to execute the payload, it may be the case that the environment does not allow it, e.g. if the payload is dependant on a window which the nanosatellite is not currently in, the processor will try to select another payload to execute.
+If the Scheduler approves and all dependencies are fulfilled, the Processor will transition to \uppLoc{Running} where it will remain for the worst case execution time for the selected payload before it transitions to \uppLoc{Wait} where it will remain for the duration of the payloads deadline.
 
 \begin{figure}[h]
 	\centering
@@ -102,8 +118,12 @@ If the Scheduler indicates it is possible to execute the payload, it may be the 
 	\label{fig:cora_pro}
 \end{figure}
 
-\subsubsection*{Scheduler}\label{ssec:cora_sch}
-Next we will describe the Scheduler. The scheduler always checks if there are enough remaining energy. When receiving the synchronisation \uppSync{ready?} it will answer back with \uppSync{run!}. And if there are at any time is no more energy this template will result in a deadlock, discarding the current trace and attempting another one. If all traces results in a deadlock it was not possible to generate a schedule with the specified parameters.
+\subsubsection*{Scheduler} \label{ssec:cora_sch}
+The scheduler always checks if there are enough remaining energy.
+When receiving the synchronisation \uppSync{ready?} it will answer back with \uppSync{run!}.
+The template is also responsible for deadlocking if the battery \gls{soc} goes below the safety threshold, thereby discarding the current trace which will force it to try another one.
+If all traces results in a deadlock it was not possible to produce a schedule with the specified parameters.
+The Scheduler template can be seen in \cref{fig:cora_schedule}.
 
 \begin{figure}[H]
 	\centering
@@ -126,7 +146,12 @@ Next we will describe the Scheduler. The scheduler always checks if there are en
 \end{figure}
 
 \subsection*{Insolation} \label{ssec:cora_ins}
-The insolation template can be seen in \cref{fig:cora_inso}. The model consist of two locations \uppLoc{inSun} and \uppLoc{inEclipse}. The nanosatellite can only recharge when it has a clear line of sight to the sun, which is indicated by the location \uppLoc{inSun}. The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}. This is done four times per orbit, rather than for each time unit, in order to minimize the state space. When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one half orbit, the model is forced to transition to \uppLoc{inEclipse}. Note that it is assumed that the nanosatellite always spends exactly half its time in insolation.
+The model consist of two locations \uppLoc{inSun} and \uppLoc{inEclipse}, as seen in \cref{fig:cora_inso}.
+The nanosatellite can only recharge when it has a clear line of sight to the sun, which is indicated by the location \uppLoc{inSun}.
+The recharging is done on the looping edge on \uppLoc{inSun} with the function \uppUpdate{increaseBattery()}.
+This is done four times per orbit, rather than for each time unit, in order to minimise the state space.
+When half of the \uppVar{OrbitTime} have passed, modelling the time it takes the nanosatellite to complete one half of its orbit, the model is forced to transition to \uppLoc{inEclipse}.
+It is assumed that the nanosatellite always spends exactly half its time in insolation.
 
 \begin{figure}[H]
 	\centering
@@ -169,22 +194,26 @@ The insolation template can be seen in \cref{fig:cora_inso}. The model consist o
 \label{fig:cora_inso}
 \end{figure}
 
-The way this is modelled have a few assumptions, and inaccuracies as previously mentioned we only recharge four times during insolation. This may result in a suboptimal schedule as executing a payload may cause the state of charge to fall below the threshold, and therefore not be executed, where the state of charge should be higher potentially resulting in it being possible to execute the payload. We however believe this to be an edge-case that will rarely occur.
-In \cref{fig:granularity} we see a graph over the state of charge(left) while doing nothing but charging. On the right, is a close-up of the same graph. The blue line shows what the state of charge should be and the orange what it is with our implementation. Clearly our implementation is not entirely accurate, but neither is the ideal battery model, and because of this we believe a small margin of error is acceptable given the much reduced state space.
+A few assumptions have been made when this template was modelled, and there is an inaccuracy as we only recharge four times during insolation.
+This may result in a suboptimal schedule as executing a payload may cause the \gls{soc} to fall below the threshold, invalidating the trace, where the \gls{soc} should be higher potentially resulting in it being possible to execute the payload.
+However, we believe this to be an edge-case that will rarely occur.
+In \cref{fig:granularity} we see a graph over the \gls{soc} (left) while doing nothing but charging.
+On the right, is a close-up of the same graph.
+The blue line shows what the \gls{soc} should be and the orange what it is with our implementation.
+Clearly our implementation is not entirely accurate, but neither is the ideal battery model, and because of this we believe a small margin of error is acceptable given the significantly reduced execution time.
 
 \begin{figure}[h]%
 	\centering
-	\subfloat{{\includegraphics[width=7cm]{graphics/granularity.png} }}%
+	\subfloat{{\includegraphics[width=7cm]{graphics/granularity.png} }}
 	\qquad
-	\subfloat{{\includegraphics[width=7cm]{graphics/granularity_zoom.png} }}%
-	\caption{Graphs illustrating state of charge, with different granularity.}%
+	\subfloat{{\includegraphics[width=7cm]{graphics/granularity_zoom.png} }}
+	\caption{Graphs illustrating \gls{soc}, with different granularity.}
 	\label{fig:granularity}%
 \end{figure}
 
-To find the effect of this state-space reduction we generated $2 * 10$ schedules of $12hours$ each, ten with our simplification and ten where recharge was added for every unit of time elapsed. The differences in time spend to generate these were quite significant and can be seen in \cref{tab:runTimes}. There it is seen that the worst case found when charging every time unit was $138.76\%$ more than when using our simplification.
-
-
-
+To find the effect of execution time reduction we produced $2 * 10$ schedules of 12 hours each, ten with our implementation and ten where recharge was added for every unit of time elapsed.
+The differences in time spend to produce these were quite significant and can be seen in \cref{tab:runTimes}.
+The worst case when charging every time unit was $138.76\%$ more than when using our implementation.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lllll}
@@ -193,15 +222,17 @@ To find the effect of this state-space reduction we generated $2 * 10$ schedules
 		\multicolumn{1}{l|}{Worst}   & \multicolumn{1}{l|}{64.68} & \multicolumn{1}{l|}{27.09} & \multicolumn{1}{l|}{138.76} &  \\
 		\multicolumn{1}{l|}{Average} & \multicolumn{1}{l|}{48.13} & \multicolumn{1}{l|}{24.89} & \multicolumn{1}{l|}{93.37}  &  \\ \cline{2-4}
 	\end{tabular}
-		\caption{Run times when generating a 12 hour schedule, using different granularity for insolation}
+		\caption{Execution times when generating a 12 hour schedule, using different granularity for insolation}
 		\label{tab:runTimes}
 \end{table}
-		
-Additionally it is assumed that the nanosatellite are always starting in insolation, resulting in our model only being able to generate an accurate schedule for the nanosatellite, when it matches our starting point.
+Our implementation would recharge at time 11, 22, 33 and, 44 as the orbit time were set to 90, which is why the granularity in the second column is set to 11.
+Additionally it is assumed that the nanosatellite are always starting in insolation, resulting in our model only being able to produce an accurate schedule for the nanosatellite that matches our starting point.
 
 
 \subsection*{PayloadWindow}\label{ssec:cora_tw}
-The last template is the PayloadWindow, this template have one instance for each window defined. PayloadWindow is used to model part of the nanosatellites environment in the sense that it updates whenever the nanosatellite enters and exits a window during its orbit in which some tasks can be performed. Windows is an important restriction when generating a schedule as some payloads may be pointless to execute in other time periods and would therefore be a waste of energy and time. When a change to a window occurs it will synchronise on the channel \uppChan{win}, with the processor if it is in \uppLoc{Idle} indicating it may now be possible to execute some payload. Otherwise it will just transition to the next location updating some global variables indicating if the nanosatellite is within the window or not. 
+The last template is the PayloadWindow, this template have one instance for each defined window.
+The template is used to model the windows as described in \myref{sec:read_input}.
+Windows is an important restriction when producing a schedule as some payloads may be pointless to execute outside of their respective windows.
+When a change to a window occurs it will synchronise with the processor on the channel \uppChan{win}, if it is in \uppLoc{Idle} which indicates it may execute some payload.
+Otherwise it will transition to the next location updating some variables indicating if the nanosatellite is within the window or not.
 A figure of this template can be seen in \cref{fig:cora_window}.\\
-It is assumed that the orbit is constant for the duration of the schedule. This means that the defined windows are constant whereas they would more realistically change during operation, e.g. at start time window(1) will occur at time 10 and end at time 30, then after 5 orbits the window may occur at time 11 to 31.
-
