@@ -12,7 +12,7 @@ The initial version of this template was based on a the UPPAAL implementation of
 As the \gls{smc} model receives a schedule from \gls{cora} it does not need to find a payload to execute, instead it will look for the next entry in the array describing what payloads to execute, such an array can be seen in \cref{lst:queue}. This template is responsible for updating the queue, and keeping track of how many payloads have been skipped, and the earnings, in regards to the specified profit.\\
 The processor in this model also differs form the one in the \gls{cora} model in the way that in this model, the processor may remain in \uppLoc{Running} for a varying amount of time instead of just the worst execution time for the payload.\\
 It synchronises with the scheduler template onthe channel \uppSync{ready!} and then awaits a synchronisation on either \uppSync{run?} or \uppSync{skip?}, while the scheduler determines what to do with the next payload.
-\begin{figure}[H]
+\begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the \gls{cora} model}, label=lst:queue, firstnumber=53]
 	.
 	.
