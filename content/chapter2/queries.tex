@@ -44,7 +44,6 @@ This query itself does not provide any information that can be used to identify 
 \begin{equation} \label{eq:smc3}
 Pr\; [<=ScheduleLength] \; (<> \ skips \ !=\ 0)
 \end{equation}
-
 % extra
 \begin{equation} \label{eq:smc4}
 	simulate\ 100 \; [<=ScheduleLength] \; \{active, \; Processor.Running\}
@@ -76,11 +75,11 @@ Therefore we will use 100 simulations for all queries of the type simulation.
 %It should also be noted that the simulations are run in order to provide indsight to the user, and should not be use
 
 \subsubsection*{Other Information}
+Query \ref{eq:smc5} provides two time series that reflects the two wells of the battery, \uppVar{a} and \uppVar{b}.
+This is useful for the user as they might want to discard the schedule if it uses more energy than what they are comfortable with. Even if we do not go below the threshold, it may be to expensive to execute the schedule.
 \begin{equation} \label{eq:smc5}
 	simulate\ 100 \; [<=\ ScheduleLength]\; \{ a,\ b\}
 \end{equation}
-Query \ref{eq:smc5} provides two time series that reflects the two wells of the battery, \uppVar{a} and \uppVar{b}.
-This is useful for the user as they might want to discard the schedule if it uses more energy than what they are comfortable with. Even if we do not go below the threshold, it may be to expensive to execute the schedule.
 
 % extra
 \begin{equation} \label{eq:smc6}

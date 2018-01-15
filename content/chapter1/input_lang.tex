@@ -50,19 +50,6 @@ The \textbf{battery\_capacity} is an constant that defines the maximum capacity 
 This will allow us to disregard some of the payloads that the nanosatellite may perform as they can be grouped together as one single background process which is always being executed.
 The user should only consider payloads which can be executed in parallel to the defined payloads and only chose those which energy and time cost are trivial.
 Failing to do so may result in a non representative model of their nanosatellite and therefore a schedule where our guarantees may not be valid.\\
-Based on the findings from Bisgaard et al. 2016\cite{gomx3} we have decided to include the \textbf{safe\_threshold} variable.
-This variable is used to determine when the nanosatellite's \gls{soc} is too low to continue executing the schedule.
-If the nanosatellite go below this threshold, it is in danger of depleting the battery, which means it will not be able to communicate with Earth for a period of time.
-This will result in a huge loss of potential profit as we are no longer able to execute profitable payloads and should therefore be avoided.It is critical that the schedules we produce will never go below this threshold.\\
-\textbf{rec\_rate}  defines the recharge rate such that the value is added to the battery's capacity every minute that the nanosatellite is in insolation.\\
-We have three variables that are related to the \gls{smc} model where two of them is used in its battery model.\\
-\begin{itemize}
-	\item f\_rate
-	\item ac\_width
-	\item certainty
-\end{itemize}
-\textbf{f\_rate} is a rate that is specific to the battery model we have chosen, and it is used to simulate the recovery effect of batteries. The recovery effect will be described later in \myref{sec:kibam}, together with the \textbf{ac\_width} constant.
-The constant \textbf{certainty} specifies how certain we require that \gls{smc} should be in its results. \gls{smc} is described in \myref{sec:smc}.
 \begin{figure}[H]
 \begin{lstlisting}[caption={Example of how the environment can be defined}, label=lst:ini, language=text]
 [SYSTEM]
@@ -95,6 +82,20 @@ ac_width = 0.16667
 certainty = 95
 \end{lstlisting}
 \end{figure}
+Based on the findings from Bisgaard et al. 2016\cite{gomx3} we have decided to include the \textbf{safe\_threshold} variable.
+This variable is used to determine when the nanosatellite's \gls{soc} is too low to continue executing the schedule.
+If the nanosatellite go below this threshold, it is in danger of depleting the battery, which means it will not be able to communicate with Earth for a period of time.
+This will result in a huge loss of potential profit as we are no longer able to execute profitable payloads and should therefore be avoided.It is critical that the schedules we produce will never go below this threshold.\\
+\textbf{rec\_rate}  defines the recharge rate such that the value is added to the battery's capacity every minute that the nanosatellite is in insolation.\\
+We have three variables that are related to the \gls{smc} model where two of them is used in its battery model.\\
+\begin{itemize}
+	\item f\_rate
+	\item ac\_width
+	\item certainty
+\end{itemize}
+\textbf{f\_rate} is a rate that is specific to the battery model we have chosen, and it is used to simulate the recovery effect of batteries. The recovery effect will be described later in \myref{sec:kibam}, together with the \textbf{ac\_width} constant.
+The constant \textbf{certainty} specifies how certain we require that \gls{smc} should be in its results. \gls{smc} is described in \myref{sec:smc}.
+
 At this point the CORA section does not contain any variables, the section is used as a placeholder for future versions of the system, as the model could be expanded to include variables specific to \gls{cora}.
 
 Now that payloads and nanosatellite is specified, we are able to start modelling the system.

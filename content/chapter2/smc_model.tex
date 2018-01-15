@@ -13,11 +13,7 @@ As the \gls{smc} model receives a schedule from \gls{cora} it does not need to f
 The processor in this model also differs form the one in the \gls{cora} model in the way that in this model, the processor may remain in \uppLoc{Running} for a varying amount of time instead of just the worst execution time for the payload.\\
 It synchronises with the scheduler template onthe channel \uppSync{ready!} and then awaits a synchronisation on either \uppSync{run?} or \uppSync{skip?}, while the scheduler determines what to do with the next payload.
 \begin{figure}[h]
-	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the \gls{cora} model}, label=lst:queue, firstnumber=53]
-	.
-	.
-	.
-//from cora
+	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the \gls{cora} model}, label=lst:queue, firstnumber=57]
 int Queue[NumberOfPayloads] = {4, 0, 1, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0};
 const int RunStart[NumberOfPayloads] = {0, 50, 100, 140, 190, 230, 280, 320, 370, 410, 460, 500, 550, 590, 640, 680};
 	\end{lstlisting}

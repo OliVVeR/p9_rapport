@@ -83,7 +83,10 @@ void dequeue() {
 	}
 	queue[N-1] = a;
 }
-
+\end{lstlisting}
+\end{figure}
+\begin{figure}[H]
+\begin{lstlisting}[language=my_c, caption={Declarations for Processor template}, label=lst:core_processor_code1, firstnumber=44]
 void reset() {
 	int i = 0;
 	int all_done = 0;
@@ -100,10 +103,7 @@ void reset() {
 		}
 	}
 }
-\end{lstlisting}
-\end{figure}
-\begin{figure}[H]
-\begin{lstlisting}[language=my_c, caption={Declarations for Processor template}, label=lst:core_processor_code1, firstnumber=61]
+
 int runnabeCount() {
 	int count = 0;
 	int i = 0;
