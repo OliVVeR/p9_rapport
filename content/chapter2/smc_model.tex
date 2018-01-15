@@ -135,23 +135,26 @@ The PayloadWindow template can be found in \cref{fig:smc_OW}, with three locatio
 
 
 \subsection{EnergySource} \label{subsec:energy_src}
-During the entire schedule we need to keep track of the battery level, as mentioned in the start of this section we are using \gls{kibam}. In \myref{sec:kibam} we show the equations for calculating the available and bound charge as a function of time. In order to use it in our \gls{smc} model we need to change the equation, to not be a function of time and only give us the difference changes to the available and bound charge each time unit. We are able to do this, because we store the value of available and bound charge as each time unit passes in two clocks, \uppVar{a} and \uppVar{b}. At the start of the model we assign \uppVar{a} to \gls{soc} multiply with the ratio c. likewise we assign \uppVar{b} to \gls{soc} multiply by one minus c.
+During the entire schedule we need to keep track of the battery level, as mentioned in the start of this section we are using \gls{kibam}. In \myref{sec:kibam} we show the equations for calculating the available and bound charge as a function of time. In order to use it in our \gls{smc} model we need to change the equation, to not be a function of time and only give us the difference changes to the available and bound charge for each time unit. We are able to do this, because we store the value of available and bound charge as each time unit passes in two clocks, \uppVar{a} and \uppVar{b}. In the initial state we assign \uppVar{a} to \gls{soc} multiplied with the ratio \uppVar{c}. Likewise we assign $b = SoC * (1 - c)$.
 
-The equation used to calculate clock \uppVar{a} can be seen in \cref{eq:calcA}. The equation has two purposes, subtract the amount of energy being used by the running payload represented with the variable \uppVar{i}, and add energy to \uppVar{a} from \uppVar{b} based on the difference between the two wells calculated by $k*(b/(1-c)-a/c)$.
+The equation used to calculate clock \uppVar{a} can be seen in \cref{eq:calcA}. The equation has two purposes, subtract the amount of energy being used by the currently executing payload represented with the variable \uppVar{i}, and add energy to \uppVar{a} from \uppVar{b} based on the difference between the two wells calculated by $k*(b/(1-c)-a/c)$.
 \begin{equation}\label{eq:calcA}
 \uppInv{a' == -i+k*(b/(1-c)-a/c)} 
 \end{equation}
 
-Similar for clock \uppVar{b}, It needs to subtract the amount of energy add to \uppVar{a} and add the amount of charge gained from \uppVar{RechargeRate}. \uppVar{insolation} is a bool that is either one or zero depending on the Insolation template and determines if \uppVar{b} gains charge.
+Similar for clock \uppVar{b}, it needs to subtract the amount of energy added to \uppVar{a}, and add the amount of charge gained from \uppVar{RechargeRate}.
+\uppVar{insolation} is a boolean that is either one or zero depending on the model's state and determines if \uppVar{b} gains charge.
 \begin{equation}\label{eq:calcB}
 \uppInv{b' == -k*(b/(1-c)-a/c)+(insolation * RechargeRate)}
 \end{equation}
 
-An illustration can be seen below, showing how the difference is calculated along with k's impact on how much get transferred from \uppVar{b} to \uppVar{a}.
-Assume a battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. Consider a payload had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from bound would be needed to add to available. The same is done for the bound capacity but instead of multiplying by k we multiply by minus k resulting in the value that should be subtracted from the bound well.
+An illustration can be seen below, showing how the difference is calculated along with \uppVar{k}'s impact on how much charge that gets transferred from \uppVar{b} to \uppVar{a}.
+Assume a battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. 
+Consider a payload that had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in a value of $500$.
+The value would then be multiplied by \uppVar{k} to give us the rate of how much to transfer from bound to available.
+The same is done for the bound capacity but instead of multiplying by \uppVar{k} we multiply by minus \uppVar{k} resulting in the value that should be subtracted from the bound charge.
 
-With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on insolation, now we only need to consider what queries should be run in order to give the most usable data for the users.
-
+With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on insolation. Now we only need to consider what queries should be run in order to give the most usable data for the users.
 
 %Where the \gls{cora} model finds a trace, the \gls{smc} model will try and rerun the produced trace. This means the \gls{smc} model will execute tasks in the exact same order as the \gls{cora} model.% As this model implements KiBaM it gives a fairly accurate representation of the energy consumption. 
 
