@@ -11,7 +11,7 @@ The eight variables are Name, Time, Energy, Profit, Deadline, Dependencies, Wind
 \textbf{Name} should indicate what the payload represents. When modelled, a payloads name will be translated into a number in range 0 to N-1 where N is the amount of payloads. The numeric name will also be used when a payload is referenced in the produced schedule.\\
 \textbf{Time} specifies how much time, in minutes, it will take to complete the payload. It is defined by a range in order to allow for uncertainty in regards to the timing of the payloads. It is valid to specify a number that is higher than the orbit duration, but a time may not be below 0.\\
 \textbf{Energy} specifies how high a load, in mAh, the payload applies on the battery every minute it is being executed.\\
-\textbf{Profit} is expressed within a range from 1 to 5, which signifies how valuable or profitable it is to complete a payload. 1 being the least profitable and 5 being the most. In the example from below, L1 and L2 represents the use of the L-Band transmitter that the GomX-3 nanosatellite use to communicate with other satellites, which allows it to collect valuable data. Which is why it has been given a profit of 5 as it is the most profitable payload. The first payload Slew represents the action of slewing the satellite. This does not directly generate any profit for the satellite as no data is gathered.\\
+\textbf{Profit} is expressed within a range from 1 to 5, which signifies how valuable or profitable it is to complete a payload. 1 being the least profitable and 5 being the most. In the example from below, L1 and L2 represents the use of the L-Band transmitter that the GomX-3 nanosatellite use to communicate with other satellites, which allows it to collect valuable data. Which is why it has been given a profit of 5 as it is the most profitable payload. The first payload Slew represents the action of slewing the nanosatellite. This does not directly generate any profit for the nanosatellite as no data is gathered.\\
 \textbf{Deadline} is a positive integer and is used to cancel payloads which are delayed too much. The minimum value for the deadline is that of the maximum execution time and the maximum is undefined. The scheduler may chose to wait before executing a payload and we can therefore risk that it is no longer relevant to execute the next payload in the queue.
 The decision for whether or not to cancel a payload in regards to its deadline goes as follows: \textit{if the time we have spent waiting for the next payload to start plus the time it takes to complete the payload exceeds the deadline; then cancel}. We want to make sure that only payloads that are guaranteed to finish within their deadline start\\
 \textbf{Dependencies} contains a list of other payloads which the current payload is waiting for to be completed. A payload may only be executed if all payloads expressed in its dependencies have previously been activated. The user may specify a dependency of multiple executions of another tasks. In the example, X is dependant on L1 and L2 to be completed twice, before it may self be executed.\\
@@ -32,7 +32,7 @@ UHF,	15-15,	15,		1,		45,			0 0 0 1 0,	20-65,	1
 \subsection{Configuration Specification} \label{subsec:init}
 The nanosatellite and its battery is specified by a configuration which consists of a list of variables and constants. The configuration is read from an INI file which we have provided an example of below in \cref{lst:ini}.
 The configuration is divided into three sections System, CORA, and SMC.\\
-The System specific variables describes the satellite and the time constraints.
+The System specific variables describes the nanosatellite and the time constraints.
 The variables are:
 \begin{itemize}
 	\item schedule\_length
@@ -45,16 +45,16 @@ The variables are:
 \end{itemize}
 The \textbf{schedule\_length} defines how long the produced schedule should be, in minutes. 
 \textbf{orbit\_time} defines how long it takes to complete one orbit, in minutes. 
-The \textbf{battery\_capacity} is an constant that defines the maximum capacity of the battery. We do not expect that the user defines every single operation that the satellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
-\textbf{idle\_cost} is the load that is imposes on the battery at all times, even when the satellite is idling, not currently executing any of the defined payloads.
-This will allow us to disregard some of the payloads that the satellite may perform as they can be grouped together as one single background process which is always being executed.
+The \textbf{battery\_capacity} is an constant that defines the maximum capacity of the battery. We do not expect that the user defines every single operation that the nanosatellite is capable of performing, which is why we have made an abstraction by introducing the \textbf{idle\_cost} variable. 
+\textbf{idle\_cost} is the load that is imposes on the battery at all times, even when the nanosatellite is idling, not currently executing any of the defined payloads.
+This will allow us to disregard some of the payloads that the nanosatellite may perform as they can be grouped together as one single background process which is always being executed.
 The user should only consider payloads which can be executed in parallel to the defined payloads and only chose those which energy and time cost are trivial.
-Failing to do so may result in a non representative model of their satellite and therefore a schedule where our guarantees may not be valid.\\
+Failing to do so may result in a non representative model of their nanosatellite and therefore a schedule where our guarantees may not be valid.\\
 Based on the findings from Bisgaard et al. 2016\cite{gomx3} we have decided to include the \textbf{safe\_threshold} variable.
 This variable is used to determine when the nanosatellite's \gls{soc} is too low to continue executing the schedule.
 If the nanosatellite go below this threshold, it is in danger of depleting the battery, which means it will not be able to communicate with Earth for a period of time.
 This will result in a huge loss of potential profit as we are no longer able to execute profitable payloads and should therefore be avoided.It is critical that the schedules we produce will never go below this threshold.\\
-\textbf{rec\_rate}  defines the recharge rate such that the value is added to the battery's capacity every minute that the satellite is in insolation.\\
+\textbf{rec\_rate}  defines the recharge rate such that the value is added to the battery's capacity every minute that the nanosatellite is in insolation.\\
 We have three variables that are related to the \gls{smc} model where two of them is used in its battery model.\\
 \begin{itemize}
 	\item f\_rate
