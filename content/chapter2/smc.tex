@@ -111,21 +111,21 @@ simulate\ 5\ [<=\ 100]\ \{x,y\}
 
 The result of the two queries is displayed as graphs in \cref{fig:sim01} and \cref{fig:sim02}, where the value axis is the value of \uppVar{x} and \uppVar{y}, and the time axis is the time spent.
 Examining the graph we can observe that the value \uppVar{x} tends be about 50 at 100 time units.
-From that results a new question can be raised \textit{``What is the probability that \uppVar{x} is above or equal to 50 when 100 time units have passed?''} in \cref{eq:q3} a query have been constructed to answer the question.
+From that results a new question can be raised \textit{``What is the probability that \uppVar{x} is above or equal to 50 when 100 time units have passed?''} in \ref{eq:q3} a query have been constructed to answer the question.
 \begin{equation}\label{eq:q3}
 Pr[<=150](<>\ x\ >=\ 50)
 \end{equation}
 
-Like the previous probability example, the query results in a range that describes the probability that \uppVar{x} will be higher or equal to 50 when 100 time units have passed, which in this case results in about a 98\% to 100\% probability.
+Like the previous probability example, the query results in a range that describes the probability that \uppVar{x} will be higher or equal to 50 when 150 time units have passed, which in this case results in about a 98\% to 100\% probability.
 It is possible to get more information from the query in the form of seven different graphs (Probability Density Distribution, Probability Density Confidence Intervals, Probability Distribution, Probability Confidence Intervals, Cumulative Probability Distribution, Cumulative Probability Confidence Intervals, and Frequency Histogram). 
 
 Frequency Histograms shows the count on the vertical axis and run duration in time on the horizontal axis, each of the columns represent a time where a number of runs have fulfilled the property.
 The first column show that out of the 263 runs, three of them had observed the value \uppVar{x} to be higher or equal to 50 at 80.8 time units.
-This histogram show that with a 99\% certainty \uppVar{x} will at the earliest be 50 or higher at 80.8 and latest 111.4 time units.
+This histogram show that with a 99\% certainty \uppVar{x} will at the earliest be 50 or higher at 80.8 and latest 112 time units.
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/eq3fh.png}
-	\caption{Frequency histogram generated from \cref{eq:q3}}
+	\caption{Frequency histogram generated from query \ref{eq:q3}}
 	\label{fig:eq3fh}
 \end{figure}
 
@@ -134,7 +134,7 @@ With a 99\% certainty, at 112 time units there is almost a 100\% probability for
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{graphics/eq3cpd.png}
-	\caption{Cumulative probability distribution generated from \cref{eq:q3}}
+	\caption{Cumulative probability distribution generated from query \ref{eq:q3}}
 	\label{fig:eq3cpd}
 \end{figure}
 
