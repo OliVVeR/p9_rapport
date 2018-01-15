@@ -160,7 +160,7 @@ In \cref{eq:calcA} and \cref{eq:calcB} we see the constant $k$, \uppVar{k} deter
 
 So for example if the battery has a capacity of $3000$ and a ratio $c = 0.2$ this means that the bound capacity will be $2400$ and the available will be $600$. If we were to calculate the imbalance like so $(b/(1-c)-a/c)$, this would result in zero because $b/(1-c)$ would be $3000$ and $a/c$ would be $3000$. Consider a payload had just taken $100$ from available in a single tick, the equation would now be $(2400/(1-0.2)-500/0.2)$ resulting in $500$ this would then be multiplied by k to give us the rate of how much from bound would be needed to add to available. The same is done for the bound capacity but instead of multiplying by k we multiply by minus k resulting in the value that should be subtracted from the bound well.
 
-In \cref{eq:checkB} we also see the product of \uppVar{insolation} and \uppVar{RechargeRate} being added to \uppVar{b}, when we are in eclipse from the sun, \uppVar{insolation} is false resulting in no recharge being added to \uppVar{b}.
+In \cref{eq:calcB} we also see the product of \uppVar{insolation} and \uppVar{RechargeRate} being added to \uppVar{b}, when we are in eclipse from the sun, \uppVar{insolation} is false resulting in no recharge being added to \uppVar{b}.
 
 With these changes to the \gls{smc} model we are able to run a schedule with payloads, that have windows and dependencies, with the capability of recharging the battery based on insolation, now we only need to consider what queries should be run in order to give the most usable data for the users.
 
