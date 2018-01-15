@@ -14,7 +14,7 @@ Since the iterative adjustment of the nanosatellite configuration have become ma
 	\label{fig:tool_act}
 \end{figure}
 
-\subsection{Battery Wear and Lifetime} \label{subsec:disc_life}
+\subsection*{Battery Wear and Lifetime} \label{subsec:disc_life}
 We did not implement any major features that would try to avoid straining the battery. 
 But as Wognsen et al. 2015\cite{score_function} expresses, it is important to predict the battery wear for battery powered systems as it is a central part of predicting the system's lifetime.
 Wognsen et al. 2015\cite{score_function} presented a scoring function to compare and evaluate the impact of battery usage profiles on cycle life. Their scoring system would have been simple to implement as the \gls{cora} model is always aware of the battery's \gls{soc}. However, the authors conclude that the score does not indicate to what effect the usage profile will have on the battery life. They do note that it is expected that with a large enough amount of experiments, it would be possible to tailor the function to a specific battery type, such as the one the GomX-3 nanosatellite is equipped with. \\
