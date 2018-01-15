@@ -1,4 +1,4 @@
-\section{SMC model} \label{sec:smc_model}
+\section{SMC Model} \label{sec:smc_model}
 \Gls{smc} is chosen because \gls{cora} handles randomness poorly making it inadequate to perform robustness check, because of its deterministic approach, compared to \gls{smc} which can perform undeterministic choices. This section will focus on how a \gls{smc} model can be constructed to provide further insight about the schedules robustness produced by the \gls{cora} model. Additionally the \gls{smc} model will need variables mentioned in \myref{sec:read_input}.
 
 Since \gls{smc} allows clocks to have non-linear rate along with rational numbers, it is possible to implement \gls{kibam}, see \myref{sec:kibam}. The advantage of using the battery model over ideal, implemented in \gls{cora}, is that \gls{kibam} is pessimistic in the sense that \gls{kibam} tends to underestimate the actual battery levels. Because of this \gls{kibam} will be implemented in the \gls{smc} model, instead of the ideal
