@@ -12,7 +12,7 @@ The initial version of this template was based on a the UPPAAL implementation of
 As the \gls{smc} model receives a schedule from \gls{cora} it does not need to find a payload to execute, instead it will look for the next entry in the array describing what payloads to execute, such an array can be seen in \cref{lst:queue}. This template is responsible for updating the queue, and keeping track of how many payloads have been skipped, and the earnings, in regards to the specified profit.\\
 The processor in this model also differs form the one in the \gls{cora} model in the way that in this model, the processor may remain in \uppLoc{Running} for a varying amount of time instead of just the worst execution time for the payload.\\
 It synchronises with the scheduler template onthe channel \uppSync{ready!} and then awaits a synchronisation on either \uppSync{run?} or \uppSync{skip?}, while the scheduler determines what to do with the next payload.
-\begin{figure}[H]
+\begin{figure}[h]
 	\begin{lstlisting}[language=my_c, caption={Payload queue with start times, extracted from the \gls{cora} model}, label=lst:queue, firstnumber=53]
 	.
 	.
@@ -93,7 +93,7 @@ const int RunStart[NumberOfPayloads] = {0, 50, 100, 140, 190, 230, 280, 320, 370
 \end{figure}
 
 \subsection{Scheduler}
-When the location \uppLoc{Ready} from Processor is active, two transitions is available to either execute or skip the current payload, each of the transitions are dependent on the scheduler template seen in \cref{fig:smc_S}. This template is responsible for determining if a payload can be run based on all of the restrictions defined, in the payload and environment description, by the user. This includes dependencies, windows, and the battery levels. It checks the windows, dependencies, and the maximum amount of runs per reset, whereas for the battery level it calculates an estimate of what it would be after executing the payload, this is done for both the available, bound and total level.
+When the location \uppLoc{Ready} from Processor is active, two transitions is available to either execute or skip the current payload, each of the transitions are dependent on the scheduler template seen in \cref{fig:smc_S}. This template is responsible for determining if a payload can be executed based on all of the restrictions defined, in the payload and environment description, by the user. This includes dependencies, windows, and the battery levels. It checks the windows, dependencies, and the maximum amount of executions per reset, whereas for the battery level it calculates an estimate of what it would be after executing the payload, this is done for both the available, bound and total level.
 This is necessary to ensure that a payload does not draw more power than currently available. All of these checks are done on the transition that broadcast \uppSync{run!} indicating that it is safe to execute the payload. \\
 If for some reason it is not possible to perform the transition it waits until we either have recharged enough energy or a chance in the windows have occurred, allowing for execution of the payload. If we are not able to perform the payload before the deadline, which is calculated by subtracting worst from the payload deadline, then the other transition is activated leading to a skip of the payload. With dependencies this can have significant consequences to the schedule because the next payload in the schedule may have depended the skipped payload thus resulting in a chain of skipped payloads.
 
