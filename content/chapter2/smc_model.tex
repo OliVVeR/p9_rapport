@@ -6,7 +6,6 @@ Since \gls{smc} allows clocks to have non-linear rate along with rational number
 Our \gls{smc} model consist of four templates plus one instance of a template for each window described in the payload specification. However, it is required that at least one window is defined in the input. This makes a total of 5 plus templates, which are Processor, Insolation, EnergySource, Scheduler, and PayloadWindow(i).\\ 
 The \gls{smc} model is based on a UPPAAL implementation of \gls{kibam} \cite{battery_aware_scheduling}, and our \gls{cora} model. The UPPAAL implementation of \gls{kibam} covers scheduling with uncertainty, combined with capturing battery levels during execution of the schedule. \\
 The rest of this section we will go over each of the important points in the model, this include the concept of recharging, windows for payloads, payload dependencies ect. 
-\ofx{det er ikke blevet beskrevet hvorfor vi laver denne model! ud fra dette ville jeg gætte på det er for KiBaM}
 
 \subsection{Processor}
 The initial version of this template was based on a the UPPAAL implementation of \gls{kibam}, which we have then modified to fit our context. The processor template describes the status of the nanosatellites processor, it indicates if it is currently executing a payload, waiting for a payloads deadline to be reached or idling.\\
