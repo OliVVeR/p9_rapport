@@ -3,9 +3,9 @@ In this chapter we conclude on the report and project as a whole to evaluate the
 
 \enquote{How is it possible to produce a schedule that consider multiple requirements, and how is it possible to verify the robustness of such a schedule}
 
-To conclude on the problem statement and to what degree the different requirements have been fulfilled, we must examine and evaluate each of these.\\
+To conclude on the problem statement and to what degree the different requirements have been fulfilled, we must examine and evaluate each of the requirements, and the robustness.
 
-As described in \myref{sec:cora} the \gls{soc} threshold is ensured by the \gls{cora} model, as exceeding this would result in a deadlock, causing the trace to be discarded. Furthermore, in the \gls{smc} model we pre calculate the energy consumption to also enforce a payload can only be executed if it will not cause the \gls{soc} to fall below the threshold.  Which these percussions installed, \gls{soc} is always considered.\\
+As described in \myref{sec:cora} the \gls{soc} threshold is ensured by the \gls{cora} model, as exceeding this would result in a deadlock, causing the trace to be discarded. Furthermore, in the \gls{smc} model we precalculate the energy consumption to also enforce a payload can only be executed if it will not cause the \gls{soc} to fall below the threshold.  Which these percussions installed, \gls{soc} will always be kept above this threshold.\\
 After having completed a payload our \gls{cora} model will immediately start execution of the next payload, if any payload is enabled. However, we do not currently execute payloads as soon as they are enabled if the model is idling, it does not check if a payload is executable until a change in the PaylaodWindow template occurs. Therefore the requirement for payload efficiency is only partially fulfilled.\\
 If a payload is defined as only being able to execute in a window, it must never execute at any other time. This is in both models ensured, and the requirement for windows is therefore fulfilled \\
 As the schedule is being generated in \gls{cora} with the setting to find the best trace based on the the defined profit, see \myref{sec:cora}, we have archived the goal of maximising profit.\\
