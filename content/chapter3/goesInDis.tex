@@ -20,7 +20,7 @@ The PayloadWindow in \myref{sec:cora} mentions that our orbit are modelled circu
 Modifications to the \gls{smc} model were also been done, as described in \myref{sec:smc_model}, \gls{kibam} is one of the factors that impact the \gls{smc} model, unlike in \gls{cora} where the battery model overestimated the battery, \gls{kibam} underestimate resulting in few schedules being discarded even though the may be viable.
 
 %Starting value from future work \cref{ssec:start_val}
-Our \gls{cora} model does not support knowledge from previous schedules, so the variable \uppVar{runs[]} that keep track of which payloads has been executed will always initialize zero, making it impossible to generate a schedule based on the \uppVar{runs[]} from the previous schedule.
+Our \gls{cora} model does not support knowledge from previous schedules, so the variable \uppVar{runs[]} that keep track of which payloads has been executed will always be initialized to zero, making it impossible to generate a schedule based on the \uppVar{runs[]} from the previous schedule.
 
 To conclude on this we can divide the behaviours into two categories, "will", and "may" effect schedule. will includes battery models, worst payload running time, general insolation because these factors will always have an effect on the produced schedule. May on the other hand can be tweaked by the user to have no effect on the produced schedule, these are number of updates per orbit on the battery, five prioritisation limit on payloads, deadline on payloads.
 \jfx{Too short? What can we then say?}
