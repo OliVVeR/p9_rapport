@@ -149,7 +149,7 @@ void enqueue(){
 	\node [location] (l4) [below of=l1, yshift=-40mm, label={
 		[align=left]below:
 		\textcolor{name}{Wait}\\
-		\textcolor{invariant}{x <= D}
+		\textcolor{invariant}{t <= D}
 	}] {};
 	\node [location] (l5) [below of=l2, yshift=-40mm, label={
 		[align=left]below:
@@ -162,7 +162,7 @@ void enqueue(){
 	\path[->,black, thick] (l1) edge node [midway, above][align=center]{
 		\textcolor{guard}{totalTime >=RunStart[payloadNumber]}\\
 		\textcolor{sync}{ready!}\\
-		\textcolor{update}{x=0, t=0,}\\
+		\textcolor{update}{ t=0,}\\
 		\textcolor{update}{deadline()}} (l2);
 	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
 		\textcolor{sync}{run?}\\
@@ -180,7 +180,7 @@ void enqueue(){
 		\textcolor{update}{dequeue(), active = -1,}\\
 		\textcolor{update}{payloadNumber ++}} (l4);
 	\path[->,black, thick] (l4) edge node [midway, left][align=left]{
-		\textcolor{guard}{x >= D \&\&}\\
+		\textcolor{guard}{t >= D \&\&}\\
 		\textcolor{guard}{!done()}\\
 		\textcolor{update}{setActive()}} (l1);
 	\path[->,black, thick] (l4) edge node [midway, below][align=left]{
