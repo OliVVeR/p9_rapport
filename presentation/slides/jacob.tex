@@ -3,18 +3,18 @@
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 	\centering
-	\begin{equation}
+	\begin{equation*}
 	y_1(t) = c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}
-	\end{equation}\quad
-	\begin{equation}
+	\end{equation*}\quad
+	\begin{equation*}
 	y_2(t) = (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
-	\end{equation}\quad
-	\begin{equation}
+	\end{equation*}\quad
+	\begin{equation*}
 	a '== -i+k*(b/(1-c)-a/c)
-	\end{equation}\quad
-	\begin{equation}
+	\end{equation*}\quad
+	\begin{equation*}
 	b '== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
-	\end{equation}
+	\end{equation*}
 \end{frame}
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
@@ -22,12 +22,12 @@
 	\begin{figure}[h]
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
 	\end{figure}
-	\begin{equation}
+	\begin{equation*}
 	y_1(t) = c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	y_2(t) = (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
-	\end{equation}
+	\end{equation*}
 \end{frame}
 \note{e growth, rate of change (compound interest)}
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
@@ -35,46 +35,46 @@
 	\begin{figure}[h]
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
 	\end{figure}
-	\begin{equation}
+	\begin{equation*}
 \frac{dy_1}{dt} = -i(t)+k(h_2-h_1)
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 \frac{dy_2}{dt} = -k(h_2-h_1)
-	\end{equation}
+	\end{equation*}
 \end{frame}
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 	Calculate height of $h_1$ and $h_2$
-	\begin{equation}
+	\begin{equation*}
 	h_1 = y_1/c
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	h_2 = y_2/1-c
-	\end{equation}\quad
-	\begin{equation}
+	\end{equation*}\quad
+	\begin{equation*}
 	 \frac{dy_1}{dt} = -i(t)+k(h_2-h_1)
-	\end{equation}	
-	\begin{equation}
+	\end{equation*}	
+	\begin{equation*}
 	\xrightarrow[dt]{} dy_1 = -i+k(h_2-h_1) 
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	\xrightarrow[h_1, h_2]{} dy_1 = -i+k(y_2/(1-c)-y_1/c)
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	\xrightarrow[y_1, y_2]{} da = -i+k(b/(1-c)-a/c)
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	a '== -i+k(b/(1-c)-a/c)
-	\end{equation}
+	\end{equation*}
 \end{frame}
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
-	\begin{equation}
+	\begin{equation*}
 	db = -k(b/1-c-a/c)
-	\end{equation}
-	\begin{equation}
+	\end{equation*}
+	\begin{equation*}
 	b '== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
-	\end{equation}
+	\end{equation*}
 	\begin{figure}[h]
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
 	\end{figure}
@@ -105,7 +105,6 @@
 		\rowcolor[HTML]{EFEFEF} 
 		C10 & 142.7 & 20.04\% & 4.27\% & -7.71\%
 	\end{tabular}
-	\caption{Comparison of Battery Models}
 \end{table}
 \end{frame}
 
@@ -117,14 +116,14 @@
 	\end{figure}
 	\begin{figure}[h]
 		\begin{minipage}{.7\textwidth}
-		\begin{lstlisting}[language=my_c, caption={Variables}, label=lst:queue]
+		\begin{lstlisting}
 N = 2;
 Payloads[N][3] = {{10,15,20}, {7,15,20};
 RunStart[NumberOfPayloads] = {50,100};
 		\end{lstlisting}
 		\end{minipage}\\
 		\begin{minipage}{.7\textwidth}
-			\begin{lstlisting}[language=my_c, caption={Function}, label=lst:queue]
+			\begin{lstlisting}
 void enqueue(){
 	i = IIdle + Costs[active];
 	B = Payloads[active][0];
