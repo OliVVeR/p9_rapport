@@ -4,16 +4,12 @@
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 	\centering
 	\begin{equation*}
-	y_1(t) = c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}
-	\end{equation*}\quad
-	\begin{equation*}
-	y_2(t) = (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
-	\end{equation*}\quad
-	\begin{equation*}
-	a '== -i+k*(b/(1-c)-a/c)
-	\end{equation*}\quad
-	\begin{equation*}
-	b '== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
+	\begin{aligned}
+		y_1(t) &= c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}\\
+		y_2(t) &= (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}\\
+		a '&== -i+k*(b/(1-c)-a/c)\\
+		b '&== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
+	\end{aligned}
 	\end{equation*}
 \end{frame}
 
@@ -23,10 +19,10 @@
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
 	\end{figure}
 	\begin{equation*}
-	y_1(t) = c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}
-	\end{equation*}
-	\begin{equation*}
-	y_2(t) = (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
+	\begin{aligned}
+		y_1(t) &= c*C*e^{-k't}+\frac{(C*k'c-I)(1-e^{-k't})}{k'}-\frac{I*c(k't-1+e^{-k't})}{k'}\\
+		y_2(t) &= (1-c)C*e^{-k't}+C(1-c)(1-e^{-k't})-\frac{I(1-c)(k't-1+e^{-k't})}{k'}
+	\end{aligned}
 	\end{equation*}
 \end{frame}
 \note{e growth, rate of change (compound interest)}
@@ -36,44 +32,34 @@
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
 	\end{figure}
 	\begin{equation*}
-\frac{dy_1}{dt} = -i(t)+k(h_2-h_1)
-	\end{equation*}
-	\begin{equation*}
-\frac{dy_2}{dt} = -k(h_2-h_1)
+	\begin{aligned}
+		\frac{dy_1}{dt} &= -i(t)+k(h_2-h_1)\\
+		\frac{dy_2}{dt} &= -k(h_2-h_1)
+	\end{aligned}
 	\end{equation*}
 \end{frame}
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 	Calculate height of $h_1$ and $h_2$
 	\begin{equation*}
-	h_1 = y_1/c
-	\end{equation*}
-	\begin{equation*}
-	h_2 = y_2/1-c
-	\end{equation*}\quad
-	\begin{equation*}
-	 \frac{dy_1}{dt} = -i(t)+k(h_2-h_1)
-	\end{equation*}	
-	\begin{equation*}
-	\xrightarrow[dt]{} dy_1 = -i+k(h_2-h_1) 
-	\end{equation*}
-	\begin{equation*}
-	\xrightarrow[h_1, h_2]{} dy_1 = -i+k(y_2/(1-c)-y_1/c)
-	\end{equation*}
-	\begin{equation*}
-	\xrightarrow[y_1, y_2]{} da = -i+k(b/(1-c)-a/c)
-	\end{equation*}
-	\begin{equation*}
-	a '== -i+k(b/(1-c)-a/c)
+	\begin{aligned}
+		h_1 &= y_1/c\\
+		h_2 &= y_2/1-c\\
+		\frac{dy_1}{dt} &= -i(t)+k(h_2-h_1)\\
+		\xrightarrow[dt]{} dy_1 &= -i+k(h_2-h_1) \\
+		\xrightarrow[h_1, h_2]{} dy_1 &= -i+k(y_2/(1-c)-y_1/c)\\
+		\xrightarrow[y_1, y_2]{} da &= -i+k(b/(1-c)-a/c)\\
+		a '&== -i+k(b/(1-c)-a/c)
+	\end{aligned}
 	\end{equation*}
 \end{frame}
 
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 	\begin{equation*}
-	db = -k(b/1-c-a/c)
-	\end{equation*}
-	\begin{equation*}
-	b '== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
+	\begin{aligned}
+		db &= -k(b/1-c-a/c)\\
+		b '&== -k*(b/(1-c)-a/c)+(insolation*RechargeRate)
+	\end{aligned}
 	\end{equation*}
 	\begin{figure}[h]
 		\includegraphics[width=.7\textwidth]{graphics/kibam_wells}
@@ -164,7 +150,7 @@ void enqueue() {
 	\node [location] (l4) [below of=l1, yshift=-40mm, label={
 		[align=left]below:
 		\textcolor{name}{Wait}\\
-		\textcolor{invariant}{x <= D}
+		\textcolor{invariant}{t <= D}
 	}] {};
 	\node [location] (l5) [below of=l2, yshift=-40mm, label={
 		[align=left]below:
@@ -177,7 +163,7 @@ void enqueue() {
 	\path[->,black, thick] (l1) edge node [midway, above][align=center]{
 		\textcolor{guard}{totalTime >=RunStart[payloadNumber]}\\
 		\textcolor{sync}{ready!}\\
-		\textcolor{update}{x=0, t=0,}\\
+		\textcolor{update}{ t=0,}\\
 		\textcolor{update}{deadline()}} (l2);
 	\path[->,black, thick] (l2) edge node [midway, right][align=left]{
 		\textcolor{sync}{run?}\\
@@ -195,7 +181,7 @@ void enqueue() {
 		\textcolor{update}{dequeue(), active = -1,}\\
 		\textcolor{update}{payloadNumber ++}} (l4);
 	\path[->,black, thick] (l4) edge node [midway, left][align=left]{
-		\textcolor{guard}{x >= D \&\&}\\
+		\textcolor{guard}{t >= D \&\&}\\
 		\textcolor{guard}{!done()}\\
 		\textcolor{update}{setActive()}} (l1);
 	\path[->,black, thick] (l4) edge node [midway, below][align=left]{
