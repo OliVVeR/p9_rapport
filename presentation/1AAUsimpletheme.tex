@@ -1,0 +1,59 @@
+\documentclass[
+aspectratio=169, 
+10pt, t]{beamer}
+\usetheme[]{AAUsimple}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\usepackage{svg}
+\usepackage{listings}
+
+\usepackage{caption}
+\captionsetup{labelformat=empty}
+
+\newcommand{\chref}[2]{%
+  \href{#1}{{\usebeamercolor[bg]{AAUsimple}#2}}%
+}
+
+\title{Anders slides}
+
+\date{NA}
+
+\author{
+  Anders Lykke Matthiassen\\
+  \href{mailto:anders.matthiassen@gmail.com}{{\tt}}
+}
+
+\pgfdeclareimage[height=1.5cm]{titlepagelogo}{AAUgraphics/aau_logo_new} % placed on the title page
+%\pgfdeclareimage[height=1.5cm]{titlepagelogo2}{AAUgraphics/aau_logo_new} % placed on the title page
+\titlegraphic{% is placed on the bottom of the title page
+  \pgfuseimage{titlepagelogo}
+%  \hspace{1cm}\pgfuseimage{titlepagelogo2}
+}
+
+\begin{document}
+% the titlepage
+{\aauwavesbg%
+\begin{frame}[plain,noframenumbering] % the plain option removes the header from the title page
+  \titlepage
+\end{frame}}
+%%%%%%%%%%%%%%%%
+
+% Demo
+\input{slides/anders}
+\input{slides/jacob}
+\input{slides/oliver}
+
+
+%{\aauwavesbg
+%\begin{frame}[plain,noframenumbering]
+%\huge{Questions?}{}\\
+%\includegraphics[width=0.75\textwidth]{graphics/metamoc.png}
+%\end{frame}}
+
+%\begin{frame}[plain,noframenumbering]
+%\includegraphics[width=.90\textwidth]{graphics/upp.png}
+%\end{frame}
+
+\end{document}
