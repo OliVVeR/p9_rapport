@@ -81,7 +81,7 @@
 \end{frame}
 \note{Talk about the inaccuarcy, we recharged energy is added to bound charge}
 
-\subsection{Chose of Battery Model}
+\subsection{Choice of Battery Model}
 \begin{frame}[fragile]{Battery Models}{\insertsubsection}
 \begin{table}[]
 	\centering
@@ -105,6 +105,7 @@
 		\rowcolor[HTML]{EFEFEF} 
 		C10 & 142.7 & 20.04\% & 4.27\% & -7.71\%
 	\end{tabular}
+	\caption{Measurements from Rakhmatov et al. 2003}
 \end{table}
 \end{frame}
 
@@ -124,10 +125,10 @@ RunStart[NumberOfPayloads] = {50,100};
 		\end{minipage}\\
 		\begin{minipage}{.7\textwidth}
 			\begin{lstlisting}
-void enqueue(){
-	i = IIdle + Costs[active];
-	B = Payloads[active][0];
-	W = Payloads[active][1];
+void enqueue() {
+    i = IIdle + Costs[active];
+    B = Payloads[active][0];
+    W = Payloads[active][1];
 }
 			\end{lstlisting}
 		\end{minipage}
