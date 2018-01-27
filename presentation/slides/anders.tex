@@ -1,11 +1,6 @@
-\begin{frame}{Demo}{}
-	Skift over til terminal\\
-	Start\\
-	Forklar, antal payloads, kompleksitet og tidsplanens laengde\\
-	Vis gantt chart imens at vi venter (gem et saadan at det ikke overskrives undervejs)\\
-	Hop tilbage igen og vis vi blev faerdig
-\end{frame}
-
+\section{Demonstration}
+\section{Output and Reflection}
+\subsection{Output}
 % Output intro
 \begin{frame}{Output}{}
 	Output Files
@@ -19,7 +14,7 @@
 \end{frame}
 
 % Output 1
-\begin{frame}[fragile]{Output}{Query 4.8}
+\begin{frame}[fragile]{Output}{Battery Threshold Percentage}
 	% query 4.8 - den der viser om vi havde strom nok til sidst - men ikke hvor meget
 	\begin{equation*}
 		Pr\; [<=ScheduleLength] \; (<>\; b\ +\ a\ <\ C\ *\ (ThresholdPercentage\ /\ 100)
@@ -42,17 +37,17 @@ with confidence 0.95.
 \end{frame}
 
 % Output 1.1 - query 4.11
-\begin{frame}{Output}{Query 4.11}
+\begin{frame}{Output}{Battery capacity}
 	\begin{equation*}
 		simulate\ 100 \; [<=\ ScheduleLength]\; \{ a,\ b\}
 	\end{equation*}
 	\begin{figure}
-		\includegraphics[width=0.80\textwidth]{graphics/ab.png}
+		\includegraphics[width=0.75\textwidth]{graphics/ab.png}
 		\end{figure}
 \end{frame}
 
 % Output 2
-\begin{frame}[fragile]{Output}{Query 4.9}
+\begin{frame}[fragile]{Output}{Skips}
 	% query 4.9 - 
 	\begin{equation*}
 Pr\; [<=ScheduleLength] \; (<> \ skips \ !=\ 0)
@@ -76,7 +71,7 @@ with confidence 0.95.
 \end{frame}
 
 % Output 3
-\begin{frame}[fragile]{Output}{Query 4.10}
+\begin{frame}[fragile]{Output}{Active and Running}
 	% query 4.10
 	\begin{equation*}
 		simulate\ 100 \; [<=ScheduleLength] \; \{active, \; Processor.Running\}
@@ -91,7 +86,7 @@ Processor.Running:
 \end{frame}
 
 % Output 3.1
-\begin{frame}{Output}{Query 4.10}
+\begin{frame}{Output}{Active and Running Visual}
 	\begin{equation*}
 		simulate\ 1 \; [<=ScheduleLength] \; \{active, \; Processor.Running\}
 	\end{equation*}
@@ -100,6 +95,7 @@ Processor.Running:
 		\end{figure}
 \end{frame}
 
+\subsection{Reflection}
 % Reflection 1 - batteri
 \begin{frame}{Reflection}{Battery considerations}
 	The battery is not a concern
